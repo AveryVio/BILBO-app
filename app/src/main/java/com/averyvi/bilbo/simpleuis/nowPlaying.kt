@@ -1,5 +1,6 @@
 package com.averyvi.bilbo.simpleuis
 
+import android.widget.Button
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,28 +23,39 @@ import java.sql.Ref
 @Composable
 fun karta() {
     Card(
-        shape = RoundedCornerShape(15.dp),
-        /*colors = CardColors(
-            Color.Gray,
+        shape = RoundedCornerShape(18.dp),
+        colors = CardColors(
+            Color.DarkGray,
             Color.Blue,
             Color.Black,
             Color.White,
-        )*/
+        )
     ) {
-        Row {
+        val CardButtonColors = ButtonColors(
+            Color.Gray,
+            Color.Black,
+            Color.DarkGray,
+            Color.White
+        )
+        Row(
+            modifier = Modifier.padding(horizontal = 3.dp)
+        ) {
             Button(
                 onClick = {},
-                colors = ButtonColors(
-                    Color.Gray,
-                    Color.Blue,
-                    Color.Black,
-                    Color.White,
-                ),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardButtonColors,
+            ) { Text("C") }
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(16.dp),
+                colors = CardButtonColors,
                 enabled = false
-            ) { }
-            Text("kfjsdofis  ")
-            Text("kfjsdofis  ")
-            Text("kfjsdofis  ")
+            ) { Text("D") }
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(16.dp),
+                colors = CardButtonColors,
+            ) { Text("E") }
         }
     }
 }
