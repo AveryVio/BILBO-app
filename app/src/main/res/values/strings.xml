@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">A sample of UIs</string>
+    <string name="AppName" translatable="false">BILBO app</string>
     <string name="InstrumentSelectScreen">Instrument Select</string>
     <string name="HelpScreen">Help</string>
-    <string name="AppName" translatable="false">BILBO app</string>
     <string name="MostUsedInstrumentsStatName">Most used Instruments</string>
     <string name="IntroScreen">Intro</string>
     <string name="IntroTextTop">Welcome to the BILBO app.</string>

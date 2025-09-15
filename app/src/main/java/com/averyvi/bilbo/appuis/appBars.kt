@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.averyvi.asampleofuis.ui.theme.FancyHeading
 import com.averyvi.bilbo.notuis.InstrumentStyling
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +51,9 @@ fun BILBOTopAppBar(
             ){
                 Text(
                     text = "BILBO",
-                    fontWeight = FontWeight(800),
+                    fontFamily = FancyHeading.titleLarge.fontFamily,
+                    fontWeight = FancyHeading.titleLarge.fontWeight,
+                    fontSize = 25.sp,
                     lineHeight = 10.sp,
                     modifier = Modifier.padding(top = 0.dp, bottom = 0.dp, start = 0.dp, end = 20.dp)
                 )
