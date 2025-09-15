@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">uika lol</string>
+    <string name="InstrumentSelectScreen">Výběr Nástroje</string>
+    <string name="HelpScreen">Nápověda</string>
+    <string name="MostUsedInstrumentsStatName">Nejvíce používané nástroje:</string>
+    <string name="IntroScreen">Úvod</string>
+    <string name="IntroTextTop">Vítejte do BILBO aplikace.</string>
+    <string name="nextButton">Další</string>
+    <string name="CurrentlyPlaying">Aktuální Nástroj</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">A sample of UIs</string>
+    <string name="InstrumentSelectScreen">Instrument Select</string>
+    <string name="HelpScreen">Help</string>
+    <string name="MostUsedInstrumentsStatName">Most used Instruments:</string>
+    <string name="IntroScreen">Intro</string>
+    <string name="IntroTextTop">Welcome to the BILBO app.</string>
+    <string name="nextButton">Next</string>
+    <string name="CurrentlyPlaying">Current Instrument</string>
+</resources>
