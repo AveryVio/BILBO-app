@@ -7,4 +7,7 @@
     <string name="IntroTextTop">Vítejte do BILBO aplikace.</string>
     <string name="nextButton">Další</string>
     <string name="CurrentlyPlaying">Aktuální Nástroj</string>
+    <string name="YouAreXUnderAbove1">"Jste "</string>
+    <string name="YouAreXUnderAbove2Under">" pod vybraným tónem"</string>
+    <string name="YouAreXUnderAbove2Above">" nad vybraným tónem"</string>
 </resources>

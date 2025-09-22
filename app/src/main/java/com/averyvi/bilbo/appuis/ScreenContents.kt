@@ -32,16 +32,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.notuis.InstrumentStyling
 import com.averyvi.bilbo.simpleuis.InstrumentShelfItem
+import com.averyvi.bilbo.simpleuis.IsHarmonicText
 import com.averyvi.bilbo.simpleuis.PitchDiffView
-import com.averyvi.bilbo.simpleuis.karta
+import com.averyvi.bilbo.simpleuis.NoteDisplayCard
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -62,7 +61,7 @@ fun NowPlayingScreenContents(paddingValues: PaddingValues){
                     modifier = Modifier.size(30.dp),
                 )
             }
-            karta()
+            NoteDisplayCard()
             Text("jfklsjdf")
         }
         Column(Modifier.padding(5.dp)) {
@@ -82,6 +81,8 @@ fun NowPlayingScreenContents(paddingValues: PaddingValues){
             }
 
             PitchDiffView(pitch, 400,550)
+
+            IsHarmonicText(pitch)
         }
     }
 }

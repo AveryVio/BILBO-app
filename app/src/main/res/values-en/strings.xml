@@ -7,4 +7,7 @@
     <string name="IntroTextTop">Welcome to the BILBO app.</string>
     <string name="nextButton">Next</string>
     <string name="CurrentlyPlaying">Current Instrument</string>
+    <string name="YouAreXUnderAbove1">"You are "</string>
+    <string name="YouAreXUnderAbove2Under">" under the selecte tone"</string>
+    <string name="YouAreXUnderAbove2Above">" above the selecte tone"</string>
 </resources>
