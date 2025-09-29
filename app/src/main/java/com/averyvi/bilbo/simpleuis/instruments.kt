@@ -85,45 +85,6 @@ fun InstrumentShelfItem(
     }
 }
 
-@Composable
-fun PitchDiffView(
-    pitchDiff: MutableState<Double>,
-    width: Int,
-    height: Int,
-){
-    val halfHeight = height.toDouble() / 2
-
-    Box {
-        Box(modifier = Modifier
-            .width(Dp(width.toFloat()))
-            .height(Dp(height.toFloat()))
-            .background(color = Color(255, 255, 255, 255))
-        ){}
-
-        Image(
-            painter = painterResource( R.drawable.decreasing_sine ),
-            contentDescription = null,
-            modifier = Modifier
-                .offset(x = Dp((width / 2.5).toFloat()))
-                .height(height.dp)
-        )
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .width(width.dp)
-                .offset(0.dp, Dp((  halfHeight - (pitchDiff.value * halfHeight) - (height.toFloat()/36) ).toFloat()) )
-        ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(110.dp))
-                    .width(Dp(width.toFloat()/7))
-                    .height(Dp(height.toFloat()/18))
-                    .background(color = Color(200, 50, 100))
-            ) {}
-        }
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
