@@ -1,0 +1,57 @@
+package com.averyvi.bilbo
+
+import androidx.annotation.StringRes
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.averyvi.bilbo.ui.app.HelpScreen
+import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
+import com.averyvi.bilbo.ui.app.IntroScreen
+import com.averyvi.bilbo.ui.app.NowPlayingScreen
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun AppUI(){
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = Routes.CurrentlyPlaying.name,
+    ){
+
+        val onRouteButtonClicked = { route: Routes ->
+            navController.navigate(route = route.name)
+        }
+
+        composable(route = Routes.CurrentlyPlaying.name){
+            NowPlayingScreen(onRouteButtonClicked = onRouteButtonClicked)
+        }
+        composable(route = Routes.InstrumentSelect.name){
+            InstrumentSelectScreen(onRouteButtonClicked = onRouteButtonClicked)
+        }
+        composable(route = Routes.Help.name) {
+            HelpScreen(onRouteButtonClicked = onRouteButtonClicked)
+        }
+        composable(route = Routes.Intro.name) {
+            IntroScreen(onRouteButtonClicked = onRouteButtonClicked)
+        }
+    }
+}
+
+enum class Routes(
+    @StringRes val title: Int,
+){
+    Intro(
+        title = R.string.IntroScreen
+    ),
+    CurrentlyPlaying(
+        title = R.string.CurrentlyPlaying
+    ),
+    InstrumentSelect(
+        title = R.string.InstrumentSelectScreen
+    ),
+    Help(
+        title = R.string.HelpScreen
+    )
+}

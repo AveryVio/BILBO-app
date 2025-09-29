@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.appuis
+package com.averyvi.bilbo.ui.app
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,19 +24,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.asampleofuis.ui.theme.FancyHeading
-import com.averyvi.bilbo.notuis.InstrumentStyling
+import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.notui.InstrumentStyling
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BILBOTopAppBar(
     selectedInstrument: InstrumentStyling,
     scrollBehavior: TopAppBarScrollBehavior,
-    onHelpButtonClicked: () -> Unit,
+    onRouteButtonClicked: (Routes) -> Unit,
 ){
 
     TopAppBar(
@@ -69,7 +69,7 @@ fun BILBOTopAppBar(
                 },
         navigationIcon = {
             IconButton(
-                onClick = onHelpButtonClicked /* do something */
+                onClick = { onRouteButtonClicked(Routes.Help) } /* do something */
             ) {
                 Icon(
                     painter = painterResource(selectedInstrument.instrumentIcon),
@@ -94,8 +94,7 @@ fun BILBOTopAppBar(
 @Composable
 fun BILBOBottomAppBar(
     selectedInstrument: InstrumentStyling,
-    onInstrumentButtonClicked: () -> Unit,
-    onCurrentlyPlayingClicked: () -> Unit,
+    onRouteButtonClicked: (Routes) -> Unit,
 ){
     BottomAppBar(
         actions = {
@@ -107,14 +106,14 @@ fun BILBOBottomAppBar(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
-                    IconButton(onClick = onInstrumentButtonClicked ) {
+                    IconButton(onClick = { onRouteButtonClicked(Routes.InstrumentSelect) } ) {
                         Icon(
                             painter = painterResource(selectedInstrument.instrumentIcon),
                             contentDescription = "Localized description"
                         )
                     }
                     FloatingActionButton(
-                        onClick = onCurrentlyPlayingClicked,
+                        onClick = { onRouteButtonClicked(Routes.CurrentlyPlaying) },
                         containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                         elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                     ) {

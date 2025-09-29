@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.appuis
+package com.averyvi.bilbo.ui.app
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,20 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.averyvi.bilbo.R
-import com.averyvi.bilbo.notuis.InstrumentStyling
+import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.notui.InstrumentStyling
 
 @Composable
 fun NowPlayingScreen(
-    onHelpButtonClicked: () -> Unit,
-    onInstrumentButtonClicked: () -> Unit,
-    onCurrentlyPlayingClicked: () -> Unit,
+    onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
-        onHelpButtonClicked = onHelpButtonClicked,
-        onInstrumentButtonClicked = onInstrumentButtonClicked,
-        onCurrentlyPlayingClicked = onCurrentlyPlayingClicked,
+        onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
         NowPlayingScreenContents(innerPadding)
     }
@@ -28,16 +25,12 @@ fun NowPlayingScreen(
 
 @Composable
 fun InstrumentSelectScreen(
-    onHelpButtonClicked: () -> Unit,
-    onInstrumentButtonClicked: () -> Unit,
-    onCurrentlyPlayingClicked: () -> Unit,
+    onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
-        onHelpButtonClicked = onHelpButtonClicked,
-        onInstrumentButtonClicked = onInstrumentButtonClicked,
-        onCurrentlyPlayingClicked = onCurrentlyPlayingClicked,
+        onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
         InstrumentSelectScreenContents(innerPadding)
     }
@@ -45,16 +38,12 @@ fun InstrumentSelectScreen(
 
 @Composable
 fun HelpScreen(
-    onHelpButtonClicked: () -> Unit,
-    onInstrumentButtonClicked: () -> Unit,
-    onCurrentlyPlayingClicked: () -> Unit,
+    onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
-        onHelpButtonClicked = onHelpButtonClicked,
-        onInstrumentButtonClicked = onInstrumentButtonClicked,
-        onCurrentlyPlayingClicked = onCurrentlyPlayingClicked,
+        onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
         HelpScreenContents(innerPadding)
     }
@@ -63,9 +52,9 @@ fun HelpScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun IntroScreen(
-    onNextScreenButtonClicked: () -> Unit
+    onRouteButtonClicked: (Routes) -> Unit,
 ){
     Surface(Modifier.fillMaxSize()) {
-        IntroScreenContents(onNextScreenButtonClicked)
+        IntroScreenContents(onRouteButtonClicked = onRouteButtonClicked)
     }
 }

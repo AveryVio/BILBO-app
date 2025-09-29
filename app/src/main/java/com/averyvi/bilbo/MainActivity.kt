@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.averyvi.bilbo.appuis.AppUI
 import com.averyvi.bilbo.ui.theme.BilboTheme
 
 class MainActivity : ComponentActivity() {

@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.simpleuis
+package com.averyvi.bilbo.ui.fragments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.averyvi.bilbo.R
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.round
 import kotlin.math.withSign
 

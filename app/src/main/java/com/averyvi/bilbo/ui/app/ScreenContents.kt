@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.appuis
+package com.averyvi.bilbo.ui.app
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -36,11 +36,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
-import com.averyvi.bilbo.notuis.InstrumentStyling
-import com.averyvi.bilbo.simpleuis.InstrumentShelfItem
-import com.averyvi.bilbo.simpleuis.IsHarmonicText
-import com.averyvi.bilbo.simpleuis.PitchDiffView
-import com.averyvi.bilbo.simpleuis.NoteDisplayCard
+import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.notui.InstrumentStyling
+import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
+import com.averyvi.bilbo.ui.fragments.IsHarmonicText
+import com.averyvi.bilbo.ui.fragments.PitchDiffView
+import com.averyvi.bilbo.ui.fragments.NoteDisplayCard
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -157,7 +158,7 @@ fun HelpScreenContents(paddingValues: PaddingValues){
 }
 
 @Composable
-fun IntroScreenContents(onNextScreenButtonClicked: () -> Unit) {
+fun IntroScreenContents(onRouteButtonClicked: (Routes) -> Unit) {
     Surface(modifier = Modifier.statusBarsPadding().fillMaxSize()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Card(
@@ -185,7 +186,7 @@ fun IntroScreenContents(onNextScreenButtonClicked: () -> Unit) {
              */
             Spacer(Modifier.padding(vertical = 330.dp))
             Button(
-                onClick = onNextScreenButtonClicked
+                onClick = { onRouteButtonClicked(Routes.InstrumentSelect) }
             ) {
                 Text(
                     text = stringResource(R.string.nextButton),
