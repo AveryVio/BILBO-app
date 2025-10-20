@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothManager
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-
+/*
 @Composable
 fun BTAC(){
     val context = LocalContext.current
@@ -22,7 +22,7 @@ fun BTAC(){
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 }
-
+*/
 
 
 /*
