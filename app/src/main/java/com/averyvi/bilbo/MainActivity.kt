@@ -5,6 +5,8 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,11 +14,15 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
+import androidx.compose.runtime.mutableStateListOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.averyvi.bilbo.ui.theme.BilboTheme
@@ -25,6 +31,11 @@ import kotlin.contracts.contract
 class MainActivity : ComponentActivity() {
     private lateinit var bluetoothManager: BluetoothManager
     private var bluetoothAdapter: BluetoothAdapter? = null
+    private val bleScanner by lazy { bluetoothAdapter?.bluetoothLeScanner }
+
+    var isScanning = false
+    val discoveredDevices = mutableStateListOf<SelectableBluetoothDevice>()
+    val scanTimeoutHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +54,11 @@ class MainActivity : ComponentActivity() {
 
     /*permissions**********************************************************************************************/
 
+    /**
+     * <h3>function</h3>
+     *
+     * Checks if the necessary permissions for bluetooth are enabled and if not, then it enables them.
+     */
     fun checkEnablePermissions(): Boolean{
         // check if the device has bt and if it is enabled
         val permissionsNeeded = arrayOf(
@@ -64,6 +80,16 @@ class MainActivity : ComponentActivity() {
     }
 
     var requestPermissionsReturn: Boolean? = null
+    /**
+     * <h3>lambda function</h3>
+     *
+     * Requests for the passed in permissions from the user.
+     *
+     * Usage
+     * ```kt
+     * requestPermissions.launch(permissionsNeeded)
+     * ```
+     */
     val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allPermissionsGranted = permissions.all { it.value }
@@ -77,11 +103,22 @@ class MainActivity : ComponentActivity() {
         }
 
     var enablePermissionReturn: Boolean? = null
+    /**
+     * <h3>lambda function</h3>
+     *
+     * Asks the user for permission to enable a permission. If allowed, then starts scanning.
+     *
+     * Usage
+     * ```kt
+     * requestPermissions.launch(permissionsNeeded)
+     * ```
+     */
     val enablePermission =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 Log.d("Permissions", "Bluetooth enabled by user.")
-                enablePermissionReturn = true
+                Log.d("BluetoothBegin", "Scanning begins.")
+                startSBTScann()
 
             } else {
                 Log.d("Permissions", "User denied Bluetooth enabling.")
@@ -110,99 +147,69 @@ class MainActivity : ComponentActivity() {
 
     fun proceedWithBluetooth(){
         if (bluetoothAdapter?.isEnabled == false) {
+            Log.d("BluetoothBegin", "Bluetooth disabled, asking user to enable it.")
             val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             enablePermission.launch(enableIntent)
             if(enablePermissionReturn?:false){
-                Log.d("BluetoothBegin", "Scanning begins.")
-                //startBluetoothScan()
             }
         } else if (bluetoothAdapter != null) {
             Log.d("BluetoothBegin", "Scanning begins.")
-            //startBluetoothScan()
+            startSBTScann()
         }
     }
 
+    /*bluetooth scanning**********************************************************************************************/
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    fun startSBTScann(){
+        if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) return
+        if (isScanning) return
+        discoveredDevices.clear()
+        isScanning = true
 
+        scanTimeoutHandler.postDelayed({ stopBTScan() }, 10000)
+        bleScanner?.startScan(scanCallback)
+        Log.d("BluetoothScan", "Bluetooth scanning started.")
+    }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    fun stopBTScan() {
+        if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) return
+        if (isScanning && (bluetoothAdapter?.isEnabled == true)) {
+            bleScanner?.stopScan(scanCallback)
+            isScanning = false
+            scanTimeoutHandler.removeCallbacksAndMessages(null)
+            Log.d("BluetoothScan", "BLE scan stopped.")
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    fun findDevice(){
-        val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-
-        // check if the device has bt and if it is enabled and connected
-        if (bluetoothAdapter?.isEnabled == false) {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this@MainActivity,
-                    arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-                    1
-                )
-
-                /*registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                    val allPermissionsGranted = permissions.all { it.value }
-                    if (allPermissionsGranted) {
-                        Log.d("MyActivity", "All permissions granted.")
-                        proceedWithBluetooth()
-                    } else {
-                        Log.w("MyActivity", "User denied one or more permissions. Cannot perform BLE operations.")
-                    }
-                }*/
-
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-
+    val scanCallback = object : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                Log.w("BluetoothScan", "BLUETOOTH_CONNECT permission missing")
+                return
+            }
+            val device = result.device
+            if (device != null && device.name != null && discoveredDevices.none { it.device.address == device.address }) {
+                Log.d("BluetoothScan", "Found BLE device: ${device.name} - ${device.address}")
+                discoveredDevices.add(SelectableBluetoothDevice(device))
             }
         }
 
-        // check paired devices for our device
-        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-        pairedDevices?.forEach { device ->
-            val deviceName = device.name
-            val deviceHardwareAddress = device.address // MAC address
+        override fun onScanFailed(errorCode: Int) {
+            Log.e("BluetoothScan", "BLE Scan failed with error code: $errorCode")
+            isScanning = false
         }
-
-
     }
+
+    // kouknout do referenci na 582 pro discoveredDevices
 }
+
+/******************************************************************************************************************************************/
+/******************************************************************************************************************************************/
+
+data class SelectableBluetoothDevice(
+    val device: BluetoothDevice,
+    var isSelected: Boolean = false,
+    var isConnected: Boolean = false
+)
