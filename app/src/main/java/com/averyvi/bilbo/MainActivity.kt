@@ -7,12 +7,8 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,18 +17,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.averyvi.bilbo.ui.theme.BilboTheme
-import kotlin.contracts.contract
+
 
 class MainActivity : ComponentActivity() {
     private lateinit var bluetoothManager: BluetoothManager
     private var bluetoothAdapter: BluetoothAdapter? = null
+
     private val bleScanner by lazy { bluetoothAdapter?.bluetoothLeScanner }
 
     var isScanning = false
@@ -135,7 +130,7 @@ class MainActivity : ComponentActivity() {
                 Log.d("Permissions", "Bluetooth enabled by user.")
                 Log.d("BluetoothBegin", "Scanning begins.")
                 enablePermissionReturn = mutableStateOf(true)
-                startSBTScann()
+                startSBTScan()
 
             } else {
                 Log.d("Permissions", "User denied Bluetooth enabling.")
@@ -158,7 +153,7 @@ class MainActivity : ComponentActivity() {
                 }
             } else if (bluetoothAdapter != null) {
                 Log.d("BluetoothBegin", "Scanning begins.")
-                startSBTScann()
+                startSBTScan()
             }
         } else{
             Log.d("Permissions", "App does not have the permissions for bluetooth")
@@ -167,14 +162,14 @@ class MainActivity : ComponentActivity() {
 
     /*bluetooth scanning**********************************************************************************************/
 
-    fun startSBTScann(){
+    fun startSBTScan(){
         val btPermission = Manifest.permission.BLUETOOTH_SCAN
         if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
         if (isScanning) return
         discoveredDevices.clear()
         isScanning = true
 
-            scanTimeoutHandler.postDelayed({ stopBTScan() }, 10000)
+        scanTimeoutHandler.postDelayed({ stopBTScan() }, 10000)
         bleScanner?.startScan(scanCallback)
         Log.d("BluetoothScan", "Bluetooth scanning started.")
     }
@@ -208,9 +203,11 @@ class MainActivity : ComponentActivity() {
             isScanning = false
         }
     }
-
-    // kouknout do referenci na 582 pro discoveredDevices
 }
+
+/*bluetooth filters**********************************************************************************************/
+
+/*bluetooth connecting**********************************************************************************************/
 
 /******************************************************************************************************************************************/
 /******************************************************************************************************************************************/
