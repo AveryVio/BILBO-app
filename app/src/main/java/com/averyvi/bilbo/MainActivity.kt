@@ -4,7 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
@@ -25,14 +29,21 @@ import com.averyvi.bilbo.ui.theme.BilboTheme
 
 
 class MainActivity : ComponentActivity() {
-    private lateinit var bluetoothManager: BluetoothManager
-    private var bluetoothAdapter: BluetoothAdapter? = null
-
-    private val bleScanner by lazy { bluetoothAdapter?.bluetoothLeScanner }
+    lateinit var bluetoothManager: BluetoothManager
+    var bluetoothAdapter: BluetoothAdapter? = null
+    val bleScanner by lazy { bluetoothAdapter?.bluetoothLeScanner }
+    var bluetoothGATT: BluetoothGatt? = null
 
     var isScanning = false
     val discoveredDevices = mutableStateListOf<SelectableBluetoothDevice>()
     val scanTimeoutHandler = Handler(Looper.getMainLooper())
+
+    val connectionAttemptHandler = Handler(Looper.getMainLooper())
+    var connectionAttempts = 0
+    var connectionAttemptDevice: BluetoothDevice? = null
+
+    var writtenGATTCharacteristic: BluetoothGattCharacteristic? = null
+    var connectedGATT: BluetoothGatt? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -203,11 +214,133 @@ class MainActivity : ComponentActivity() {
             isScanning = false
         }
     }
+
+    /*bluetooth filters**********************************************************************************************/
+
+
+
+    /*bluetooth connection**********************************************************************************************/
+
+    fun connectToDevice(device: BluetoothDevice) {
+        val btPermission = Manifest.permission.BLUETOOTH_SCAN
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
+
+        clearConnectionAttempts()
+        connectionAttemptDevice = device
+
+        if(isScanning) stopBTScan()
+
+        if(bluetoothGATT == null){
+            establishConnection(device)
+        } else {
+            Log.d("BLE connect", "Existing GATT connection found. Disconnecting, before making a new connection")
+            disconnectGATT(bluetoothGATT!!.device.address)
+            Handler(Looper.getMainLooper()).postDelayed({
+                establishConnection(device)
+            }, 500)
+        }
+    }
+
+    fun establishConnection(device: BluetoothDevice){
+        val btPermission = Manifest.permission.BLUETOOTH_SCAN
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
+
+        Log.d("BLE connect", "Attempting to connect to device: ${device.name} (${device.address})")
+
+        Handler(Looper.getMainLooper()).post {
+            discoveredDevices.forEachIndexed { index, selectable ->
+                discoveredDevices[index] = selectable.copy(isSelected = selectable.device.address == device.address)
+            }
+            bluetoothGATT?.let { existingGATT ->
+                closeGATTInstance(existingGATT)
+                bluetoothGATT = null
+                writtenGATTCharacteristic = null
+            }
+            bluetoothGATT = device.connectGatt(applicationContext, false, GATTCallback)
+        }
+    }
+
+    fun updateDeviceConnectionState(deviceAddress: String, isConnected: Boolean) {
+        val index = discoveredDevices.indexOfFirst { it.device.address == deviceAddress }
+        if (index != -1) {
+            val device = discoveredDevices[index]
+            discoveredDevices[index] = device.copy(
+                isConnected = isConnected,
+                isSelected = device.isSelected || isConnected
+            )
+        }
+    }
+
+    /*GATT**********************************************************************************************/
+
+    val GATTCallback = object : BluetoothGattCallback() {
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            val btPermission = Manifest.permission.BLUETOOTH_SCAN
+            if (ActivityCompat.checkSelfPermission(this@MainActivity, btPermission) != PackageManager.PERMISSION_GRANTED) {
+                Log.w("GATT", "Missing permission BLUETOOTH_CONNECT")
+                return
+            }
+
+            val deviceAddress = gatt.device.address
+            Log.d("GattCallback","onConnectionStateChange address=$deviceAddress status=$status newState=$newState")
+
+            if (status != BluetoothGatt.GATT_SUCCESS) {
+                Log.w("GattCallback", "Non-success status $status for $deviceAddress")
+                if (status == 133) {
+                    Log.e("GattCallback","GATT_ERROR 133. Scheduling a reconnection attempt after a short delay.")
+                }
+                closeGattInstance(gatt)
+                if (connectedGATT == gatt) {
+                    connectedGATT = null
+                    writtenGATTCharacteristic = null
+                }
+                disconnectGatt(deviceAddress)
+                if (status == 133) {
+                    scheduleGattRetry(gatt.device)
+                }
+                return
+            }
+
+            when(newState){
+                BluetoothProfile.STATE_CONNECTED -> {
+                    bluetoothGATT = gatt
+                    Log.i("GATT", "Connected to GATT server.")
+                    clearConnectionAttempts()
+                    Handler(Looper.getMainLooper()).post {
+                        updateDeviceConnectionState(deviceAddress, isConnected = true)
+                    }
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val btPermission = Manifest.permission.BLUETOOTH_CONNECT
+                        if (ActivityCompat.checkSelfPermission(this@MainActivity, btPermission) == PackageManager.PERMISSION_GRANTED){
+                            gatt.discoverServices()
+                        }
+                    }, 600)
+                }
+                BluetoothProfile.STATE_DISCONNECTED -> {
+                    Log.i("GattCallback", "Disconnected from GATT server.")
+                    closeGattInstance(gatt)
+                    if (connectedGATT == gatt) {
+                        connectedGATT = null
+                        writtenGATTCharacteristic = null
+                    }
+                    disconnectGatt(deviceAddress)
+                }
+                else -> Log.d("GattCallback", "Unhandled state transition: $newState")
+            }
+        }
+
+        // 497 override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+        // the rest of the object
+    }
+
+    /*misc**********************************************************************************************/
+
+    fun clearConnectionAttempts() {
+        connectionAttemptHandler.removeCallbacksAndMessages(null)
+        connectionAttempts = 0
+        connectionAttemptDevice = null
+    }
 }
-
-/*bluetooth filters**********************************************************************************************/
-
-/*bluetooth connecting**********************************************************************************************/
 
 /******************************************************************************************************************************************/
 /******************************************************************************************************************************************/
