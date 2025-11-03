@@ -52,6 +52,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        if (isScanning) {
+            stopBTScan()
+        }
+        //bluetoothGatt?.let { disconnectGatt(it.device.address) }
+        //clearPendingConnectionRetries()
+    }
+
     /*permissions**********************************************************************************************/
 
     /**
