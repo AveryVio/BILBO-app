@@ -79,13 +79,15 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
 
-        val permissionsNotGranted = permissionsNeeded.filterNot { hasPermission(it) }
+        val permissionsNotGranted = permissionsNeeded.filterNot { (ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED) }
 
         if(permissionsNotGranted.isEmpty()){
             Log.d("Permissions", "All necessary permissions already granted.")
             return true
         } else{
             Log.d("Permissions", "Requesting necessary permissions.")
+            Log.d("Permissions", "Requesting:")
+            Log.d("Permissions", permissionsNotGranted.joinToString(";"))
             requestPermissions.launch(permissionsNeeded)
             return requestPermissionsReturn?:false
         }
@@ -138,55 +140,44 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    fun hasPermission(permission: String): Boolean {
-        val granted = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-        if (!granted) {
-            Log.w("Permissions", "Permission not granted: $permission")
-        }
-        return granted
-    }
-
     /*begin bluetooth**********************************************************************************************/
 
     fun beginBluetooth() {
         Log.d("Permissions", "Checking for necessary permissions.")
         if(checkEnablePermissions()){
-            proceedWithBluetooth()
+            // proceed
+            if (bluetoothAdapter?.isEnabled == false) {
+                Log.d("BluetoothBegin", "Bluetooth disabled, asking user to enable it.")
+                val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                enablePermission.launch(enableIntent)
+                if(enablePermissionReturn?:false){
+                }
+            } else if (bluetoothAdapter != null) {
+                Log.d("BluetoothBegin", "Scanning begins.")
+                startSBTScann()
+            }
         } else{
             Log.d("Permissions", "App does not have the permissions for bluetooth")
         }
     }
 
-    fun proceedWithBluetooth(){
-        if (bluetoothAdapter?.isEnabled == false) {
-            Log.d("BluetoothBegin", "Bluetooth disabled, asking user to enable it.")
-            val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            enablePermission.launch(enableIntent)
-            if(enablePermissionReturn?:false){
-            }
-        } else if (bluetoothAdapter != null) {
-            Log.d("BluetoothBegin", "Scanning begins.")
-            startSBTScann()
-        }
-    }
-
     /*bluetooth scanning**********************************************************************************************/
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun startSBTScann(){
-        if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) return
+        val btPermission = Manifest.permission.BLUETOOTH_SCAN
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
         if (isScanning) return
         discoveredDevices.clear()
         isScanning = true
 
-        scanTimeoutHandler.postDelayed({ stopBTScan() }, 10000)
+            scanTimeoutHandler.postDelayed({ stopBTScan() }, 10000)
         bleScanner?.startScan(scanCallback)
         Log.d("BluetoothScan", "Bluetooth scanning started.")
     }
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun stopBTScan() {
-        if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) return
+        val btPermission = Manifest.permission.BLUETOOTH_SCAN
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
         if (isScanning && (bluetoothAdapter?.isEnabled == true)) {
             bleScanner?.stopScan(scanCallback)
             isScanning = false
