@@ -22,7 +22,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.averyvi.bilbo.ui.theme.BilboTheme
@@ -87,13 +89,13 @@ class MainActivity : ComponentActivity() {
         } else{
             Log.d("Permissions", "Requesting necessary permissions.")
             Log.d("Permissions", "Requesting:")
-            Log.d("Permissions", permissionsNotGranted.joinToString(";"))
+            Log.d("Permissions", permissionsNotGranted.joinToString("; "))
             requestPermissions.launch(permissionsNeeded)
-            return requestPermissionsReturn?:false
+            return requestPermissionsReturn.value?:false
         }
     }
 
-    var requestPermissionsReturn: Boolean? = null
+    var requestPermissionsReturn: MutableState<Boolean?> = mutableStateOf(null)
     /**
      * <h3>lambda function</h3>
      *
@@ -109,14 +111,14 @@ class MainActivity : ComponentActivity() {
             val allPermissionsGranted = permissions.all { it.value }
             if (allPermissionsGranted) {
                 Log.d("Permissions", "All permissions granted.")
-                requestPermissionsReturn = true
+                requestPermissionsReturn = mutableStateOf(true)
             } else {
                 Log.w("Permissions", "User denied one or more permissions. Cannot perform BLE operations.")
-                requestPermissionsReturn = true
+                requestPermissionsReturn = mutableStateOf(false)
             }
         }
 
-    var enablePermissionReturn: Boolean? = null
+    var enablePermissionReturn: MutableState<Boolean?> = mutableStateOf(null)
     /**
      * <h3>lambda function</h3>
      *
@@ -132,11 +134,12 @@ class MainActivity : ComponentActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 Log.d("Permissions", "Bluetooth enabled by user.")
                 Log.d("BluetoothBegin", "Scanning begins.")
+                enablePermissionReturn = mutableStateOf(true)
                 startSBTScann()
 
             } else {
                 Log.d("Permissions", "User denied Bluetooth enabling.")
-                enablePermissionReturn = false
+                enablePermissionReturn = mutableStateOf(false)
             }
         }
 
@@ -150,7 +153,8 @@ class MainActivity : ComponentActivity() {
                 Log.d("BluetoothBegin", "Bluetooth disabled, asking user to enable it.")
                 val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 enablePermission.launch(enableIntent)
-                if(enablePermissionReturn?:false){
+                if(enablePermissionReturn.value?:false){
+                    Log.d("Permissions", "Bluetooth is disabled.")
                 }
             } else if (bluetoothAdapter != null) {
                 Log.d("BluetoothBegin", "Scanning begins.")
