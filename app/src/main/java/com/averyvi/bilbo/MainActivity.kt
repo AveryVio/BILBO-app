@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.averyvi.bilbo.notui.FirstHarmonic
 import com.averyvi.bilbo.ui.theme.BilboTheme
 import java.util.Locale
 import java.util.UUID
@@ -512,6 +513,15 @@ class MainActivity : ComponentActivity() {
         connectionAttemptHandler.removeCallbacksAndMessages(null)
         connectionAttempts = 0
         connectionAttemptDevice = null
+    }
+
+    private fun FrequencySelectionHandler(firstHarmonic: FirstHarmonic) {
+        if (connectedGATT != null && uartTxCharacteristic != null) {
+            val frequencyPayload = String.format(Locale.US, "%.2f\r\n", firstHarmonic.frequency)
+            sendData(frequencyPayload)
+        } else {
+            Log.w("MyActivity","Cannot send frequency ${firstHarmonic.frequency} Hz - no active BLE connection.")
+        }
     }
 }
 
