@@ -389,6 +389,121 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /*GATT other**********************************************************************************************/
+
+    fun disconnectGATT(deviceAddress: String) {
+        val btPermission = Manifest.permission.BLUETOOTH_CONNECT
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
+
+        Handler(Looper.getMainLooper()).post {
+            updateDeviceConnectionState(deviceAddress, isConnected = false)
+        }
+
+        if (connectedGATT?.device?.address == deviceAddress) {
+            connectedGATT?.let { closeGATTInstance(it) }
+            connectedGATT = null
+            uartTxCharacteristic = null
+            Log.d("GATT", "GATT connection to $deviceAddress closed.")
+        }
+    }
+
+    fun closeGATTInstance(gatt: BluetoothGatt) {
+        try {
+            val btPermission = Manifest.permission.BLUETOOTH_CONNECT
+            if (ContextCompat.checkSelfPermission(this, btPermission) == PackageManager.PERMISSION_GRANTED) {
+                gatt.disconnect()
+            }
+        } catch (disconnectError: Exception) {
+            Log.w("GATT", "Error while disconnecting GATT", disconnectError)
+        }
+
+        try {
+            gatt.close()
+        } catch (closeError: Exception) {
+            Log.w("GATT", "Error while closing GATT", closeError)
+        }
+    }
+
+    fun scheduleGattRetry(device: BluetoothDevice) {
+        val targetAddress = connectionAttemptDevice?.address
+        if (targetAddress != null && targetAddress != device.address) {
+            Log.d("GATT","Skipping retry because another device ($targetAddress) is selected.")
+            return
+        }
+
+        if (connectionAttemptDevice == null) connectionAttemptDevice = device
+
+        if (connectionAttempts >= maxConnectionAttempts) {
+            Log.e("GATT","Reached maximum retry attempts for ${device.address}.")
+            connectionAttemptDevice = null
+            connectionAttempts = 0
+            return
+        }
+
+        connectionAttempts += 1
+        val retryDelay = (baseConnectionAttemptDelayMs * connectionAttempts).coerceAtMost(maxConnectionAttemptDelayMs)
+        Log.i("GATT","Retry attempt $connectionAttempts for ${device.address} in ${retryDelay}ms.")
+
+        connectionAttemptHandler.postDelayed({
+            val btPermission = Manifest.permission.BLUETOOTH_CONNECT
+            if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return@postDelayed
+            connectedGATT?.let { existingGatt ->
+                if (existingGatt.device.address == device.address) {
+                    closeGATTInstance(existingGatt)
+                    connectedGATT = null
+                    uartTxCharacteristic = null
+                }
+            }
+            establishConnection(device)
+        }, retryDelay)
+    }
+
+    fun enableNotifications(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+        val btPermission = Manifest.permission.BLUETOOTH_CONNECT
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
+
+        val cccdUuid = UUID.fromString(CCCD_UUID)
+        val descriptor = characteristic.getDescriptor(cccdUuid)
+            ?: run {
+                Log.e("GATT", "CCCD descriptor not found for characteristic ${characteristic.uuid}")
+                return
+            }
+
+        gatt.setCharacteristicNotification(characteristic, true)
+
+        val value = when {
+            (characteristic.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0 ->
+                BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            (characteristic.properties and BluetoothGattCharacteristic.PROPERTY_INDICATE) > 0 ->
+                BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+            else -> return
+        }
+
+        gatt.writeDescriptor(descriptor, value)
+    }
+
+    /*Bluetooth Communication**********************************************************************************************/
+
+    fun sendData(data: String) {
+        val btPermission = Manifest.permission.BLUETOOTH_CONNECT
+        if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
+
+        val characteristic = uartTxCharacteristic ?: run {
+            Log.w("SendData", "UART TX Characteristic not found, cannot send data.")
+            return
+        }
+
+        val props = characteristic.properties
+        characteristic.writeType =
+            if (props and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0)
+                BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+            else
+                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        val dataBytes = data.toByteArray(Charsets.UTF_8)
+        Log.d("SendData", "Sending data to BLE device: $data")
+
+        connectedGATT?.writeCharacteristic(characteristic, dataBytes, characteristic.writeType)
     }
 
     /*misc**********************************************************************************************/
