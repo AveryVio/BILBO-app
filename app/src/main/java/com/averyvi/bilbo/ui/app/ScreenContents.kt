@@ -37,7 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.notui.FirstHarmonic
 import com.averyvi.bilbo.notui.InstrumentStyling
+import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
@@ -46,7 +48,9 @@ import kotlinx.coroutines.delay
 import kotlin.math.sin
 
 @Composable
-fun NowPlayingScreenContents(paddingValues: PaddingValues){
+fun NowPlayingScreenContents(
+    paddingValues: PaddingValues,
+){
     Column(modifier = Modifier.padding(paddingValues).fillMaxWidth().padding(top = 10.dp)) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

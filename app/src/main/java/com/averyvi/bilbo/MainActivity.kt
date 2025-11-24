@@ -29,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.averyvi.bilbo.notui.FirstHarmonic
+import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.theme.BilboTheme
 import java.util.Locale
 import java.util.UUID
@@ -71,7 +72,20 @@ class MainActivity : ComponentActivity() {
         beginBluetooth()
         setContent {
             BilboTheme {
-                AppUI()
+                AppUI(
+                    deviceList = discoveredDevices,
+                    onDeviceSelected = { selectedDevice ->
+                        if (selectedDevice.isConnected) {
+                            clearConnectionAttempts()
+                            disconnectGATT(selectedDevice.device.address)
+                        } else {
+                            connectToDevice(selectedDevice.device)
+                        }
+                    },
+                    onHarmonicSelected = { firstHarmonic ->
+                        FrequencySelectionHandler(firstHarmonic)
+                    }
+                )
             }
         }
     }
@@ -527,9 +541,3 @@ class MainActivity : ComponentActivity() {
 
 /******************************************************************************************************************************************/
 /******************************************************************************************************************************************/
-
-data class SelectableBluetoothDevice(
-    val device: BluetoothDevice,
-    var isSelected: Boolean = false,
-    var isConnected: Boolean = false
-)

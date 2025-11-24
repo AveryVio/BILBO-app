@@ -8,18 +8,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.notui.FirstHarmonic
 import com.averyvi.bilbo.notui.InstrumentStyling
+import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 
 @Composable
 fun NowPlayingScreen(
     onRouteButtonClicked: (Routes) -> Unit,
+    deviceList: List<SelectableBluetoothDevice>,
+    onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
+    onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
-        NowPlayingScreenContents(innerPadding)
+        NowPlayingScreenContents(
+            paddingValues =  innerPadding,
+            deviceList = deviceList,
+            onDeviceSelected = onDeviceSelected,
+            onHarmonicSelected = onHarmonicSelected
+            )
     }
 }
 

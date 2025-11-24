@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.averyvi.bilbo.notui.FirstHarmonic
+import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.app.HelpScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
@@ -13,7 +15,11 @@ import com.averyvi.bilbo.ui.app.NowPlayingScreen
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun AppUI(){
+fun AppUI(
+    deviceList: List<SelectableBluetoothDevice>,
+    onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
+    onHarmonicSelected: (FirstHarmonic) -> Unit
+){
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -25,7 +31,12 @@ fun AppUI(){
         }
 
         composable(route = Routes.CurrentlyPlaying.name){
-            NowPlayingScreen(onRouteButtonClicked = onRouteButtonClicked)
+            NowPlayingScreen(
+                onRouteButtonClicked = onRouteButtonClicked,
+                deviceList = deviceList,
+                onDeviceSelected = onDeviceSelected,
+                onHarmonicSelected = onHarmonicSelected
+            )
         }
         composable(route = Routes.InstrumentSelect.name){
             InstrumentSelectScreen(onRouteButtonClicked = onRouteButtonClicked)
