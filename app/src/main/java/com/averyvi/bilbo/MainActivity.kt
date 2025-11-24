@@ -7,12 +7,14 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,7 +27,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.averyvi.bilbo.ui.theme.BilboTheme
+import java.util.Locale
+import java.util.UUID
 
 
 class MainActivity : ComponentActivity() {
@@ -41,9 +46,19 @@ class MainActivity : ComponentActivity() {
     val connectionAttemptHandler = Handler(Looper.getMainLooper())
     var connectionAttempts = 0
     var connectionAttemptDevice: BluetoothDevice? = null
+    val maxConnectionAttempts = 3
+    val baseConnectionAttemptDelayMs = 1000L
+    val maxConnectionAttemptDelayMs = 5000L
 
     var writtenGATTCharacteristic: BluetoothGattCharacteristic? = null
     var connectedGATT: BluetoothGatt? = null
+
+    val TRANSPARENT_UART_SERVICE_UUID = "49535343-fe7d-4ae5-8fa9-9fafd205e455"
+    val UART_TX_CHARACTERISTIC_UUID = "49535343-1e4d-4bd9-ba61-23c647249616" // Write coming from device
+    val UART_RX_CHARACTERISTIC_UUID = "49535343-8841-43f4-a8d4-ecbe34729bb3" // Write coming from phone
+    val CCCD_UUID = "00002902-0000-1000-8000-00805f9b34fb"
+
+    var uartTxCharacteristic: BluetoothGattCharacteristic? = null // write target
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -222,7 +237,7 @@ class MainActivity : ComponentActivity() {
     /*bluetooth connection**********************************************************************************************/
 
     fun connectToDevice(device: BluetoothDevice) {
-        val btPermission = Manifest.permission.BLUETOOTH_SCAN
+        val btPermission = Manifest.permission.BLUETOOTH_CONNECT
         if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
 
         clearConnectionAttempts()
@@ -242,7 +257,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun establishConnection(device: BluetoothDevice){
-        val btPermission = Manifest.permission.BLUETOOTH_SCAN
+        val btPermission = Manifest.permission.BLUETOOTH_CONNECT
         if (ActivityCompat.checkSelfPermission(this, btPermission) != PackageManager.PERMISSION_GRANTED) return
 
         Log.d("BLE connect", "Attempting to connect to device: ${device.name} (${device.address})")
@@ -271,11 +286,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*GATT**********************************************************************************************/
+    /*GATTCallback**********************************************************************************************/
 
     val GATTCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-            val btPermission = Manifest.permission.BLUETOOTH_SCAN
+            val btPermission = Manifest.permission.BLUETOOTH_CONNECT
             if (ActivityCompat.checkSelfPermission(this@MainActivity, btPermission) != PackageManager.PERMISSION_GRANTED) {
                 Log.w("GATT", "Missing permission BLUETOOTH_CONNECT")
                 return
@@ -289,12 +304,12 @@ class MainActivity : ComponentActivity() {
                 if (status == 133) {
                     Log.e("GattCallback","GATT_ERROR 133. Scheduling a reconnection attempt after a short delay.")
                 }
-                closeGattInstance(gatt)
+                closeGATTInstance(gatt)
                 if (connectedGATT == gatt) {
                     connectedGATT = null
                     writtenGATTCharacteristic = null
                 }
-                disconnectGatt(deviceAddress)
+                disconnectGATT(deviceAddress)
                 if (status == 133) {
                     scheduleGattRetry(gatt.device)
                 }
@@ -318,19 +333,62 @@ class MainActivity : ComponentActivity() {
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.i("GattCallback", "Disconnected from GATT server.")
-                    closeGattInstance(gatt)
+                    closeGATTInstance(gatt)
                     if (connectedGATT == gatt) {
                         connectedGATT = null
                         writtenGATTCharacteristic = null
                     }
-                    disconnectGatt(deviceAddress)
+                    disconnectGATT(deviceAddress)
                 }
                 else -> Log.d("GattCallback", "Unhandled state transition: $newState")
             }
         }
 
-        // 497 override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-        // the rest of the object
+        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.i("GattCallback", "Successfully discovered device services.")
+                val service = gatt.getService(UUID.fromString(TRANSPARENT_UART_SERVICE_UUID))
+                if (service == null) {
+                    Log.w("GattCallback", "Trans. UART Service was not found")
+                } else {
+                    Log.i("GattCallback", "Trans. UART Service was found")
+                    val rxCharacteristic = service.getCharacteristic(UUID.fromString(UART_TX_CHARACTERISTIC_UUID))
+                    uartTxCharacteristic = service.getCharacteristic(UUID.fromString(UART_RX_CHARACTERISTIC_UUID))
+
+                    if (rxCharacteristic != null && uartTxCharacteristic != null) {
+                        enableNotifications(gatt, rxCharacteristic)
+                    } else {
+                        Log.w("GattCallback", "Both UART characteristic not found")
+                    }
+                }
+            } else {
+                Log.w("GattCallback", "Services discovery received error: $status")
+            }
+        }
+
+        override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d("GattCallback", "Descriptor for ${descriptor.characteristic.uuid} written successfully. Notifications enabled.")
+                // sendData("Hello from Android\r\n") // volitelné pro debug
+            } else {
+                Log.e("GattCallback", "Descriptor write failed with status: $status")
+            }
+        }
+
+        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) {
+            val dataString = value.toString(Charsets.UTF_8)
+            Log.i("GattCallback", "Received data on ${characteristic.uuid}: $dataString")
+        }
+
+        override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d("GattCallback", "Wrote to ${characteristic.uuid}: ${characteristic.value?.toString(Charsets.UTF_8)}")
+            } else {
+                Log.e("GattCallback", "Characteristic write failed for ${characteristic.uuid} with status $status")
+            }
+        }
+    }
+
     }
 
     /*misc**********************************************************************************************/
