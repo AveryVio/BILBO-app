@@ -14,7 +14,6 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -397,7 +396,7 @@ class MainActivity : ComponentActivity() {
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d("GattCallback", "Wrote to ${characteristic.uuid}: ${characteristic.value?.toString(Charsets.UTF_8)}")
+                Log.d("GattCallback", "Wrote to ${characteristic.uuid}")
             } else {
                 Log.e("GattCallback", "Characteristic write failed for ${characteristic.uuid} with status $status")
             }
