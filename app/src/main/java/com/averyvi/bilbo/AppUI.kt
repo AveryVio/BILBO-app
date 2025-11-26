@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 import com.averyvi.bilbo.notui.FirstHarmonic
 import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.app.AboutScreen
-import com.averyvi.bilbo.ui.app.HelpScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
 import com.averyvi.bilbo.ui.app.NowPlayingScreen
