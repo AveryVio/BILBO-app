@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.averyvi.bilbo.notui.FirstHarmonic
 import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.ui.app.AboutScreen
 import com.averyvi.bilbo.ui.app.HelpScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
@@ -41,8 +42,8 @@ fun AppUI(
         composable(route = Routes.InstrumentSelect.name){
             InstrumentSelectScreen(onRouteButtonClicked = onRouteButtonClicked)
         }
-        composable(route = Routes.Help.name) {
-            HelpScreen(onRouteButtonClicked = onRouteButtonClicked)
+        composable(route = Routes.About.name) {
+            AboutScreen(onRouteButtonClicked = onRouteButtonClicked)
         }
         composable(route = Routes.Intro.name) {
             IntroScreen(onRouteButtonClicked = onRouteButtonClicked)
@@ -62,7 +63,7 @@ enum class Routes(
     InstrumentSelect(
         title = R.string.InstrumentSelectScreen
     ),
-    Help(
+    About(
         title = R.string.HelpScreen
     )
 }

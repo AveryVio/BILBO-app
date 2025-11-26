@@ -103,7 +103,7 @@ fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
 }
 
 @Composable
-fun HelpScreenContents(paddingValues: PaddingValues){
+fun AboutScreenContents(paddingValues: PaddingValues){
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

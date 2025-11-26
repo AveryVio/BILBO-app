@@ -47,7 +47,7 @@ fun InstrumentSelectScreen(
 }
 
 @Composable
-fun HelpScreen(
+fun AboutScreen(
     onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
@@ -55,7 +55,7 @@ fun HelpScreen(
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
-        HelpScreenContents(innerPadding)
+        AboutScreenContents(innerPadding)
     }
 }
 
