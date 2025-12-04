@@ -69,7 +69,7 @@ fun BILBOTopAppBar(
                 },
         navigationIcon = {
             IconButton(
-                onClick = { onRouteButtonClicked(Routes.Help) } /* do something */
+                onClick = { onRouteButtonClicked(Routes.About) } /* do something */
             ) {
                 Icon(
                     painter = painterResource(selectedInstrument.instrumentIcon),

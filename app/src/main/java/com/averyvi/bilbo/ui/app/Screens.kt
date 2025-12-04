@@ -15,9 +15,6 @@ import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 @Composable
 fun NowPlayingScreen(
     onRouteButtonClicked: (Routes) -> Unit,
-    deviceList: List<SelectableBluetoothDevice>,
-    onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
-    onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
@@ -26,9 +23,6 @@ fun NowPlayingScreen(
     ) { innerPadding ->
         NowPlayingScreenContents(
             paddingValues =  innerPadding,
-            deviceList = deviceList,
-            onDeviceSelected = onDeviceSelected,
-            onHarmonicSelected = onHarmonicSelected
             )
     }
 }

@@ -33,9 +33,6 @@ fun AppUI(
         composable(route = Routes.CurrentlyPlaying.name){
             NowPlayingScreen(
                 onRouteButtonClicked = onRouteButtonClicked,
-                deviceList = deviceList,
-                onDeviceSelected = onDeviceSelected,
-                onHarmonicSelected = onHarmonicSelected
             )
         }
         composable(route = Routes.InstrumentSelect.name){
