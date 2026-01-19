@@ -16,7 +16,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import com.averyvi.bilbo.comms.BilboViewModel
+import com.averyvi.bilbo.ui.app.DeviceList
 import com.averyvi.bilbo.ui.theme.BilboTheme
+import kotlin.math.log
 
 
 class MainActivity : ComponentActivity() {
@@ -39,7 +41,10 @@ class MainActivity : ComponentActivity() {
                 // Observe data from ViewModel
                 val discoveredDevices by viewModel.discoveredDevices.collectAsState()
 
-                AppUI(
+                DeviceList(
+                    discoveredDevices, { Log.d("test","sent") }
+                )
+                /*AppUI(
                     deviceList = discoveredDevices,
                     onDeviceSelected = { selectedDevice ->
                         // Delegate logic to ViewModel
@@ -48,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     onHarmonicSelected = { firstHarmonic ->
                         viewModel.sendFrequency(firstHarmonic)
                     }
-                )
+                )*/
             }
         }
     }

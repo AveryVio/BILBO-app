@@ -10,4 +10,5 @@
     <string name="YouAreXUnderAbove1">"Jste "</string>
     <string name="YouAreXUnderAbove2Under">" pod vybraným tónem"</string>
     <string name="YouAreXUnderAbove2Above">" nad vybraným tónem"</string>
+    <string name="BTConnectedDevices">Připojená zařízení</string>
 </resources>
