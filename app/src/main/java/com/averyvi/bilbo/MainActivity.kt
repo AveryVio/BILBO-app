@@ -16,9 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import com.averyvi.bilbo.comms.BilboViewModel
-import com.averyvi.bilbo.ui.app.DeviceList
 import com.averyvi.bilbo.ui.theme.BilboTheme
-import kotlin.math.log
 
 
 class MainActivity : ComponentActivity() {

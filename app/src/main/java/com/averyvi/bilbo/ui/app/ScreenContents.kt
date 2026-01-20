@@ -1,7 +1,6 @@
 package com.averyvi.bilbo.ui.app
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.notui.FirstHarmonic
 import com.averyvi.bilbo.notui.InstrumentStyling
 import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
@@ -54,26 +53,10 @@ fun NowPlayingScreenContents(
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
     Column(modifier = Modifier.padding(paddingValues).fillMaxWidth().padding(top = 10.dp)) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth()
-        ) {
-            Button(
-                onClick =  {},
-                modifier = Modifier.size(55.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp),
-                )
-            }
-            NoteDisplayCard()
-            DeviceList(
-                devices = deviceList,
-                onDeviceSelected = onDeviceSelected
-            )
-        }
+        DeviceList(
+            devices = deviceList,
+            onDeviceSelected = onDeviceSelected
+        )
         Column(Modifier.padding(5.dp)) {
             val pitch = remember {
                 mutableDoubleStateOf(0.0)
@@ -90,9 +73,12 @@ fun NowPlayingScreenContents(
                 }
             }
 
-            PitchDiffView(pitch, 400,550)
+            PitchDiffView(pitch, 400,300)
 
             IsHarmonicText(pitch)
+        }
+        Row() {
+            NoteDisplayCard()
         }
     }
 }
