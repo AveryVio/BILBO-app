@@ -41,10 +41,7 @@ class MainActivity : ComponentActivity() {
                 // Observe data from ViewModel
                 val discoveredDevices by viewModel.discoveredDevices.collectAsState()
 
-                DeviceList(
-                    discoveredDevices, { Log.d("test","sent") }
-                )
-                /*AppUI(
+                AppUI(
                     deviceList = discoveredDevices,
                     onDeviceSelected = { selectedDevice ->
                         // Delegate logic to ViewModel
@@ -53,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     onHarmonicSelected = { firstHarmonic ->
                         viewModel.sendFrequency(firstHarmonic)
                     }
-                )*/
+                )
             }
         }
     }

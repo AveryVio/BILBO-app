@@ -50,6 +50,8 @@ import kotlin.math.sin
 @Composable
 fun NowPlayingScreenContents(
     paddingValues: PaddingValues,
+    deviceList: List<SelectableBluetoothDevice>,
+    onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
     Column(modifier = Modifier.padding(paddingValues).fillMaxWidth().padding(top = 10.dp)) {
         Row(
@@ -67,7 +69,10 @@ fun NowPlayingScreenContents(
                 )
             }
             NoteDisplayCard()
-            Text("jfklsjdf")
+            DeviceList(
+                devices = deviceList,
+                onDeviceSelected = onDeviceSelected
+            )
         }
         Column(Modifier.padding(5.dp)) {
             val pitch = remember {

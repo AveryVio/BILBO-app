@@ -3,16 +3,22 @@ package com.averyvi.bilbo.ui.app
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.opengl.Visibility
+import android.widget.Space
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.materialIcon
@@ -31,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,44 +53,87 @@ fun DeviceList(
 ){
     var isExpanded by remember { mutableStateOf(false) }
 
-    Column(
+    Card(
+        colors = CardColors(
+            MaterialTheme.colorScheme.surfaceContainer,
+            MaterialTheme.colorScheme.onSurface,
+            MaterialTheme.colorScheme.surfaceContainer,
+            MaterialTheme.colorScheme.onSurface
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
+        shape = RoundedCornerShape(24.dp),
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardColors(
-                MaterialTheme.colorScheme.surface,
-                MaterialTheme.colorScheme.onSurface,
-                MaterialTheme.colorScheme.surface,
-                MaterialTheme.colorScheme.onSurface
-            ),
-            onClick = { isExpanded = !isExpanded }
-        ) {
-            Row(
-                modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Column() {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardColors(
+                    MaterialTheme.colorScheme.secondaryContainer,
+                    MaterialTheme.colorScheme.onSurface,
+                    MaterialTheme.colorScheme.secondaryContainer,
+                    MaterialTheme.colorScheme.onSurface
+                ),
+                onClick = { isExpanded = !isExpanded }
             ) {
-                Text(
-                    text = stringResource(R.string.BTConnectedDevices),
-                    modifier = Modifier.padding(start = 10.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                )
-                Icon(
-                    painter = painterResource( if(!isExpanded) R.drawable.bluetooth_searching else R.drawable.bluetooth ),
-                    contentDescription = null,
-                    modifier = if(!isExpanded) Modifier.size(40.dp) else Modifier.size(40.dp).rotate(90f) ,
-                )
+                Row(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.BTConnectedDevices),
+                        modifier = Modifier.padding(
+                            start = 10.dp,
+                            top = 0.dp,
+                            end = 0.dp,
+                            bottom = 0.dp
+                        ),
+                    )
+                    Icon(
+                        painter = painterResource(if (!isExpanded) R.drawable.bluetooth_searching else R.drawable.bluetooth),
+                        contentDescription = null,
+                        modifier = if (!isExpanded) Modifier.size(40.dp) else Modifier
+                            .size(40.dp)
+                            .rotate(90f),
+                    )
+                }
             }
-        }
 
-        AnimatedVisibility(isExpanded) {
-            LazyColumn( modifier = Modifier.fillMaxWidth()) {
-                //todo finish
-
+            AnimatedVisibility(isExpanded) {
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    itemsIndexed(
+                        items = devices,
+                    ) { index, device ->
+                        Card(
+                            modifier = Modifier
+                                .padding(3.dp)
+                                .clickable { onDeviceSelected(device) },
+                            colors = CardColors(
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                                MaterialTheme.colorScheme.onSurface,
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                                MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                Row() {
+                                    Text(index.toString())
+                                    Spacer(Modifier.width(5.dp))
+                                    Text(device.device.name)
+                                }
+                                Text(device.device.address)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
