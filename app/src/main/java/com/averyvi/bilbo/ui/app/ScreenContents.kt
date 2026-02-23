@@ -1,6 +1,8 @@
 package com.averyvi.bilbo.ui.app
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.handwriting.handwritingDetector
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -43,6 +46,7 @@ import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import com.averyvi.bilbo.ui.fragments.NoteDisplayCard
+import com.averyvi.bilbo.ui.fragments.NoteOctiveDisplay
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -52,12 +56,8 @@ fun NowPlayingScreenContents(
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
-    Column(modifier = Modifier.padding(paddingValues).fillMaxWidth().padding(top = 10.dp)) {
-        DeviceList(
-            devices = deviceList,
-            onDeviceSelected = onDeviceSelected
-        )
-        Column(Modifier.padding(5.dp)) {
+    Box(modifier = Modifier.padding(paddingValues).fillMaxWidth()) {
+        Column(Modifier.padding(top = 122.dp)) {
             val pitch = remember {
                 mutableDoubleStateOf(0.0)
             }
@@ -66,6 +66,7 @@ fun NowPlayingScreenContents(
             }
 
             LaunchedEffect (Unit) {
+                pitch.doubleValue = sin(0.4)
                 while(true) {
                     pitchStep.doubleValue += 0.1
                     pitch.doubleValue = sin(pitchStep.doubleValue)
@@ -73,13 +74,34 @@ fun NowPlayingScreenContents(
                 }
             }
 
-            PitchDiffView(pitch, 400,300)
+            PitchDiffView(pitch, 500,300)
 
-            IsHarmonicText(pitch)
+            Card(
+                modifier = Modifier.padding(horizontal = 55.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(15.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.height(85.dp).width(150.dp)
+                    ) {
+                        NoteDisplayCard("A")
+                        Spacer(Modifier.width(5.dp))
+                        IsHarmonicText(pitch)
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    NoteOctiveDisplay(4)
+                }
+            }
+            // frequency
         }
-        Row() {
-            NoteDisplayCard()
-        }
+
+        DeviceList(
+            devices = deviceList,
+            onDeviceSelected = onDeviceSelected
+        )
     }
 }
 
