@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,30 +37,34 @@ fun InstrumentShelfItem(
     columnWidth: Dp,
     inModifier: Modifier = Modifier
 ){
+    val boxHeightMultiplier = (if (comment != "") (if (comment.length > 9) 1.6 else 1.45) else 1.25).toFloat()
+    val boldFontSizeMultiplier = if(columnWidth < 100.dp) 8 else 9
+    val normalFontSizeMultiplier = if(columnWidth < 100.dp) 6 else 7
+
     val boxModifier = inModifier
         .padding(8.dp)
         .clip(RoundedCornerShape(11.dp))
         .width(columnWidth)
-        .height(Dp((columnWidth.value * if (comment != "") 1.25 else 0.95).toFloat()))
         .background(Color( 100, 100, 100 ))
 
 
-    Box(boxModifier) {
+    Card(boxModifier) {
         Column {
             Image(
                 painter = painterResource( InstrumentImageResource ),
                 contentDescription = null,
-                modifier = inModifier.fillMaxWidth().clip(RoundedCornerShape(11.dp))
+                modifier = inModifier.width(columnWidth).height(columnWidth).clip(RoundedCornerShape(11.dp))
             )
             Text(
                 text = name,
                 fontWeight = FontWeight(800),
-                fontSize = 17.sp,
+                fontSize = (2 * boldFontSizeMultiplier).sp,
+
                 modifier = inModifier.fillMaxWidth().padding(vertical = 0.dp, horizontal =  4.dp)
             )
             Text(
                 text = comment,
-                fontSize = 14.sp,
+                fontSize = (2 * normalFontSizeMultiplier).sp,
                 lineHeight = 12.sp,
                 modifier = inModifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 4.dp)
             )

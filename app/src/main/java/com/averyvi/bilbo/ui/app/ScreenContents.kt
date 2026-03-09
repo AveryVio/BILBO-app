@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,12 +34,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.notui.InstrumentStyling
@@ -127,13 +130,32 @@ fun NowPlayingScreenContents(
 
 @Composable
 fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
+    val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)
+    val e: MutableList<InstrumentStyling> = MutableList(size = 10, {InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)} );
+
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
+
+    val columnCount = 4
+
     LazyColumn(modifier = Modifier
         .verticalScroll(rememberScrollState())
         .size(1000.dp)
         .padding(paddingValues)) {
-        item{Text("jfgdklsjfls")}
-        items(300){
-            Text("$it")
+
+        item { }
+        items(e.size){
+            Row(Modifier.width(IntrinsicSize.Min)) {
+                InstrumentShelfItem(
+                    InstrumentImageResource = e[it].instrumentIcon,
+                    name = e[it].instrumentName,
+                    columnWidth = 75.dp
+                )
+            }
+
         }
     }
 }
