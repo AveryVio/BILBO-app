@@ -10,4 +10,5 @@
     <string name="Cents">Centů</string>
     <string name="BTConnectedDevices">Připojená zařízení</string>
     <string name="OctiveName">Oktáva</string>
+    <string name="CurrentFilter">"Aktuální filtr: "</string>
 </resources>

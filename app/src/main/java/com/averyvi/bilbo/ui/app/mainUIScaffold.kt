@@ -31,7 +31,6 @@ fun MainScaffold(
             BILBOTopAppBar(
                 selectedInstrument = selectedInstrumentStyling,
                 scrollBehavior = scrollBehavior,
-                onRouteButtonClicked = onRouteButtonClicked,
             )
         },
         bottomBar = {

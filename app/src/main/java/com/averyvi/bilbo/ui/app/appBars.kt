@@ -24,10 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.asampleofuis.ui.theme.FancyHeading
+import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.notui.InstrumentStyling
 
@@ -36,7 +38,6 @@ import com.averyvi.bilbo.notui.InstrumentStyling
 fun BILBOTopAppBar(
     selectedInstrument: InstrumentStyling,
     scrollBehavior: TopAppBarScrollBehavior,
-    onRouteButtonClicked: (Routes) -> Unit,
 ){
 
     TopAppBar(
@@ -50,7 +51,7 @@ fun BILBOTopAppBar(
                 modifier = Modifier.fillMaxWidth()
             ){
                 Text(
-                    text = "BILBO",
+                    text = stringResource(R.string.AppNameShort),
                     fontFamily = FancyHeading.titleLarge.fontFamily,
                     fontWeight = FancyHeading.titleLarge.fontWeight,
                     fontSize = 25.sp,
@@ -67,26 +68,6 @@ fun BILBOTopAppBar(
                 )
             }
                 },
-        navigationIcon = {
-            IconButton(
-                onClick = { onRouteButtonClicked(Routes.About) } /* do something */
-            ) {
-                Icon(
-                    painter = painterResource(selectedInstrument.instrumentIcon),
-                    contentDescription = "Localized description"
-                )
-            }
-        },
-        actions = {
-            Row {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
-                }
-            }
-        },
         scrollBehavior = scrollBehavior
     )
 }

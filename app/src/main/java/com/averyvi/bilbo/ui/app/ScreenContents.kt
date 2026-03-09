@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.handwriting.handwritingDetector
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
@@ -42,6 +44,7 @@ import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.notui.InstrumentStyling
 import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.fragments.DeviceList
+import com.averyvi.bilbo.ui.fragments.FilterRangeDisplay
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
@@ -56,7 +59,9 @@ fun NowPlayingScreenContents(
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
-    Box(modifier = Modifier.padding(paddingValues).fillMaxWidth()) {
+    Box(modifier = Modifier
+        .padding(paddingValues)
+        .fillMaxWidth()) {
         Column(Modifier.padding(top = 122.dp)) {
             val pitch = remember {
                 mutableDoubleStateOf(0.0)
@@ -76,24 +81,39 @@ fun NowPlayingScreenContents(
 
             PitchDiffView(pitch, 500,300)
 
-            Card(
-                modifier = Modifier.padding(horizontal = 55.dp)
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.padding(15.dp)
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.height(85.dp).width(150.dp)
+                Spacer(Modifier.width(1.dp))
+                Card(){
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.padding(15.dp)
                     ) {
-                        NoteDisplayCard("A")
-                        Spacer(Modifier.width(5.dp))
-                        IsHarmonicText(pitch)
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier
+                                .height(85.dp)
+                                .width(150.dp)
+                        ) {
+                            NoteDisplayCard("A")
+                            IsHarmonicText(pitch)
+                        }
+                        Spacer(Modifier.height(5.dp))
+                        NoteOctiveDisplay(4)
                     }
-                    Spacer(Modifier.height(5.dp))
-                    NoteOctiveDisplay(4)
                 }
+                Spacer(Modifier.width(1.dp))
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
+            ) {
+                FilterRangeDisplay(5)
             }
             // frequency
         }
@@ -107,7 +127,10 @@ fun NowPlayingScreenContents(
 
 @Composable
 fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
-    LazyColumn(modifier = Modifier.verticalScroll(rememberScrollState()).size(1000.dp).padding(paddingValues)) {
+    LazyColumn(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .size(1000.dp)
+        .padding(paddingValues)) {
         item{Text("jfgdklsjfls")}
         items(300){
             Text("$it")
@@ -120,7 +143,9 @@ fun AboutScreenContents(paddingValues: PaddingValues){
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().padding(paddingValues)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(paddingValues)
     ) {
         Spacer(modifier = Modifier.height(25.dp))
         Image(
@@ -176,7 +201,9 @@ fun AboutScreenContents(paddingValues: PaddingValues){
 
 @Composable
 fun IntroScreenContents(onRouteButtonClicked: (Routes) -> Unit) {
-    Surface(modifier = Modifier.statusBarsPadding().fillMaxSize()) {
+    Surface(modifier = Modifier
+        .statusBarsPadding()
+        .fillMaxSize()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Card(
                 shape = RoundedCornerShape(15.dp)

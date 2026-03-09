@@ -147,3 +147,16 @@ fun NoteOctiveDisplay(octive:Int){
         )
     }
 }
+
+@Composable
+fun FilterRangeDisplay(FilterRange:Int){
+    Card(
+    ) {
+        Row(
+            modifier = Modifier.padding(10.dp)
+        ) {
+            Text(stringResource(R.string.CurrentFilter))
+            Text(FilterRange.toString())
+        }
+    }
+}

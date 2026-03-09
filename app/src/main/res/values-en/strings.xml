@@ -10,4 +10,5 @@
     <string name="Cents">Cents</string>
     <string name="BTConnectedDevices">Connected Devices</string>
     <string name="OctiveName">Octave</string>
+    <string name="CurrentFilter">"Current filter: "</string>
 </resources>
