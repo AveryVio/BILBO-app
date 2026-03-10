@@ -29,9 +29,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,9 +55,8 @@ import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.FilterRangeDisplay
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
-import com.averyvi.bilbo.ui.fragments.PitchDiffView
-import com.averyvi.bilbo.ui.fragments.NoteDisplayCard
 import com.averyvi.bilbo.ui.fragments.NoteOctiveDisplay
+import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -72,60 +74,65 @@ fun NowPlayingScreenContents(
         Column(
             modifier = Modifier.fillMaxSize().padding(top = 90.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(
+                space = 100.dp,
+                alignment = Alignment.CenterVertically
+            )
         ) {
             val pitch = remember {
-                mutableDoubleStateOf(0.0)
+                mutableIntStateOf(0)
             }
             val pitchStep = remember {
                 mutableDoubleStateOf(0.0)
             }
-
             LaunchedEffect (Unit) {
-                pitch.doubleValue = sin(0.4)
+                pitch.value = (sin(0.4) * 100).toInt()
                 while(true) {
                     pitchStep.doubleValue += 0.1
-                    pitch.doubleValue = sin(pitchStep.doubleValue)
+                    pitch.value = (sin(pitchStep.doubleValue) * 100).toInt()
                     delay(50)
                 }
             }
 
-            PitchDiffView(pitch, 500,300)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy( 10.dp)
+            ){
+                Text(
+                    text = "placeholder",
+                    fontSize = 45.sp,
+                    fontStyle = MaterialTheme.typography.titleLarge.fontStyle
+                )
+                PitchDiffView(pitch)
+            }
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
+
+            Card(
+                shape = RoundedCornerShape(24.dp),
             ) {
-                Spacer(Modifier.width(1.dp))
-                Card(){
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier.padding(15.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            modifier = Modifier
-                                .height(85.dp)
-                                .width(150.dp)
-                        ) {
-                            NoteDisplayCard("A")
-                            IsHarmonicText(pitch)
-                        }
-                        NoteOctiveDisplay(4)
+                        NoteOctiveDisplay("A", 4.toString())
+                        VerticalDivider(
+                            modifier = Modifier.height(5.dp),
+                            thickness = 5.dp
+                        )
+                        IsHarmonicText(pitch)
+                        VerticalDivider(
+                            modifier = Modifier.height(5.dp),
+                            thickness = 5.dp
+                        )
+                        FilterRangeDisplay(3)
                     }
                 }
-                Spacer(Modifier.width(1.dp))
             }
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp)
-            ) {
-                FilterRangeDisplay(5)
-            }
-            // frequency
         }
 
         DeviceList(
@@ -142,7 +149,7 @@ fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
 
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.handa, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.tunebar, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.ic_launcher_foreground, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.cupcake, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
 

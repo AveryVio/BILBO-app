@@ -9,7 +9,6 @@
     <string name="CurrentlyPlaying">Current Instrument</string>
     <string name="Cents">Cents</string>
     <string name="BTConnectedDevices">Connected Devices</string>
-    <string name="OctiveName">Octave</string>
     <string name="AppNameShort" translatable="false">BILBO</string>
     <string name="CurrentFilter">"Current filter: "</string>
 </resources>
