@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // --- Permissions & Lifecycle Logic (Remains in Activity) ---
+    // --- Permissions & Lifecycle Logic ---
 
     private fun beginBluetooth() {
         Log.d("Permissions", "Checking for necessary permissions.")

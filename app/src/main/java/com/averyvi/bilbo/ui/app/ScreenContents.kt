@@ -62,10 +62,16 @@ fun NowPlayingScreenContents(
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
-    Box(modifier = Modifier
-        .padding(paddingValues)
-        .fillMaxWidth()) {
-        Column(Modifier.padding(top = 122.dp)) {
+    Box(
+        modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxWidth()
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize().padding(top = 90.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             val pitch = remember {
                 mutableDoubleStateOf(0.0)
             }
@@ -91,11 +97,11 @@ fun NowPlayingScreenContents(
                 Spacer(Modifier.width(1.dp))
                 Card(){
                     Column(
-                        verticalArrangement = Arrangement.SpaceEvenly,
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
                         modifier = Modifier.padding(15.dp)
                     ) {
                         Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier
                                 .height(85.dp)
                                 .width(150.dp)
@@ -103,7 +109,6 @@ fun NowPlayingScreenContents(
                             NoteDisplayCard("A")
                             IsHarmonicText(pitch)
                         }
-                        Spacer(Modifier.height(5.dp))
                         NoteOctiveDisplay(4)
                     }
                 }
@@ -142,11 +147,9 @@ fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
     val columnCount = 4
 
     LazyColumn(modifier = Modifier
-        .verticalScroll(rememberScrollState())
-        .size(1000.dp)
+        .fillMaxSize()
         .padding(paddingValues)) {
 
-        item { }
         items(e.size){
             Row(Modifier.width(IntrinsicSize.Min)) {
                 InstrumentShelfItem(
