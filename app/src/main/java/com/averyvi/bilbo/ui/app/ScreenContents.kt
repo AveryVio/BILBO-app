@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.handwriting.handwritingDetector
@@ -136,29 +138,30 @@ fun NowPlayingScreenContents(
 @Composable
 fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)
-    val e: MutableList<InstrumentStyling> = MutableList(size = 10, {InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)} );
+    val e: MutableList<InstrumentStyling> = MutableList(size = 6, {InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)} );
 
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.handa, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.tunebar, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.cupcake, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
 
     val columnCount = 4
 
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues)) {
-
-        items(e.size){
-            Row(Modifier.width(IntrinsicSize.Min)) {
-                InstrumentShelfItem(
-                    InstrumentImageResource = e[it].instrumentIcon,
-                    name = e[it].instrumentName,
-                    columnWidth = 75.dp
-                )
-            }
-
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(top  = 6.dp),
+        columns = GridCells.Fixed(4),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        items(e.size) {
+            InstrumentShelfItem(
+                InstrumentImageResource = e[it].instrumentIcon,
+                name = e[it].instrumentName,
+            )
         }
     }
 }
@@ -205,17 +208,14 @@ fun AboutScreenContents(paddingValues: PaddingValues){
                 InstrumentShelfItem(
                     InstrumentImageResource = a.instrumentIcon,
                     name = a.instrumentName,
-                    columnWidth = 70.dp
                 )
                 InstrumentShelfItem(
                     InstrumentImageResource = a.instrumentIcon,
                     name = a.instrumentName,
-                    columnWidth = 70.dp
                 )
                 InstrumentShelfItem(
                     InstrumentImageResource = a.instrumentIcon,
                     name = a.instrumentName,
-                    columnWidth = 70.dp
                 )
             }
         }

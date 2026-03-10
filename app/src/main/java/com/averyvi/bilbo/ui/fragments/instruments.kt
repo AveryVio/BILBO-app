@@ -3,8 +3,12 @@ package com.averyvi.bilbo.ui.fragments
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,39 +39,34 @@ fun InstrumentShelfItem(
     @DrawableRes InstrumentImageResource: Int,
     name: String,
     comment: String = "",
-    columnWidth: Dp,
     inModifier: Modifier = Modifier
 ){
-    val boxHeightMultiplier = (if (comment != "") (if (comment.length > 9) 1.6 else 1.45) else 1.25).toFloat()
-    val boldFontSizeMultiplier = if(columnWidth < 100.dp) 8 else 9
-    val normalFontSizeMultiplier = if(columnWidth < 100.dp) 6 else 7
-
-    val boxModifier = inModifier
-        .padding(8.dp)
-        .clip(RoundedCornerShape(11.dp))
-        .width(columnWidth)
-        .background(Color( 100, 100, 100 ))
-
-
-    Card(boxModifier) {
+    Card(
+        inModifier
+            .clip(RoundedCornerShape(18.dp))
+            .background(Color( 100, 100, 100 ))
+    ) {
         Column {
             Image(
                 painter = painterResource( InstrumentImageResource ),
                 contentDescription = null,
-                modifier = inModifier.width(columnWidth).height(columnWidth).clip(RoundedCornerShape(11.dp))
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
             )
             Text(
                 text = name,
                 fontWeight = FontWeight(800),
-                fontSize = (2 * boldFontSizeMultiplier).sp,
+                fontSize = 18.sp,
 
-                modifier = inModifier.fillMaxWidth().padding(vertical = 0.dp, horizontal =  4.dp)
+                modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal =  4.dp)
             )
             Text(
                 text = comment,
-                fontSize = (2 * normalFontSizeMultiplier).sp,
+                fontSize = 14.sp,
                 lineHeight = 12.sp,
-                modifier = inModifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 4.dp)
+                modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 4.dp)
             )
         }
     }

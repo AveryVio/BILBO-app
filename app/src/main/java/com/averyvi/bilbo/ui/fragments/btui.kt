@@ -115,34 +115,3 @@ fun DeviceList(
         }
     }
 }
-
-@Composable
-fun DeviceListItem(
-    index: Int,
-    deviceName: String,
-    deviceAddress: String,
-    onClick: () -> Unit
-){
-    Card(
-        modifier = Modifier
-            .padding(3.dp)
-            .clickable { onClick },
-        colors = CardColors(
-            MaterialTheme.colorScheme.surfaceContainerHigh,
-            MaterialTheme.colorScheme.onSurface,
-            MaterialTheme.colorScheme.surfaceContainerHigh,
-            MaterialTheme.colorScheme.onSurface
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Row() {
-                Text(index.toString())
-                Spacer(Modifier.width(5.dp))
-                Text(deviceName)
-            }
-            Text(deviceAddress)
-        }
-    }
-}
