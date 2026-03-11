@@ -54,6 +54,7 @@ import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.FilterRangeDisplay
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
+import com.averyvi.bilbo.ui.fragments.IntroAppTitle
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.NoteOctiveDisplay
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
@@ -236,31 +237,17 @@ fun IntroScreenContents(onRouteButtonClicked: (Routes) -> Unit) {
     Surface(modifier = Modifier
         .statusBarsPadding()
         .fillMaxSize()) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Card(
-                shape = RoundedCornerShape(15.dp)
-            ) {
-                Column(Modifier.padding(7.dp)) {
-                    Icon(
-                        painter = painterResource(R.drawable.radio_button_checked_24px),
-                        contentDescription = "Localized description",
-                        tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.padding(15.dp))
-            Text(
-                text = stringResource(R.string.IntroTextTop),
-                fontWeight = FontWeight(500),
-                fontSize = 25.sp,
-            )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            IntroAppTitle()
+
             /* add some fluff */
             /*
             github
             licences/ licence
              */
-            Spacer(Modifier.padding(vertical = 330.dp))
             Button(
                 onClick = { onRouteButtonClicked(Routes.InstrumentSelect) }
             ) {
