@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.comms
+package com.averyvi.bilbo.bluetooth
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -11,7 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

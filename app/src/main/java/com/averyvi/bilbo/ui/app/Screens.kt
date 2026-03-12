@@ -9,9 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.notui.FirstHarmonic
-import com.averyvi.bilbo.notui.InstrumentStyling
-import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.definitions.InstrumentStyling
+import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 
 @Composable
 fun NowPlayingScreen(

@@ -6,14 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.averyvi.bilbo.notui.FirstHarmonic
-import com.averyvi.bilbo.notui.MusicalNote
-import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.definitions.FirstHarmonic
+import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.app.AboutScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen

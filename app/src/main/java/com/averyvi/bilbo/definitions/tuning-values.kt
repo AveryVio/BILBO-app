@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.notui
+package com.averyvi.bilbo.definitions
 
 data class FirstHarmonic(val name: String, val frequency: Double)
 

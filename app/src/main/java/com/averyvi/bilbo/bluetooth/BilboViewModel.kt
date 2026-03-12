@@ -1,10 +1,10 @@
-package com.averyvi.bilbo.comms
+package com.averyvi.bilbo.bluetooth
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.averyvi.bilbo.notui.FirstHarmonic
-import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.definitions.FirstHarmonic
+import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn

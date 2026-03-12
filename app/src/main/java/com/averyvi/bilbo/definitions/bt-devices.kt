@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.notui
+package com.averyvi.bilbo.definitions
 
 import android.bluetooth.BluetoothDevice
 

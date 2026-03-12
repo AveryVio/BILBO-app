@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.averyvi.asampleofuis.ui.theme.FancyHeading
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.notui.InstrumentStyling
+import com.averyvi.bilbo.definitions.InstrumentStyling
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

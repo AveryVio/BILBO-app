@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.notui.InstrumentStyling
+import com.averyvi.bilbo.definitions.InstrumentStyling
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
