@@ -2,11 +2,22 @@ package com.averyvi.bilbo.notui
 
 data class FirstHarmonic(val name: String, val frequency: Double)
 
-val standardTuning = listOf(
-    FirstHarmonic("E", 82.00),
-    FirstHarmonic("A", 110.00),
-    FirstHarmonic("D", 147.00),
-    FirstHarmonic("G", 196.00),
-    FirstHarmonic("H", 247.00),
-    FirstHarmonic("E", 330.00)
-)
+enum class MusicalNote(noteNumber: Int, noteString: String) {
+    C(1,"C"),
+    D(2, "D"),
+    E(3, "E"),
+    F(4, "F"),
+    G(5, "G"),
+    A(6, "A"),
+    H(7, "H"),
+}
+
+/*
+THE USER SEES TODO
+    octives (just numbers - ok)
+    notes (use enum - check usage)
+    cents (just numbers - ok)
+    freq (just numbers - ok)
+ACTIONS TODO
+    cents to an offset value
+ */

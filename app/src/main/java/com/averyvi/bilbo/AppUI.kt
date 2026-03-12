@@ -8,11 +8,11 @@ import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.averyvi.bilbo.notui.FirstHarmonic
+import com.averyvi.bilbo.notui.MusicalNote
 import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 import com.averyvi.bilbo.ui.app.AboutScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
@@ -28,7 +28,7 @@ fun AppUI(
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
     onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
-    val note = remember { mutableStateOf("A") }
+    val note = remember { mutableIntStateOf(0) }
     val octive = remember { mutableIntStateOf(4) }
 
     val pitch = remember {
@@ -47,8 +47,8 @@ fun AppUI(
 
     LaunchedEffect(Unit) {
         while(true) {
-            if(note.value == "A") note.value = "C"
-            else note.value = "A"
+            if(note.value >= 6) note.value = 0
+            else note.value++
 
             if(octive.value >= 8) octive.value = -2
             else octive.value++
@@ -69,7 +69,7 @@ fun AppUI(
 
         composable(route = Routes.CurrentlyPlaying.name){
             NowPlayingScreen(
-                note = note.value,
+                note = MusicalNote.entries[note.value].name,
                 octive = octive.intValue.toString(),
                 pitch = pitch,
                 onRouteButtonClicked = onRouteButtonClicked,
@@ -79,7 +79,7 @@ fun AppUI(
         }
         composable(route = Routes.InstrumentSelect.name){
             InstrumentSelectScreen(
-                note = note.value,
+                note = MusicalNote.entries[note.value].name,
                 octive = octive.intValue.toString(),
                 pitch = pitch,
                 onRouteButtonClicked = onRouteButtonClicked
@@ -87,7 +87,7 @@ fun AppUI(
         }
         composable(route = Routes.About.name) {
             AboutScreen(
-                note = note.value,
+                note = MusicalNote.entries[note.value].name,
                 octive = octive.intValue.toString(),
                 pitch = pitch,
                 onRouteButtonClicked = onRouteButtonClicked
