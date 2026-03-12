@@ -10,4 +10,6 @@
     <string name="Cents">Cents</string>
     <string name="BTConnectedDevices">Connected Devices</string>
     <string name="CurrentFilter">"Current filter: "</string>
+    <string name="TutorialText">To use your tuner,\nyou have to connect to it via Bluetooth.</string>
+    <string name="IntroBy">By</string>
 </resources>

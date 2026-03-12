@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
+import com.averyvi.bilbo.Routes
 import kotlin.math.ceil
 import kotlin.math.round
 import kotlin.math.roundToInt
@@ -110,17 +111,17 @@ fun IsHarmonicText(pitchDiff: MutableState<Int>) {
 }
 
 @Composable
-fun NoteOctiveDisplay(Note:String, Octive:String){
+fun NoteOctiveDisplay(note:String, octive:String){
     Row(
         horizontalArrangement = Arrangement.spacedBy(3.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         Text(
-            text = Note,
+            text = note,
             fontSize = 40.sp,
         )
         Text(
-            text = Octive,
+            text = octive,
             fontSize = 20.sp,
         )
     }

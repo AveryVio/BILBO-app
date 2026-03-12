@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.averyvi.bilbo.R
@@ -14,6 +15,9 @@ import com.averyvi.bilbo.notui.SelectableBluetoothDevice
 
 @Composable
 fun NowPlayingScreen(
+    note: String,
+    octive: String,
+    pitch: MutableState<Int>,
     onRouteButtonClicked: (Routes) -> Unit,
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
@@ -25,6 +29,10 @@ fun NowPlayingScreen(
     ) { innerPadding ->
         NowPlayingScreenContents(
             paddingValues =  innerPadding,
+            note = note,
+            octive = octive,
+            pitch = pitch,
+            onRouteButtonClicked = onRouteButtonClicked,
             deviceList = deviceList,
             onDeviceSelected = onDeviceSelected
             )
@@ -33,6 +41,9 @@ fun NowPlayingScreen(
 
 @Composable
 fun InstrumentSelectScreen(
+    note: String,
+    octive: String,
+    pitch: MutableState<Int>,
     onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
@@ -40,12 +51,21 @@ fun InstrumentSelectScreen(
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
-        InstrumentSelectScreenContents(innerPadding)
+        InstrumentSelectScreenContents(
+            paddingValues =  innerPadding,
+            note = note,
+            octive = octive,
+            pitch = pitch,
+            onRouteButtonClicked = onRouteButtonClicked,
+        )
     }
 }
 
 @Composable
 fun AboutScreen(
+    note: String,
+    octive: String,
+    pitch: MutableState<Int>,
     onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
@@ -53,7 +73,11 @@ fun AboutScreen(
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
-        AboutScreenContents(innerPadding)
+        AboutScreenContents(
+            paddingValues =  innerPadding,
+            pitch = pitch,
+            onRouteButtonClicked = onRouteButtonClicked,
+        )
     }
 }
 

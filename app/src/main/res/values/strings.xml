@@ -11,4 +11,6 @@
     <string name="BTConnectedDevices">Connected Devices</string>
     <string name="AppNameShort" translatable="false">BILBO</string>
     <string name="CurrentFilter">"Current filter: "</string>
+    <string name="TutorialText">To us your tuner,\nyou have to connect to it via Bluetooth.</string>
+    <string name="IntroBy">By</string>
 </resources>

@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -51,10 +52,12 @@ import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.notui.InstrumentStyling
 import com.averyvi.bilbo.notui.SelectableBluetoothDevice
+import com.averyvi.bilbo.ui.fragments.BILBONavPill
 import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.FilterRangeDisplay
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IntroAppTitle
+import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.NoteOctiveDisplay
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
@@ -64,37 +67,26 @@ import kotlin.math.sin
 @Composable
 fun NowPlayingScreenContents(
     paddingValues: PaddingValues,
+    note: String,
+    octive: String,
+    pitch: MutableState<Int>,
+    onRouteButtonClicked: (Routes) -> Unit,
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
     Box(
         modifier = Modifier
             .padding(paddingValues)
+            .padding(bottom = 10.dp)
             .fillMaxWidth()
     ){
         Column(
-            modifier = Modifier.fillMaxSize().padding(top = 90.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 220.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(
-                space = 100.dp,
-                alignment = Alignment.CenterVertically
-            )
+            verticalArrangement = Arrangement.spacedBy(150.dp)
         ) {
-            val pitch = remember {
-                mutableIntStateOf(0)
-            }
-            val pitchStep = remember {
-                mutableDoubleStateOf(0.0)
-            }
-            LaunchedEffect (Unit) {
-                pitch.value = (sin(0.4) * 100).toInt()
-                while(true) {
-                    pitchStep.doubleValue += 0.1
-                    pitch.value = (sin(pitchStep.doubleValue) * 100).toInt()
-                    delay(50)
-                }
-            }
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy( 10.dp)
@@ -106,34 +98,12 @@ fun NowPlayingScreenContents(
                 )
                 PitchDiffView(pitch)
             }
-
-
-            Card(
-                shape = RoundedCornerShape(24.dp),
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        NoteOctiveDisplay("A", 4.toString())
-                        VerticalDivider(
-                            modifier = Modifier.height(5.dp),
-                            thickness = 5.dp
-                        )
-                        IsHarmonicText(pitch)
-                        VerticalDivider(
-                            modifier = Modifier.height(5.dp),
-                            thickness = 5.dp
-                        )
-                        FilterRangeDisplay(3)
-                    }
-                }
-            }
+            BILBONavPill(
+                note = note,
+                octive = octive,
+                pitch = pitch,
+                onRouteButtonClicked = { onRouteButtonClicked(Routes.InstrumentSelect) }
+            )
         }
 
         DeviceList(
@@ -144,7 +114,13 @@ fun NowPlayingScreenContents(
 }
 
 @Composable
-fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
+fun InstrumentSelectScreenContents(
+    paddingValues: PaddingValues,
+    note: String,
+    octive: String,
+    pitch: MutableState<Int>,
+    onRouteButtonClicked: (Routes) -> Unit,
+){
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)
     val e: MutableList<InstrumentStyling> = MutableList(size = 6, {InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)} );
 
@@ -156,26 +132,50 @@ fun InstrumentSelectScreenContents(paddingValues: PaddingValues){
 
     val columnCount = 4
 
-    LazyVerticalGrid(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-            .padding(top  = 6.dp),
-        columns = GridCells.Fixed(4),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(bottom = 10.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        items(e.size) {
-            InstrumentShelfItem(
-                InstrumentImageResource = e[it].instrumentIcon,
-                name = e[it].instrumentName,
+        LazyVerticalGrid(
+            modifier = Modifier
+                .padding(top = 6.dp),
+            columns = GridCells.Fixed(4),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            items(e.size) {
+                InstrumentShelfItem(
+                    InstrumentImageResource = e[it].instrumentIcon,
+                    name = e[it].instrumentName,
+                )
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            BILBONavPill(
+                note = note,
+                octive = octive,
+                pitch = pitch,
+                onRouteButtonClicked = { onRouteButtonClicked(Routes.CurrentlyPlaying) }
             )
         }
     }
 }
 
 @Composable
-fun AboutScreenContents(paddingValues: PaddingValues){
+fun AboutScreenContents(
+    paddingValues: PaddingValues,
+    pitch: MutableState<Int>,
+    onRouteButtonClicked: (Routes) -> Unit,
+){
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -242,6 +242,8 @@ fun IntroScreenContents(onRouteButtonClicked: (Routes) -> Unit) {
             verticalArrangement = Arrangement.SpaceAround
         ) {
             IntroAppTitle()
+
+            IntroTutorial()
 
             /* add some fluff */
             /*

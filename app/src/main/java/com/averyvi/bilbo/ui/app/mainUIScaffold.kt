@@ -32,12 +32,6 @@ fun MainScaffold(
                 selectedInstrument = selectedInstrumentStyling,
                 scrollBehavior = scrollBehavior,
             )
-        },
-        bottomBar = {
-            BILBOBottomAppBar(
-                selectedInstrument = selectedInstrumentStyling,
-                onRouteButtonClicked = onRouteButtonClicked,
-            )
         }
     ) { innerPadding ->
         content(innerPadding)
