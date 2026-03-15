@@ -25,6 +25,7 @@ fun NowPlayingScreen(
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
+        showNewInstrumentButton = false,
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
         NowPlayingScreenContents(
@@ -50,6 +51,7 @@ fun InstrumentSelectScreen(
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
+        showNewInstrumentButton = true,
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
         InstrumentSelectScreenContents(
@@ -57,6 +59,7 @@ fun InstrumentSelectScreen(
             note = note,
             octive = octive,
             pitch = pitch,
+            dbDao = dbDao,
             onRouteButtonClicked = onRouteButtonClicked,
         )
     }
@@ -72,6 +75,7 @@ fun AboutScreen(
     MainScaffold(
         modifier = Modifier.fillMaxSize(),
         selectedInstrumentStyling =  InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
+        showNewInstrumentButton = false,
         onRouteButtonClicked = onRouteButtonClicked,
     ) { innerPadding ->
         AboutScreenContents(

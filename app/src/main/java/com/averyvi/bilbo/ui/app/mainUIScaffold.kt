@@ -34,7 +34,7 @@ fun MainScaffold(
                 scrollBehavior = scrollBehavior,
             )
         },
-        floatingActionButton = {
+        floatingActionButton = { //todo: do this differently than a floating action button
             BILBOAddInstrumentButton()
         }
     ) { innerPadding ->

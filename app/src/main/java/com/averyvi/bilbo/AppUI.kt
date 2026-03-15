@@ -91,6 +91,7 @@ fun AppUI(
                 note = MusicalNote.entries[note.value].name,
                 octive = octive.intValue.toString(),
                 pitch = pitch,
+                dbDao = userDao,
                 onRouteButtonClicked = onRouteButtonClicked
             )
         }
@@ -109,7 +110,7 @@ fun AppUI(
 }
 
 enum class Routes(
-    @StringRes val title: Int,
+    @field:StringRes val title: Int,
 ){
     Intro(
         title = R.string.IntroScreen
