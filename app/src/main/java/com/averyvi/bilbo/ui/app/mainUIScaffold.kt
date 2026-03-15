@@ -15,6 +15,7 @@ import com.averyvi.bilbo.definitions.InstrumentStyling
 @OptIn(ExperimentalMaterial3Api::class)
 fun MainScaffold(
     selectedInstrumentStyling: InstrumentStyling,
+    showNewInstrumentButton: Boolean,
     modifier: Modifier = Modifier,
     scrollEnabled: Boolean = true,
     onRouteButtonClicked: (Routes) -> Unit,
@@ -32,6 +33,9 @@ fun MainScaffold(
                 selectedInstrument = selectedInstrumentStyling,
                 scrollBehavior = scrollBehavior,
             )
+        },
+        floatingActionButton = {
+            BILBOAddInstrumentButton()
         }
     ) { innerPadding ->
         content(innerPadding)

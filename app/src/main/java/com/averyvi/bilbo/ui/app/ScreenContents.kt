@@ -34,12 +34,15 @@ import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import com.averyvi.bilbo.storage.InstrumentDBRow
+import com.averyvi.bilbo.storage.UserDao
 import com.averyvi.bilbo.ui.fragments.BILBONavPill
 import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IntroAppTitle
 import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun NowPlayingScreenContents(
@@ -96,8 +99,12 @@ fun InstrumentSelectScreenContents(
     note: String,
     octive: String,
     pitch: MutableState<Int>,
+    dbDao: UserDao,
     onRouteButtonClicked: (Routes) -> Unit,
 ){
+    //val instruments: Flow<List<InstrumentDBRow>>
+
+
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)
     val e: MutableList<InstrumentStyling> = MutableList(size = 6, {InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)} );
 

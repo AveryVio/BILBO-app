@@ -7,12 +7,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.averyvi.bilbo.definitions.FirstHarmonic
 import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import com.averyvi.bilbo.storage.AppDatabase
 import com.averyvi.bilbo.ui.app.AboutScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
@@ -27,6 +30,13 @@ fun AppUI(
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
     onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
+    val locContext = LocalContext.current
+    val db = Room.databaseBuilder(
+        locContext,
+        AppDatabase::class.java, "instruments"
+    ).build()
+    val userDao = db.userDao()
+
     val note = remember { mutableIntStateOf(0) }
     val octive = remember { mutableIntStateOf(4) }
 
@@ -68,7 +78,7 @@ fun AppUI(
 
         composable(route = Routes.CurrentlyPlaying.name){
             NowPlayingScreen(
-                note = MusicalNote.entries[note.value].name,
+                note = MusicalNote.entries[note.intValue].name,
                 octive = octive.intValue.toString(),
                 pitch = pitch,
                 onRouteButtonClicked = onRouteButtonClicked,
@@ -86,7 +96,7 @@ fun AppUI(
         }
         composable(route = Routes.About.name) {
             AboutScreen(
-                note = MusicalNote.entries[note.value].name,
+                note = MusicalNote.entries[note.intValue].name,
                 octive = octive.intValue.toString(),
                 pitch = pitch,
                 onRouteButtonClicked = onRouteButtonClicked

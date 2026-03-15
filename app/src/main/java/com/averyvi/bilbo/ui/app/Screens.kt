@@ -11,6 +11,7 @@ import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import com.averyvi.bilbo.storage.UserDao
 
 @Composable
 fun NowPlayingScreen(
@@ -43,6 +44,7 @@ fun InstrumentSelectScreen(
     note: String,
     octive: String,
     pitch: MutableState<Int>,
+    dbDao: UserDao,
     onRouteButtonClicked: (Routes) -> Unit,
 ){
     MainScaffold(
