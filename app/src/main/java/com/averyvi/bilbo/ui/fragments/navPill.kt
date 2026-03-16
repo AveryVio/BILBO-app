@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +22,8 @@ import com.averyvi.bilbo.Routes
 
 @Composable
 fun BILBONavPill(
-    note: String,
-    octive: String,
+    note: State<String>,
+    octive: State<String>,
     pitch: MutableState<Int> = mutableIntStateOf(0),
     onRouteButtonClicked: (Routes) -> Unit,
 ) {
@@ -38,7 +39,7 @@ fun BILBONavPill(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                NoteOctiveDisplay(note, octive)
+                NoteOctiveDisplay(note.value, octive.value)
 
                 VerticalDivider(
                     modifier = Modifier.height(5.dp),

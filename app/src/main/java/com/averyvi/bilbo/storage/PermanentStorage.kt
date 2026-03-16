@@ -11,7 +11,7 @@ class InstrumentProfile(
 )
 
 @Entity
-class InstrumentDBRow(
+data class InstrumentDBRow(
     @PrimaryKey(autoGenerate = false) val instrumentName:String = "Piano",
     @ColumnInfo(name = "InstrumentIcon") val instrumentIcon: Int = 0,
     @ColumnInfo(name = "InstrumentThemeColor") val instrumentThemeColor: Int = 0,

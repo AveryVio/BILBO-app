@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
@@ -37,8 +38,10 @@ fun AppUI(
     ).build()
     val userDao = db.userDao()
 
-    val note = remember { mutableIntStateOf(0) }
-    val octive = remember { mutableIntStateOf(4) }
+    val noteN = remember { mutableIntStateOf(0) }
+    val note = remember { mutableStateOf("A") }
+    val octiveN = remember { mutableIntStateOf(4) }
+    val octive = remember { mutableStateOf("4") }
 
     val pitch = remember {
         mutableIntStateOf(0)
@@ -49,18 +52,20 @@ fun AppUI(
     LaunchedEffect(Unit) {
         while(true) {
             pitchStep.doubleValue += 0.1
-            pitch.value = (sin(pitchStep.doubleValue) * 100).toInt()
+            pitch.intValue = (sin(pitchStep.doubleValue) * 100).toInt()
             delay(50)
         }
     }
 
     LaunchedEffect(Unit) {
         while(true) {
-            if(note.value >= 6) note.value = 0
-            else note.value++
+            if(noteN.intValue >= 6) noteN.intValue = 0
+            else noteN.intValue++
+            note.value = noteN.intValue.toString()
 
-            if(octive.value >= 8) octive.value = -2
-            else octive.value++
+            if(octiveN.intValue >= 8) octiveN.intValue = -2
+            else octiveN.intValue++
+            octive.value = octiveN.intValue.toString()
 
             delay(500)
         }
@@ -78,33 +83,39 @@ fun AppUI(
 
         composable(route = Routes.CurrentlyPlaying.name){
             NowPlayingScreen(
-                note = MusicalNote.entries[note.intValue].name,
-                octive = octive.intValue.toString(),
+                note = note,
+                octive = octive,
                 pitch = pitch,
                 onRouteButtonClicked = onRouteButtonClicked,
+                defaultRouteDestination = Routes.InstrumentSelect,
                 deviceList = deviceList,
                 onDeviceSelected = onDeviceSelected
             )
         }
         composable(route = Routes.InstrumentSelect.name){
             InstrumentSelectScreen(
-                note = MusicalNote.entries[note.value].name,
-                octive = octive.intValue.toString(),
+                note = note,
+                octive = octive,
                 pitch = pitch,
                 dbDao = userDao,
-                onRouteButtonClicked = onRouteButtonClicked
+                onRouteButtonClicked = onRouteButtonClicked,
+                defaultRouteDestination = Routes.CurrentlyPlaying
             )
         }
         composable(route = Routes.About.name) {
             AboutScreen(
-                note = MusicalNote.entries[note.intValue].name,
-                octive = octive.intValue.toString(),
+                note = note,
+                octive = octive,
                 pitch = pitch,
-                onRouteButtonClicked = onRouteButtonClicked
+                onRouteButtonClicked = onRouteButtonClicked,
+                defaultRouteDestination = Routes.InstrumentSelect,
             )
         }
         composable(route = Routes.Intro.name) {
-            IntroScreen(onRouteButtonClicked = onRouteButtonClicked)
+            IntroScreen(
+                onRouteButtonClicked = onRouteButtonClicked,
+                defaultRouteDestination = Routes.InstrumentSelect,
+            )
         }
     }
 }

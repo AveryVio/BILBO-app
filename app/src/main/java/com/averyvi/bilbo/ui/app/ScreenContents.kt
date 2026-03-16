@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,10 +48,9 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun NowPlayingScreenContents(
     paddingValues: PaddingValues,
-    note: String,
-    octive: String,
+    note: State<String>,
+    octive: State<String>,
     pitch: MutableState<Int>,
-    onRouteButtonClicked: (Routes) -> Unit,
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
@@ -63,27 +63,26 @@ fun NowPlayingScreenContents(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 220.dp),
+                .padding(top = 120.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(150.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy( 10.dp)
+                verticalArrangement = Arrangement.spacedBy(25.dp)
             ){
-                Text(
-                    text = "placeholder",
-                    fontSize = 45.sp,
-                    fontStyle = MaterialTheme.typography.titleLarge.fontStyle
-                )
+                Box(
+                    modifier = Modifier
+                        .height(150.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ){
+                    Text(
+                        text = "placeholder",
+                        fontSize = 45.sp,
+                        fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                    )
+                }
                 PitchDiffView(pitch)
             }
-            BILBONavPill(
-                note = note,
-                octive = octive,
-                pitch = pitch,
-                onRouteButtonClicked = { onRouteButtonClicked(Routes.InstrumentSelect) }
-            )
         }
 
         DeviceList(
@@ -96,25 +95,45 @@ fun NowPlayingScreenContents(
 @Composable
 fun InstrumentSelectScreenContents(
     paddingValues: PaddingValues,
-    note: String,
-    octive: String,
-    pitch: MutableState<Int>,
-    dbDao: UserDao,
-    onRouteButtonClicked: (Routes) -> Unit,
+    //dbDao: UserDao,
 ){
     //val instruments: Flow<List<InstrumentDBRow>>
 
 
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)
-    val e: MutableList<InstrumentStyling> = MutableList(size = 6, {InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)} );
+    val e: MutableList<InstrumentStyling> = MutableList(size = 6) {
+        InstrumentStyling(
+            instrumentName = "Piano",
+            instrumentIcon = R.drawable.androidicon,
+            instrumentThemeColor = Color.Red
+        )
+    };
 
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.handa, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.ic_launcher_foreground, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.cupcake, instrumentThemeColor = Color.Red))
     e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
 
-    val columnCount = 4
 
     Column(
         modifier = Modifier
@@ -137,27 +156,12 @@ fun InstrumentSelectScreenContents(
                 )
             }
         }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            BILBONavPill(
-                note = note,
-                octive = octive,
-                pitch = pitch,
-                onRouteButtonClicked = { onRouteButtonClicked(Routes.CurrentlyPlaying) }
-            )
-        }
     }
 }
 
 @Composable
 fun AboutScreenContents(
     paddingValues: PaddingValues,
-    pitch: MutableState<Int>,
     onRouteButtonClicked: (Routes) -> Unit,
 ){
     val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)

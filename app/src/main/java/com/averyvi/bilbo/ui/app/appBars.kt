@@ -1,21 +1,26 @@
 package com.averyvi.bilbo.ui.app
 
 import android.graphics.drawable.shapes.Shape
+import android.widget.Toolbar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
@@ -41,7 +46,6 @@ fun BILBOTopAppBar(
     selectedInstrument: InstrumentStyling,
     scrollBehavior: TopAppBarScrollBehavior,
 ){
-
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -116,8 +120,20 @@ fun BILBOBottomAppBar(
 
 @Composable
 fun BILBOAddInstrumentButton(){
-    FloatingActionButton(
-        shape = RoundedCornerShape(24.dp),
+    IconButton(
         onClick = {},
-    ) { }
+        colors = IconButtonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface
+        )
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.radio_button_checked_24px),
+            modifier = Modifier
+                .height(intrinsicSize = IntrinsicSize.Max),
+            contentDescription = null
+        )
+    }
 }
