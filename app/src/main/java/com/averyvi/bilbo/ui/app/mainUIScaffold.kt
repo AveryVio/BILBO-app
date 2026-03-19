@@ -26,15 +26,16 @@ import com.averyvi.bilbo.ui.fragments.BILBONavPill
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun MainScaffold(
+    modifier: Modifier = Modifier,
     selectedInstrumentStyling: InstrumentStyling,
     note: State<String>,
     octive: State<String>,
     pitch: MutableState<Int>,
     showNewInstrumentButton: Boolean,
-    modifier: Modifier = Modifier,
+    showTopBar: Boolean,
+    showBottomBar: Boolean,
     scrollEnabled: Boolean = true,
-    onRouteButtonClicked: (Routes) -> Unit,
-    defaultRouteDestination: Routes = Routes.InstrumentSelect,
+    onRouteButtonClicked: () -> Unit,
     content: @Composable ((PaddingValues) -> Unit),
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
@@ -45,29 +46,41 @@ fun MainScaffold(
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            BILBOTopAppBar(
-                selectedInstrument = selectedInstrumentStyling,
-                scrollBehavior = scrollBehavior,
-            )
+            if(showTopBar) {
+                BILBOTopAppBar(
+                    selectedInstrument = selectedInstrumentStyling,
+                    scrollBehavior = scrollBehavior,
+                )
+            }
         },
         bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                BILBONavPill(
-                    note = note,
-                    octive = octive,
-                    pitch = pitch,
-                    onRouteButtonClicked = { onRouteButtonClicked(defaultRouteDestination) }
-                )
-                if(showNewInstrumentButton) BILBOAddInstrumentButton()
-            }
+
         }
     ) { innerPadding ->
-        content(innerPadding)
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter,
+
+        ) {
+            content(innerPadding)
+            if(showBottomBar) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    BILBONavPill(
+                        note = note,
+                        octive = octive,
+                        pitch = pitch,
+                        onRouteButtonClicked = onRouteButtonClicked
+                    )
+                    if (showNewInstrumentButton) BILBOAddInstrumentButton()
+                }
+            }
+        }
+
     }
 }

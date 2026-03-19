@@ -1,25 +1,32 @@
 package com.averyvi.bilbo
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.averyvi.bilbo.definitions.FirstHarmonic
+import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.storage.AppDatabase
 import com.averyvi.bilbo.ui.app.AboutScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
+import com.averyvi.bilbo.ui.app.MainScaffold
 import com.averyvi.bilbo.ui.app.NowPlayingScreen
 import kotlinx.coroutines.delay
 import kotlin.math.sin
@@ -72,50 +79,65 @@ fun AppUI(
     }
 
     val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = Routes.InstrumentSelect.name,
-    ){
 
-        val onRouteButtonClicked = { route: Routes ->
-            navController.navigate(route = route.name)
-        }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-        composable(route = Routes.CurrentlyPlaying.name){
-            NowPlayingScreen(
-                note = note,
-                octive = octive,
-                pitch = pitch,
-                onRouteButtonClicked = onRouteButtonClicked,
-                defaultRouteDestination = Routes.InstrumentSelect,
-                deviceList = deviceList,
-                onDeviceSelected = onDeviceSelected
-            )
-        }
-        composable(route = Routes.InstrumentSelect.name){
-            InstrumentSelectScreen(
-                note = note,
-                octive = octive,
-                pitch = pitch,
-                dbDao = userDao,
-                onRouteButtonClicked = onRouteButtonClicked,
-                defaultRouteDestination = Routes.CurrentlyPlaying
-            )
-        }
-        composable(route = Routes.About.name) {
-            AboutScreen(
-                note = note,
-                octive = octive,
-                pitch = pitch,
-                onRouteButtonClicked = onRouteButtonClicked,
-                defaultRouteDestination = Routes.InstrumentSelect,
-            )
-        }
-        composable(route = Routes.Intro.name) {
-            IntroScreen(
-                onRouteButtonClicked = onRouteButtonClicked,
-                defaultRouteDestination = Routes.InstrumentSelect,
-            )
+    val routesWithoutBars = listOf(
+        Routes.Intro.name
+    )
+    val showBars = currentRoute !in routesWithoutBars
+    val showNewInstrumentbutton = currentRoute == Routes.InstrumentSelect.name
+    val routesToGoTo = mapOf<String, String>(
+        Routes.InstrumentSelect.name to Routes.CurrentlyPlaying.name,
+        Routes.CurrentlyPlaying.name to Routes.InstrumentSelect.name,
+        Routes.About.name to Routes.CurrentlyPlaying.name,
+    )
+    val defaultRouteDestination = routesToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
+
+    MainScaffold(
+        selectedInstrumentStyling = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
+        note = note,
+        octive = octive,
+        pitch = pitch,
+        showNewInstrumentButton = showNewInstrumentbutton,
+        showTopBar = showBars,
+        showBottomBar = showBars,
+        onRouteButtonClicked = { navController.navigate(defaultRouteDestination) },
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Routes.Intro.name,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+
+            val onRouteButtonClicked = { route: Routes ->
+                navController.navigate(route = route.name)
+            }
+
+            composable(route = Routes.CurrentlyPlaying.name) {
+                NowPlayingScreen(
+                    note = note,
+                    octive = octive,
+                    pitch = pitch,
+                    deviceList = deviceList,
+                    onDeviceSelected = onDeviceSelected,
+                )
+            }
+            composable(route = Routes.InstrumentSelect.name) {
+                InstrumentSelectScreen(
+                )
+            }
+            composable(route = Routes.About.name) {
+                AboutScreen(
+                    onRouteButtonClicked = onRouteButtonClicked,
+                )
+            }
+            composable(route = Routes.Intro.name) {
+                IntroScreen(
+                    onRouteButtonClicked = onRouteButtonClicked
+                )
+            }
         }
     }
 }

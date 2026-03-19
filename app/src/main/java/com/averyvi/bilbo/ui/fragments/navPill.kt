@@ -25,7 +25,7 @@ fun BILBONavPill(
     note: State<String>,
     octive: State<String>,
     pitch: MutableState<Int> = mutableIntStateOf(0),
-    onRouteButtonClicked: (Routes) -> Unit,
+    onRouteButtonClicked: () -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(24.dp),
@@ -54,7 +54,7 @@ fun BILBONavPill(
                 )
 
                 Card(
-                    onClick = { onRouteButtonClicked(Routes.CurrentlyPlaying) }
+                    onClick = onRouteButtonClicked
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy((-2).dp),
