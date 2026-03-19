@@ -3,11 +3,14 @@ package com.averyvi.bilbo.ui.app
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,31 +56,31 @@ fun MainScaffold(
                 )
             }
         },
-        bottomBar = {
-
-        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
+                .padding(paddingValues = innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter,
-
         ) {
             content(innerPadding)
             if(showBottomBar) {
-                Row(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 20.dp),
-                    horizontalArrangement = Arrangement.Center
+                        .fillMaxSize()
+                        .padding(bottom = 15.dp),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    BILBONavPill(
-                        note = note,
-                        octive = octive,
-                        pitch = pitch,
-                        onRouteButtonClicked = onRouteButtonClicked
-                    )
-                    if (showNewInstrumentButton) BILBOAddInstrumentButton()
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        BILBONavPill(
+                            note = note,
+                            octive = octive,
+                            pitch = pitch,
+                            onRouteButtonClicked = onRouteButtonClicked
+                        )
+                        if (showNewInstrumentButton) BILBOAddInstrumentButton(Modifier.width(70.dp).height(70.dp))
+                    }
                 }
             }
         }

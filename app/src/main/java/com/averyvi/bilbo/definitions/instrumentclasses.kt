@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.Color
 class InstrumentStyling(
     val instrumentName: String,
     val instrumentIcon: Int,
-    val instrumentThemeColor: Color
 )
 
 class InstrumentProfile(

@@ -96,7 +96,7 @@ fun AppUI(
     val defaultRouteDestination = routesToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
 
     MainScaffold(
-        selectedInstrumentStyling = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red),
+        selectedInstrumentStyling = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon),
         note = note,
         octive = octive,
         pitch = pitch,
@@ -104,11 +104,10 @@ fun AppUI(
         showTopBar = showBars,
         showBottomBar = showBars,
         onRouteButtonClicked = { navController.navigate(defaultRouteDestination) },
-    ) { innerPadding ->
+    ) {
         NavHost(
             navController = navController,
             startDestination = Routes.Intro.name,
-            modifier = Modifier.padding(innerPadding)
         ) {
 
             val onRouteButtonClicked = { route: Routes ->
@@ -126,6 +125,7 @@ fun AppUI(
             }
             composable(route = Routes.InstrumentSelect.name) {
                 InstrumentSelectScreen(
+                    dbDao = userDao
                 )
             }
             composable(route = Routes.About.name) {

@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,11 +35,15 @@ import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import com.averyvi.bilbo.storage.InstrumentDBRow
+import com.averyvi.bilbo.storage.UserDao
+import com.averyvi.bilbo.storage.getAllInstruments
 import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IntroAppTitle
 import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
+import kotlin.concurrent.thread
 
 @Composable
 fun NowPlayingScreen(
@@ -87,36 +92,9 @@ fun NowPlayingScreen(
 
 @Composable
 fun InstrumentSelectScreen(
-    //dbDao: UserDao,
+    dbDao: UserDao,
 ){
-    //val instruments: Flow<List<InstrumentDBRow>>
-
-
-    val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red)
-    val e: MutableList<InstrumentStyling> = MutableList(size = 6) {
-        InstrumentStyling(
-            instrumentName = "Piano",
-            instrumentIcon = R.drawable.androidicon,
-            instrumentThemeColor = Color.Red
-        )
-    };
-
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.radio_button_checked_24px, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.handa, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.ic_launcher_foreground, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.cupcake, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
-    e.addLast(InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.bluetooth_searching, instrumentThemeColor = Color.Red))
+    val instruments: SnapshotStateList<InstrumentDBRow> = getAllInstruments(dbDao)
 
 
     Column(
@@ -125,19 +103,40 @@ fun InstrumentSelectScreen(
             .padding(bottom = 10.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        LazyVerticalGrid(
-            modifier = Modifier
-                .padding(top = 6.dp),
-            columns = GridCells.Adaptive(75.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            items(e.size) {
-                InstrumentShelfItem(
-                    InstrumentImageResource = e[it].instrumentIcon,
-                    name = e[it].instrumentName,
-                )
+        Button(
+            onClick = {
+                thread {
+                    dbDao.insertAll(
+                        instrument = InstrumentDBRow(
+                            instrumentName = "Piano",
+                            instrumentIcon = R.drawable.radio_button_checked_24px,
+                            refFreq = 440,
+                            positionInOctive = 9,
+                            refOctive = 4,
+                        )
+                    )
+                }
             }
+        ){
+            Text("jfdklsjfls")
+        }
+        if(instruments.isNotEmpty()) {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .padding(top = 6.dp),
+                columns = GridCells.Adaptive(75.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                items(instruments.size) {
+                    InstrumentShelfItem(
+                        InstrumentImageResource = instruments[it].instrumentIcon,
+                        name = instruments[it].instrumentName,
+                    )
+                }
+            }
+        } else {
+            Text("fjdkl")
         }
     }
 }
@@ -146,7 +145,7 @@ fun InstrumentSelectScreen(
 fun AboutScreen(
     onRouteButtonClicked: (Routes) -> Unit,
 ){
-    val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon, instrumentThemeColor = Color.Red)
+    val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

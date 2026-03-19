@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -119,7 +121,9 @@ fun BILBOBottomAppBar(
 }
 
 @Composable
-fun BILBOAddInstrumentButton(){
+fun BILBOAddInstrumentButton(
+    modifier: Modifier = Modifier,
+){
     IconButton(
         onClick = {},
         colors = IconButtonColors(
@@ -127,12 +131,12 @@ fun BILBOAddInstrumentButton(){
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             disabledContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        ),
+        modifier = modifier
     ) {
         Icon(
-            painter = painterResource(R.drawable.radio_button_checked_24px),
-            modifier = Modifier
-                .height(intrinsicSize = IntrinsicSize.Max),
+            painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
+            modifier = Modifier.fillMaxSize().padding(10.dp),
             contentDescription = null
         )
     }
