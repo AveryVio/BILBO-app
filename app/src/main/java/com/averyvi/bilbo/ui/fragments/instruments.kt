@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,8 +46,13 @@ fun InstrumentShelfItem(
 ){
     Card(
         inModifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(Color( 100, 100, 100 ))
+            .clip(RoundedCornerShape(18.dp)),
+        colors = CardColors(
+            MaterialTheme.colorScheme.surfaceContainerHigh,
+            MaterialTheme.colorScheme.onSurface,
+            MaterialTheme.colorScheme.surfaceContainerHigh,
+            MaterialTheme.colorScheme.onSurface
+        )
     ) {
         Column {
             Image(

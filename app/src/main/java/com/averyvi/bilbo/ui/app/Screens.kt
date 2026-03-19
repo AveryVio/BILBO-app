@@ -128,7 +128,7 @@ fun InstrumentSelectScreen(
         LazyVerticalGrid(
             modifier = Modifier
                 .padding(top = 6.dp),
-            columns = GridCells.Fixed(4),
+            columns = GridCells.Adaptive(75.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {

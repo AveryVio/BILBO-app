@@ -2,12 +2,17 @@ package com.averyvi.bilbo.ui.fragments
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -53,19 +58,22 @@ fun BILBONavPill(
                     thickness = 5.dp
                 )
 
-                Card(
-                    onClick = onRouteButtonClicked
+                Button(
+                    onClick = onRouteButtonClicked,
+                    contentPadding = PaddingValues(5.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonColors(
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.onSurface,
+                        MaterialTheme.colorScheme.surfaceContainerHigh,
+                        MaterialTheme.colorScheme.onSurface
+                    )
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy((-2).dp),
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        Icon(
-                            painter = painterResource( R.drawable.freq ),
-                            contentDescription = null,
-                            modifier = Modifier.padding(bottom = 4.dp, end = 3.dp)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource( R.drawable.freq ),
+                        contentDescription = null,
+                        modifier = Modifier.padding(bottom = 4.dp, end = 3.dp)
+                    )
                 }
             }
         }
