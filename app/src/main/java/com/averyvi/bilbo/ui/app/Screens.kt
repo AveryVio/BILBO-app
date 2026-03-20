@@ -15,17 +15,25 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.definitions.InstrumentStyling
+import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.storage.InstrumentDBRow
 import com.averyvi.bilbo.storage.UserDao
@@ -142,61 +151,49 @@ fun InstrumentSelectScreen(
 }
 
 @Composable
-fun AboutScreen(
+fun NewInstrumentScreen(
     onRouteButtonClicked: (Routes) -> Unit,
 ){
-    val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon)
+    var selectedNote: MusicalNote by remember { mutableStateOf(MusicalNote.C) }
+
+    val allNotes: List<MusicalNote> = listOf()
+
+    var noteIsExpanded by remember { mutableStateOf(false) }
+
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
     ) {
-        Spacer(modifier = Modifier.height(25.dp))
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = null,
-            modifier = Modifier.size(233.dp)
+        Text(
+            text = "jfsdkl"
         )
-        Spacer(modifier = Modifier.height(25.dp))
-        Row {
-            Text(
-                text = stringResource(R.string.AppName),
-                fontWeight = FontWeight(400),
-                fontSize = 20.sp,
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = "•",
-                fontWeight = FontWeight(800),
-                fontSize = 20.sp,
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = "version:" + System.getProperty("jpackage.app-version"),
-                fontWeight = FontWeight(400),
-                fontSize = 20.sp,
-            )
-        }
-        Spacer(modifier = Modifier.height(25.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally,) {
-            Text(text = stringResource(R.string.MostUsedInstrumentsStatName))
-            Row {
-                InstrumentShelfItem(
-                    InstrumentImageResource = a.instrumentIcon,
-                    name = a.instrumentName,
-                )
-                InstrumentShelfItem(
-                    InstrumentImageResource = a.instrumentIcon,
-                    name = a.instrumentName,
-                )
-                InstrumentShelfItem(
-                    InstrumentImageResource = a.instrumentIcon,
-                    name = a.instrumentName,
+        Column(){
+
+            Card(
+                onClick = { noteIsExpanded = !noteIsExpanded }
+            ) {
+                Text(
+                    text = selectedNote.name,
+                    fontSize = 50.sp
                 )
             }
-        }
+            if (noteIsExpanded) {
+                DropdownMenu(
+                    expanded = noteIsExpanded,
+                    onDismissRequest = { noteIsExpanded = false },
+                    shape = RoundedCornerShape(24.dp),
+                ) {
+                    MusicalNote.entries.forEachIndexed { index, note ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedNote = note
+                                noteIsExpanded = false
+                            },
+                            text = { Text(note.name) },
+                        )
+                    }
 
-        //add links to github
+                }
+            }
+        }
     }
 }
 
@@ -230,3 +227,62 @@ fun IntroScreen(onRouteButtonClicked: (Routes) -> Unit) {
         }
     }
 }
+
+//About screen
+
+/*
+val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon)
+Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = Modifier
+        .fillMaxWidth()
+) {
+    Spacer(modifier = Modifier.height(25.dp))
+    Image(
+        painter = painterResource(R.drawable.ic_launcher_background),
+        contentDescription = null,
+        modifier = Modifier.size(233.dp)
+    )
+    Spacer(modifier = Modifier.height(25.dp))
+    Row {
+        Text(
+            text = stringResource(R.string.AppName),
+            fontWeight = FontWeight(400),
+            fontSize = 20.sp,
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = "•",
+            fontWeight = FontWeight(800),
+            fontSize = 20.sp,
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = "version:" + System.getProperty("jpackage.app-version"),
+            fontWeight = FontWeight(400),
+            fontSize = 20.sp,
+        )
+    }
+    Spacer(modifier = Modifier.height(25.dp))
+    Column(horizontalAlignment = Alignment.CenterHorizontally,) {
+        Text(text = stringResource(R.string.MostUsedInstrumentsStatName))
+        Row {
+            InstrumentShelfItem(
+                InstrumentImageResource = a.instrumentIcon,
+                name = a.instrumentName,
+            )
+            InstrumentShelfItem(
+                InstrumentImageResource = a.instrumentIcon,
+                name = a.instrumentName,
+            )
+            InstrumentShelfItem(
+                InstrumentImageResource = a.instrumentIcon,
+                name = a.instrumentName,
+            )
+        }
+    }
+
+    //add links to github
+
+
+}*/

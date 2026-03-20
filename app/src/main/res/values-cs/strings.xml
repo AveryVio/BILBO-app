@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="InstrumentSelectScreen">Výběr Nástroje</string>
-    <string name="HelpScreen">Nápověda</string>
+    <string name="NewInstrumentScreen">Nový nástroj</string>
     <string name="MostUsedInstrumentsStatName">Nejvíce používané nástroje:</string>
     <string name="IntroScreen">Úvod</string>
     <string name="IntroTextTop">Vítejte do BILBO aplikace.</string>

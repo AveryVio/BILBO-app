@@ -1,7 +1,6 @@
 package com.averyvi.bilbo
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,8 +9,6 @@ import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,10 +17,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.averyvi.bilbo.definitions.FirstHarmonic
 import com.averyvi.bilbo.definitions.InstrumentStyling
-import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.storage.AppDatabase
-import com.averyvi.bilbo.ui.app.AboutScreen
+import com.averyvi.bilbo.ui.app.NewInstrumentScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
 import com.averyvi.bilbo.ui.app.MainScaffold
@@ -91,7 +87,7 @@ fun AppUI(
     val routesToGoTo = mapOf<String, String>(
         Routes.InstrumentSelect.name to Routes.CurrentlyPlaying.name,
         Routes.CurrentlyPlaying.name to Routes.InstrumentSelect.name,
-        Routes.About.name to Routes.CurrentlyPlaying.name,
+        Routes.NewInstrument.name to Routes.CurrentlyPlaying.name,
     )
     val defaultRouteDestination = routesToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
 
@@ -107,7 +103,7 @@ fun AppUI(
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.Intro.name,
+            startDestination = Routes.NewInstrument.name,
         ) {
 
             val onRouteButtonClicked = { route: Routes ->
@@ -128,8 +124,8 @@ fun AppUI(
                     dbDao = userDao
                 )
             }
-            composable(route = Routes.About.name) {
-                AboutScreen(
+            composable(route = Routes.NewInstrument.name) {
+                NewInstrumentScreen(
                     onRouteButtonClicked = onRouteButtonClicked,
                 )
             }
@@ -154,7 +150,7 @@ enum class Routes(
     InstrumentSelect(
         title = R.string.InstrumentSelectScreen
     ),
-    About(
-        title = R.string.HelpScreen
+    NewInstrument(
+        title = R.string.NewInstrumentScreen
     )
 }

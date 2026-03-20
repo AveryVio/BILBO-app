@@ -9,7 +9,10 @@ enum class MusicalNote(noteNumber: Int, noteString: String) {
     F(4, "F"),
     G(5, "G"),
     A(6, "A"),
-    H(7, "H"),
+    H(7, "H"), ;
+
+
+
 }
 
 /*

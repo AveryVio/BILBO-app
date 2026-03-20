@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="InstrumentSelectScreen">Instrument Select</string>
-    <string name="HelpScreen">Help</string>
+    <string name="NewInstrumentScreen">New instrument</string>
     <string name="MostUsedInstrumentsStatName">Most used Instruments:</string>
     <string name="IntroScreen">Intro</string>
     <string name="IntroTextTop">Welcome to the BILBO app.</string>

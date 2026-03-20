@@ -87,7 +87,10 @@ fun DeviceList(
                 ) {
                     devices.forEachIndexed { index, device ->
                         DropdownMenuItem(
-                            onClick = { onDeviceSelected(device) },
+                            onClick = {
+                                onDeviceSelected(device)
+                                isExpanded = false
+                                      },
                             text = { Text(device.device.name + "\n" + device.device.address) },
                             leadingIcon = { Text(index.toString()) },
                             colors = MenuItemColors(
