@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
+import com.averyvi.bilbo.definitions.MusicalNote
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -77,5 +81,30 @@ fun InstrumentShelfItem(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 4.dp)
             )
         }
+    }
+}
+
+@Composable
+fun NewInstrumentDropdown(
+    activatorName:String,
+    expanded: Boolean,
+    onCardClick: () -> Unit,
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit,
+){
+    Card(
+        onClick = onCardClick
+    ) {
+        Text(
+            text = activatorName,
+            fontSize = 50.sp
+        )
+    }
+    if (expanded) {
+        DropdownMenu(
+            expanded = true,
+            onDismissRequest = onDismissRequest,
+            shape = RoundedCornerShape(24.dp),
+        ) { content() }
     }
 }

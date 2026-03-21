@@ -1,29 +1,28 @@
 package com.averyvi.bilbo.ui.app
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -34,14 +33,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.storage.InstrumentDBRow
@@ -51,7 +54,9 @@ import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IntroAppTitle
 import com.averyvi.bilbo.ui.fragments.IntroTutorial
+import com.averyvi.bilbo.ui.fragments.NewInstrumentDropdown
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
+import androidx.compose.ui.text.TextStyle
 import kotlin.concurrent.thread
 
 @Composable
@@ -154,34 +159,62 @@ fun InstrumentSelectScreen(
 fun NewInstrumentScreen(
     onRouteButtonClicked: (Routes) -> Unit,
 ){
-    var selectedNote: MusicalNote by remember { mutableStateOf(MusicalNote.C) }
-
-    val allNotes: List<MusicalNote> = listOf()
+    var selectedFreq: Int by remember { mutableStateOf(440) }
+    var selectedFreqString: String by remember { mutableStateOf("") }
+    var selectedNote: MusicalNote by remember { mutableStateOf(MusicalNote.A) }
+    var selectedOctive: Int by remember { mutableStateOf(4) }
 
     var noteIsExpanded by remember { mutableStateOf(false) }
+    var octiveIsExpanded by remember { mutableStateOf(false) }
 
     Column(
     ) {
         Text(
             text = "jfsdkl"
         )
-        Column(){
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        ){
+            TextField(
+                label = @Composable { Text(stringResource(R.string.FreqName)) },
+                placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
+                value = selectedFreqString,
+                onValueChange = {
+                    if(it == ""){
+                        selectedFreqString = ""
+                        selectedFreq = 0
+                    } else {
+                        if(it.length < 10) {
+                            selectedFreqString = it.filter { it -> it.isDigit() }
+                            selectedFreq = selectedFreqString.toInt()
+                        }
+                    }
+                },
+                leadingIcon = @Composable {
+                    Icon(
+                        painter = painterResource(R.drawable.freq),
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.width(IntrinsicSize.Max),
+                shape = RoundedCornerShape(24.dp),
+                textStyle = TextStyle(brush = Brush.linearGradient(colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.tertiary))),
+                enabled = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+            )
 
-            Card(
-                onClick = { noteIsExpanded = !noteIsExpanded }
-            ) {
-                Text(
-                    text = selectedNote.name,
-                    fontSize = 50.sp
-                )
-            }
-            if (noteIsExpanded) {
-                DropdownMenu(
-                    expanded = noteIsExpanded,
-                    onDismissRequest = { noteIsExpanded = false },
-                    shape = RoundedCornerShape(24.dp),
-                ) {
-                    MusicalNote.entries.forEachIndexed { index, note ->
+            NewInstrumentDropdown(
+                activatorName = selectedNote.name,
+                expanded = noteIsExpanded,
+                onCardClick = { noteIsExpanded = !noteIsExpanded },
+                onDismissRequest = { noteIsExpanded = false },
+                content = @Composable {
+                    MusicalNote.entries.forEach { note ->
                         DropdownMenuItem(
                             onClick = {
                                 selectedNote = note
@@ -190,9 +223,26 @@ fun NewInstrumentScreen(
                             text = { Text(note.name) },
                         )
                     }
+                },
+            )
 
-                }
-            }
+            NewInstrumentDropdown(
+                activatorName = selectedOctive.toString(),
+                expanded = octiveIsExpanded,
+                onCardClick = { octiveIsExpanded = !octiveIsExpanded },
+                onDismissRequest = { octiveIsExpanded = false },
+                content = @Composable {
+                    (-2 .. 8).forEach { octive ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedOctive = octive
+                                octiveIsExpanded = false
+                            },
+                            text = { Text(octive.toString()) },
+                        )
+                    }
+                },
+            )
         }
     }
 }

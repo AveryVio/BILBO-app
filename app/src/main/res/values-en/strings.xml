@@ -12,4 +12,5 @@
     <string name="CurrentFilter">"Current filter: "</string>
     <string name="TutorialText">To use your tuner,\nyou have to connect to it via Bluetooth.</string>
     <string name="IntroBy">By</string>
+    <string name="FreqName">Frequency</string>
 </resources>
