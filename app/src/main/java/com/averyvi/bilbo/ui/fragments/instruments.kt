@@ -92,19 +92,21 @@ fun NewInstrumentDropdown(
     onDismissRequest: () -> Unit,
     content: @Composable () -> Unit,
 ){
-    Card(
-        onClick = onCardClick
-    ) {
-        Text(
-            text = activatorName,
-            fontSize = 50.sp
-        )
-    }
-    if (expanded) {
-        DropdownMenu(
-            expanded = true,
-            onDismissRequest = onDismissRequest,
-            shape = RoundedCornerShape(24.dp),
-        ) { content() }
+    Box(){
+        Card(
+            onClick = onCardClick
+        ) {
+            Text(
+                text = activatorName,
+                fontSize = 50.sp
+            )
+        }
+        if (expanded) {
+            DropdownMenu(
+                expanded = true,
+                onDismissRequest = onDismissRequest,
+                shape = RoundedCornerShape(24.dp),
+            ) { content() }
+        }
     }
 }

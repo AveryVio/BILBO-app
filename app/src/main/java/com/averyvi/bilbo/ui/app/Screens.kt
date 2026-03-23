@@ -1,11 +1,13 @@
 package com.averyvi.bilbo.ui.app
 
 import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,9 +36,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +63,8 @@ import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.NewInstrumentDropdown
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.TextUnit
 import com.averyvi.bilbo.storage.deleteAllInstruments
 import com.averyvi.bilbo.storage.deleteLastInstrument
 import kotlin.concurrent.thread
@@ -188,26 +196,42 @@ fun NewInstrumentScreen(
     var noteIsExpanded by remember { mutableStateOf(false) }
     var octiveIsExpanded by remember { mutableStateOf(false) }
 
+
+    val textMeasurer = rememberTextMeasurer()
+    val textLayoutResult = textMeasurer.measure(
+        text = selectedFreqString,
+        style = TextStyle(fontSize = TextUnit.Unspecified)
+    )
+    val gradientEndX = if (textLayoutResult.size.width > 0) {
+        textLayoutResult.size.width.toFloat()
+    } else {
+        1f
+    }
+
     Column(
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround
     ) {
         Text(
             text = "jfsdkl"
         )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
+            horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.border(5.dp, Color.Red)
         ){
             TextField(
                 label = @Composable { Text(stringResource(R.string.FreqName)) },
                 placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
                 value = selectedFreqString,
+
                 onValueChange = {
                     if(it == ""){
                         selectedFreqString = ""
-                        selectedFreq = 0
                     } else {
-                        if(it.length < 10) {
+                        if(it.length < 30) {
                             selectedFreqString = it.filter { it -> it.isDigit() }
-                            selectedFreq = selectedFreqString.toInt()
                         }
                     }
                 },
@@ -217,10 +241,12 @@ fun NewInstrumentScreen(
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.width(IntrinsicSize.Max),
+                modifier = Modifier.fillMaxWidth(0.5f),
                 shape = RoundedCornerShape(24.dp),
-                textStyle = TextStyle(brush = Brush.linearGradient(colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.tertiary))),
-                enabled = true,
+                textStyle = TextStyle(brush = Brush.linearGradient(
+                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.tertiary),
+                    end = Offset(gradientEndX, 0f)
+                )),
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Number,
@@ -264,6 +290,21 @@ fun NewInstrumentScreen(
                     }
                 },
             )
+        }
+        Button(
+            onClick = {
+                // make variables into values
+                if(selectedFreqString.length == 0) {
+                    selectedFreq = 0
+                }
+                else if(selectedFreqString.length < 10) {
+                    selectedFreq = selectedFreqString.takeLast(10).toInt()
+                }
+                //insert into db
+                //navigate
+            }
+        ) {
+
         }
     }
 }
