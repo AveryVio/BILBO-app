@@ -38,7 +38,7 @@ fun MainScaffold(
     showTopBar: Boolean,
     showBottomBar: Boolean,
     scrollEnabled: Boolean = true,
-    onRouteButtonClicked: () -> Unit,
+    onRouteButtonClicked: (Boolean) -> Unit,
     content: @Composable ((PaddingValues) -> Unit),
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
@@ -79,7 +79,10 @@ fun MainScaffold(
                             pitch = pitch,
                             onRouteButtonClicked = onRouteButtonClicked
                         )
-                        if (showNewInstrumentButton) BILBOAddInstrumentButton(Modifier.width(70.dp).height(70.dp))
+                        if (showNewInstrumentButton) BILBOAddInstrumentButton(
+                            Modifier.width(70.dp).height(70.dp),
+                            onRouteButtonClicked = onRouteButtonClicked
+                        )
                     }
                 }
             }

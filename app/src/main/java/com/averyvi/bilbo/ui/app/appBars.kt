@@ -123,9 +123,10 @@ fun BILBOBottomAppBar(
 @Composable
 fun BILBOAddInstrumentButton(
     modifier: Modifier = Modifier,
+    onRouteButtonClicked: (Boolean) -> Unit,
 ){
     IconButton(
-        onClick = {},
+        onClick = { onRouteButtonClicked(true) },
         colors = IconButtonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -136,7 +137,7 @@ fun BILBOAddInstrumentButton(
     ) {
         Icon(
             painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
-            modifier = Modifier.fillMaxSize().padding(10.dp),
+            modifier = Modifier.fillMaxSize().padding(12.dp),
             contentDescription = null
         )
     }

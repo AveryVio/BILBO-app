@@ -84,12 +84,20 @@ fun AppUI(
     )
     val showBars = currentRoute !in routesWithoutBars
     val showNewInstrumentbutton = currentRoute == Routes.InstrumentSelect.name
-    val routesToGoTo = mapOf<String, String>(
+
+    val defaultRouteToGoTo = mapOf<String, String>(
         Routes.InstrumentSelect.name to Routes.CurrentlyPlaying.name,
         Routes.CurrentlyPlaying.name to Routes.InstrumentSelect.name,
+        Routes.NewInstrument.name to Routes.InstrumentSelect.name,
+    )
+    val secondaryRouteToGoTo = mapOf<String, String>(
+        Routes.Intro.name to Routes.NewInstrument.name,
+        Routes.InstrumentSelect.name to Routes.NewInstrument.name,
+        Routes.CurrentlyPlaying.name to Routes.Intro.name,
         Routes.NewInstrument.name to Routes.CurrentlyPlaying.name,
     )
-    val defaultRouteDestination = routesToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
+    val defaultRouteDestination = defaultRouteToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
+    val secondaryRouteDestination = secondaryRouteToGoTo.getOrDefault(currentRoute, Routes.CurrentlyPlaying.name)
 
     MainScaffold(
         selectedInstrumentStyling = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon),
@@ -99,7 +107,10 @@ fun AppUI(
         showNewInstrumentButton = showNewInstrumentbutton,
         showTopBar = showBars,
         showBottomBar = showBars,
-        onRouteButtonClicked = { navController.navigate(defaultRouteDestination) },
+        onRouteButtonClicked = { alternateRoute ->
+            if(alternateRoute) navController.navigate(secondaryRouteDestination)
+            else navController.navigate(defaultRouteDestination)
+                               },
     ) {
         NavHost(
             navController = navController,

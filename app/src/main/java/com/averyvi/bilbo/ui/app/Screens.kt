@@ -57,6 +57,8 @@ import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.NewInstrumentDropdown
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import androidx.compose.ui.text.TextStyle
+import com.averyvi.bilbo.storage.deleteAllInstruments
+import com.averyvi.bilbo.storage.deleteLastInstrument
 import kotlin.concurrent.thread
 
 @Composable
@@ -115,24 +117,43 @@ fun InstrumentSelectScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 10.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Button(
-            onClick = {
-                thread {
-                    dbDao.insertAll(
-                        instrument = InstrumentDBRow(
-                            instrumentName = "Piano",
-                            instrumentIcon = R.drawable.radio_button_checked_24px,
-                            refFreq = 440,
-                            positionInOctive = 9,
-                            refOctive = 4,
+        Row() {
+            Button(
+                onClick = {
+                    thread {
+                        dbDao.insertAll(
+                            instrument = InstrumentDBRow(
+                                instrumentName = "Piano",
+                                instrumentIcon = R.drawable.radio_button_checked_24px,
+                                refFreq = 440,
+                                positionInOctive = 9,
+                                refOctive = 4,
+                            )
                         )
-                    )
+                    }
                 }
+            ){
+                Text("testAdd") // toto remove
             }
-        ){
-            Text("jfdklsjfls")
+            Button(
+                onClick = {
+                    thread {
+                        deleteAllInstruments(dbDao)
+                    }
+                }
+            ){
+                Text("testRemoveAll") // toto remove
+            }
+            Button(
+                onClick = {
+                    thread {
+                        deleteLastInstrument(dbDao)
+                    }
+                }
+            ){
+                Text("testRemoveLast") // toto remove
+            }
         }
         if(instruments.isNotEmpty()) {
             LazyVerticalGrid(
@@ -150,14 +171,14 @@ fun InstrumentSelectScreen(
                 }
             }
         } else {
-            Text("fjdkl")
+            Text("fjdkl") // todo add string
         }
     }
 }
 
 @Composable
 fun NewInstrumentScreen(
-    onRouteButtonClicked: (Routes) -> Unit,
+    onRouteButtonClicked: (Routes) -> Unit
 ){
     var selectedFreq: Int by remember { mutableStateOf(440) }
     var selectedFreqString: String by remember { mutableStateOf("") }
@@ -248,7 +269,9 @@ fun NewInstrumentScreen(
 }
 
 @Composable
-fun IntroScreen(onRouteButtonClicked: (Routes) -> Unit) {
+fun IntroScreen(
+    onRouteButtonClicked: (Routes) -> Unit
+) {
     Surface(modifier = Modifier
         .statusBarsPadding()
         .fillMaxSize()) {

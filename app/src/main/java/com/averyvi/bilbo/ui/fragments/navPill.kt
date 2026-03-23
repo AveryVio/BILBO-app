@@ -30,7 +30,7 @@ fun BILBONavPill(
     note: State<String>,
     octive: State<String>,
     pitch: MutableState<Int> = mutableIntStateOf(0),
-    onRouteButtonClicked: () -> Unit,
+    onRouteButtonClicked: (Boolean) -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(24.dp),
@@ -59,7 +59,7 @@ fun BILBONavPill(
                 )
 
                 Button(
-                    onClick = onRouteButtonClicked,
+                    onClick = { onRouteButtonClicked(false) },
                     contentPadding = PaddingValues(5.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonColors(
