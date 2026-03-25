@@ -14,4 +14,5 @@
     <string name="TutorialText">To us your tuner,\nyou have to connect to it via Bluetooth.</string>
     <string name="IntroBy">By</string>
     <string name="FreqName">Frequency</string>
+    <string name="NewInstrumentName">Name of New Instrument</string>
 </resources>

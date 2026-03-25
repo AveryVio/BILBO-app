@@ -138,6 +138,7 @@ fun AppUI(
             composable(route = Routes.NewInstrument.name) {
                 NewInstrumentScreen(
                     onRouteButtonClicked = onRouteButtonClicked,
+                    dbDao = userDao
                 )
             }
             composable(route = Routes.Intro.name) {

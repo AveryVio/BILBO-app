@@ -94,11 +94,12 @@ fun NewInstrumentDropdown(
 ){
     Box(){
         Card(
-            onClick = onCardClick
+            onClick = onCardClick,
         ) {
             Text(
                 text = activatorName,
-                fontSize = 50.sp
+                fontSize = 47.sp,
+                modifier = Modifier.padding(3.dp)
             )
         }
         if (expanded) {

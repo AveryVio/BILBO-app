@@ -13,4 +13,5 @@
     <string name="TutorialText">Pro použití vaší ladičky,\nse k ní musíte připojit pomocí Bluetooth.</string>
     <string name="IntroBy">Od</string>
     <string name="FreqName">Frekvence</string>
+    <string name="NewInstrumentName">Jméno nového nástroje</string>
 </resources>

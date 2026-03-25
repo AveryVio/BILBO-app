@@ -72,9 +72,11 @@ import com.averyvi.bilbo.ui.fragments.NewInstrumentDropdown
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import com.averyvi.bilbo.storage.deleteAllInstruments
 import com.averyvi.bilbo.storage.deleteLastInstrument
+import com.averyvi.bilbo.ui.fragments.NewInstrumentTextInput
 import kotlin.concurrent.thread
 
 @Composable
@@ -195,8 +197,10 @@ fun InstrumentSelectScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewInstrumentScreen(
-    onRouteButtonClicked: (Routes) -> Unit
+    onRouteButtonClicked: (Routes) -> Unit,
+    dbDao: UserDao,
 ){
+    var selectedName: String by remember { mutableStateOf("") }
     var selectedFreq: Int by remember { mutableStateOf(440) }
     var selectedFreqString: String by remember { mutableStateOf("") }
     var selectedNote: MusicalNote by remember { mutableStateOf(MusicalNote.A) }
@@ -205,35 +209,53 @@ fun NewInstrumentScreen(
     var noteIsExpanded by remember { mutableStateOf(false) }
     var octiveIsExpanded by remember { mutableStateOf(false) }
 
-
-    val textMeasurer = rememberTextMeasurer()
-    val textLayoutResult = textMeasurer.measure(
-        text = selectedFreqString,
-        style = TextStyle(fontSize = TextUnit.Unspecified)
-    )
-    val gradientEndX = if (textLayoutResult.size.width > 0) {
-        textLayoutResult.size.width.toFloat()
-    } else {
-        1f
-    }
-
     Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround
     ) {
         Text(
-            text = "jfsdkl"
+            text = stringResource(R.string.NewInstrumentScreen),
+            fontSize = 40.sp,
+            fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
+        ) {
+            NewInstrumentTextInput(
+                label = @Composable { Text(stringResource(R.string.NewInstrumentName)) },
+                placeholder = @Composable { Text("Foobar") },
+                value = selectedName,
+                onValueChange = {
+                    if (it.length < 50) {
+                        selectedName = it
+                    }
+                },
+                leadingIcon = @Composable {
+                    Icon(
+                        painter = painterResource(R.drawable.radio_button_checked_24px), // todo update
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(0.7f),
+                brushColorList = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.tertiary
+                )
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
         ){
-            TextField(
+            NewInstrumentTextInput(
                 label = @Composable { Text(stringResource(R.string.FreqName)) },
                 placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
                 value = selectedFreqString,
-
                 onValueChange = {
                     if(it == ""){
                         selectedFreqString = ""
@@ -243,28 +265,24 @@ fun NewInstrumentScreen(
                         }
                     }
                 },
-                leadingIcon = @Composable {
+                leadingIcon =  @Composable {
                     Icon(
                         painter = painterResource(R.drawable.freq),
                         contentDescription = null
                     )
                 },
                 modifier = Modifier.fillMaxWidth(0.5f),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
+                brushColorList = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.tertiary
                 ),
-                shape = RoundedCornerShape(24.dp),
-                textStyle = TextStyle(brush = Brush.linearGradient(
-                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.tertiary),
-                    end = Offset(gradientEndX, 0f)
-                )),
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
-                ),
-                singleLine = true,
+                )
             )
 
             NewInstrumentDropdown(
@@ -313,7 +331,19 @@ fun NewInstrumentScreen(
                     selectedFreq = selectedFreqString.takeLast(10).toInt()
                 }
                 //insert into db
+                thread {
+                    dbDao.insertAll(
+                        instrument = InstrumentDBRow(
+                            instrumentName = selectedName,
+                            instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
+                            refFreq = selectedFreq,
+                            positionInOctive = selectedNote.ordinal,
+                            refOctive = selectedOctive
+                        )
+                    )
+                }
                 //navigate
+                onRouteButtonClicked(Routes.InstrumentSelect)
             }
         ) {
 
