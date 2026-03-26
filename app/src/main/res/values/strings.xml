@@ -15,4 +15,5 @@
     <string name="IntroBy">By</string>
     <string name="FreqName">Frequency</string>
     <string name="NewInstrumentName">Name of New Instrument</string>
+    <string name="AddButton">Add</string>
 </resources>

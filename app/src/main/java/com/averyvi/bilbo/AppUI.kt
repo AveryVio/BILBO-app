@@ -88,13 +88,13 @@ fun AppUI(
     val defaultRouteToGoTo = mapOf<String, String>(
         Routes.InstrumentSelect.name to Routes.CurrentlyPlaying.name,
         Routes.CurrentlyPlaying.name to Routes.InstrumentSelect.name,
-        Routes.NewInstrument.name to Routes.InstrumentSelect.name,
+        Routes.NewInstrument.name to Routes.CurrentlyPlaying.name,
     )
     val secondaryRouteToGoTo = mapOf<String, String>(
         Routes.Intro.name to Routes.NewInstrument.name,
         Routes.InstrumentSelect.name to Routes.NewInstrument.name,
         Routes.CurrentlyPlaying.name to Routes.Intro.name,
-        Routes.NewInstrument.name to Routes.CurrentlyPlaying.name,
+        Routes.NewInstrument.name to Routes.InstrumentSelect.name,
     )
     val defaultRouteDestination = defaultRouteToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
     val secondaryRouteDestination = secondaryRouteToGoTo.getOrDefault(currentRoute, Routes.CurrentlyPlaying.name)

@@ -22,9 +22,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Shapes
@@ -210,18 +213,25 @@ fun NewInstrumentScreen(
     var octiveIsExpanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceAround
+        modifier = Modifier.fillMaxWidth(0.95f).fillMaxHeight(0.9f).border(15.dp, Color.Red),
+        verticalArrangement = Arrangement.SpaceAround,
     ) {
-        Text(
-            text = stringResource(R.string.NewInstrumentScreen),
-            fontSize = 40.sp,
-            fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
-        )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = stringResource(R.string.NewInstrumentScreen),
+                fontSize = 40.sp,
+                fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                modifier = Modifier.border(15.dp, Color.Red)
+            )
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f).border(15.dp, Color.Red),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             NewInstrumentTextInput(
                 label = @Composable { Text(stringResource(R.string.NewInstrumentName)) },
@@ -238,7 +248,7 @@ fun NewInstrumentScreen(
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.fillMaxWidth(0.7f),
+                modifier = Modifier.fillMaxWidth(0.75f),
                 brushColorList = listOf(
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.secondary,
@@ -247,106 +257,126 @@ fun NewInstrumentScreen(
                     MaterialTheme.colorScheme.tertiary
                 )
             )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                NewInstrumentTextInput(
+                    label = @Composable { Text(stringResource(R.string.FreqName)) },
+                    placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
+                    value = selectedFreqString,
+                    onValueChange = {
+                        if (it == "") {
+                            selectedFreqString = ""
+                        } else {
+                            if (it.length < 30) {
+                                selectedFreqString = it.filter { it -> it.isDigit() }
+                            }
+                        }
+                    },
+                    leadingIcon = @Composable {
+                        Icon(
+                            painter = painterResource(R.drawable.freq),
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    brushColorList = listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary,
+                        MaterialTheme.colorScheme.tertiary
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    )
+                )
+
+                NewInstrumentDropdown(
+                    activatorName = selectedNote.name,
+                    expanded = noteIsExpanded,
+                    onCardClick = { noteIsExpanded = !noteIsExpanded },
+                    onDismissRequest = { noteIsExpanded = false },
+                    content = @Composable {
+                        MusicalNote.entries.forEach { note ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    selectedNote = note
+                                    noteIsExpanded = false
+                                },
+                                text = { Text(note.name) },
+                            )
+                        }
+                    },
+                )
+
+                NewInstrumentDropdown(
+                    activatorName = selectedOctive.toString(),
+                    expanded = octiveIsExpanded,
+                    onCardClick = { octiveIsExpanded = !octiveIsExpanded },
+                    onDismissRequest = { octiveIsExpanded = false },
+                    content = @Composable {
+                        (-2..8).forEach { octive ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    selectedOctive = octive
+                                    octiveIsExpanded = false
+                                },
+                                text = { Text(octive.toString()) },
+                            )
+                        }
+                    },
+                )
+            }
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-        ){
-            NewInstrumentTextInput(
-                label = @Composable { Text(stringResource(R.string.FreqName)) },
-                placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
-                value = selectedFreqString,
-                onValueChange = {
-                    if(it == ""){
-                        selectedFreqString = ""
-                    } else {
-                        if(it.length < 30) {
-                            selectedFreqString = it.filter { it -> it.isDigit() }
-                        }
-                    }
-                },
-                leadingIcon =  @Composable {
-                    Icon(
-                        painter = painterResource(R.drawable.freq),
-                        contentDescription = null
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(0.5f),
-                brushColorList = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.tertiary
-                ),
-                keyboardOptions = KeyboardOptions(
-                    autoCorrectEnabled = false,
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                )
-            )
-
-            NewInstrumentDropdown(
-                activatorName = selectedNote.name,
-                expanded = noteIsExpanded,
-                onCardClick = { noteIsExpanded = !noteIsExpanded },
-                onDismissRequest = { noteIsExpanded = false },
-                content = @Composable {
-                    MusicalNote.entries.forEach { note ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedNote = note
-                                noteIsExpanded = false
-                            },
-                            text = { Text(note.name) },
-                        )
-                    }
-                },
-            )
-
-            NewInstrumentDropdown(
-                activatorName = selectedOctive.toString(),
-                expanded = octiveIsExpanded,
-                onCardClick = { octiveIsExpanded = !octiveIsExpanded },
-                onDismissRequest = { octiveIsExpanded = false },
-                content = @Composable {
-                    (-2 .. 8).forEach { octive ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedOctive = octive
-                                octiveIsExpanded = false
-                            },
-                            text = { Text(octive.toString()) },
-                        )
-                    }
-                },
-            )
-        }
-        Button(
-            onClick = {
-                // make variables into values
-                if(selectedFreqString.length == 0) {
-                    selectedFreq = 0
-                }
-                else if(selectedFreqString.length < 10) {
-                    selectedFreq = selectedFreqString.takeLast(10).toInt()
-                }
-                //insert into db
-                thread {
-                    dbDao.insertAll(
-                        instrument = InstrumentDBRow(
-                            instrumentName = selectedName,
-                            instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
-                            refFreq = selectedFreq,
-                            positionInOctive = selectedNote.ordinal,
-                            refOctive = selectedOctive
-                        )
-                    )
-                }
-                //navigate
-                onRouteButtonClicked(Routes.InstrumentSelect)
-            }
+            modifier = Modifier.fillMaxWidth().border(15.dp, Color.Red),
+            horizontalArrangement = Arrangement.End
         ) {
-
+            Button(
+                onClick = {
+                    // make variables into values
+                    if (selectedFreqString.length == 0) {
+                        selectedFreq = 0
+                    } else if (selectedFreqString.length < 10) {
+                        selectedFreq = selectedFreqString.takeLast(10).toInt()
+                    }
+                    //insert into db
+                    thread {
+                        dbDao.insertAll(
+                            instrument = InstrumentDBRow(
+                                instrumentName = selectedName,
+                                instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
+                                refFreq = selectedFreq,
+                                positionInOctive = selectedNote.ordinal,
+                                refOctive = selectedOctive
+                            )
+                        )
+                    }
+                    //navigate
+                    onRouteButtonClicked(Routes.InstrumentSelect)
+                },
+                modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
+                colors = ButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    modifier = Modifier.height(50.dp).width(50.dp)
+                )
+                Text(
+                    text = stringResource(R.string.AddButton),
+                    fontSize = 30.sp,
+                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                )
+            }
         }
     }
 }
