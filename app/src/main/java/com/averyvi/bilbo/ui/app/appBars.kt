@@ -5,18 +5,23 @@ import android.widget.Toolbar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -135,10 +140,21 @@ fun BILBOAddInstrumentButton(
         ),
         modifier = modifier
     ) {
-        Icon(
-            painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
-            modifier = Modifier.fillMaxSize().padding(12.dp),
-            contentDescription = null
-        )
+        Card(
+            modifier = Modifier.fillMaxSize().padding(10.dp),
+            colors = CardColors(
+                containerColor = MaterialTheme.colorScheme.inversePrimary,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                disabledContentColor = MaterialTheme.colorScheme.onSurface
+            ),
+            shape = RoundedCornerShape(30.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = null
+            )
+        }
     }
 }

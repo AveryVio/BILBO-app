@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -286,17 +289,34 @@ fun NewInstrumentScreen(
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                     disabledContentColor = MaterialTheme.colorScheme.onSurface
                 ),
+                contentPadding = PaddingValues(vertical = 7.dp, horizontal = 13.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
-                    contentDescription = null,
-                    modifier = Modifier.height(50.dp).width(50.dp)
-                )
-                Text(
-                    text = stringResource(R.string.AddButton),
-                    fontSize = 30.sp,
-                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                )
+                Card(
+                    modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.inversePrimary,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    shape = RoundedCornerShape(30.dp)
+                ){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            modifier = Modifier.height(45.dp).width(45.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.AddButton),
+                            fontSize = 30.sp,
+                            fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                        )
+                    }
+                }
             }
         }
     }
