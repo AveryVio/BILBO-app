@@ -2,6 +2,7 @@ package com.averyvi.bilbo.ui.app
 
 import android.graphics.drawable.shapes.Shape
 import android.widget.Toolbar
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -37,6 +38,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -132,18 +134,19 @@ fun BILBONewInstrumentButton(
     modifier: Modifier = Modifier,
     onRouteButtonClicked: (Boolean) -> Unit,
 ){
-    IconButton(
+    Button(
         onClick = { onRouteButtonClicked(true) },
-        colors = IconButtonColors(
+        colors = ButtonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             disabledContentColor = MaterialTheme.colorScheme.onSurface
         ),
-        modifier = modifier
+        contentPadding = PaddingValues(vertical = 7.dp, horizontal = 7.dp),
+        modifier = modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max)
     ) {
         Card(
-            modifier = Modifier.fillMaxSize().padding(10.dp),
+            modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
             colors = CardColors(
                 containerColor = MaterialTheme.colorScheme.inversePrimary,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -154,7 +157,7 @@ fun BILBONewInstrumentButton(
         ) {
             Icon(
                 painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.height(41.dp).width(41.dp),
                 contentDescription = null
             )
         }

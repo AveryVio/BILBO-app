@@ -3,9 +3,11 @@ package com.averyvi.bilbo.ui.fragments
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
@@ -94,7 +96,7 @@ fun NewInstrumentSelector(
     var octiveIsExpanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f),
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
@@ -109,7 +111,7 @@ fun NewInstrumentSelector(
                     contentDescription = null
                 )
             },
-            modifier = Modifier.fillMaxWidth(0.75f),
+            modifier = Modifier.fillMaxWidth(),
             brushColorList = listOf(
                 MaterialTheme.colorScheme.primary,
                 MaterialTheme.colorScheme.secondary,
@@ -133,7 +135,7 @@ fun NewInstrumentSelector(
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.fillMaxWidth(0.5f),
+                modifier = Modifier,
                 brushColorList = listOf(
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.primary,

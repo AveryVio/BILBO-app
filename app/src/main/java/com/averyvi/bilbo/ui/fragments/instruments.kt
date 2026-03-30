@@ -122,7 +122,9 @@ fun NewInstrumentDropdown(
     onDismissRequest: () -> Unit,
     content: @Composable () -> Unit,
 ){
-    Box(){
+    Box(
+        modifier = Modifier.width(IntrinsicSize.Max)
+    ){
         Card(
             onClick = onCardClick,
         ) {

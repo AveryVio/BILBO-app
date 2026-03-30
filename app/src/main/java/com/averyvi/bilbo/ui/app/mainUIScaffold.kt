@@ -82,7 +82,6 @@ fun MainScaffold(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         if (bottomButton.name == "new") BILBONewInstrumentButton(
-                            Modifier.width(70.dp).height(70.dp),
                             onRouteButtonClicked = onRouteButtonClicked
                         )
                         else if(bottomButton.name == "add") BILBOAddInstrumentButton(

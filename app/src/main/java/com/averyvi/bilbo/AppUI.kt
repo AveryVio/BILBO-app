@@ -42,6 +42,7 @@ fun AppUI(
     onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
     val instrumentViewModel: InstrumentViewModel = viewModel()
+    val tuningViewModel: TuningViewModel = viewModel()
 
     //todo add a view model for live data
 
@@ -51,8 +52,6 @@ fun AppUI(
         AppDatabase::class.java, "instruments"
     ).build()
     val userDao = db.userDao()
-
-    val tuningViewModel: TuningViewModel = viewModel()
 
     val pitchStep = remember {
         mutableDoubleStateOf(0.0)
@@ -64,7 +63,6 @@ fun AppUI(
             delay(50)
         }
     }
-
     LaunchedEffect(Unit) {
         while(true) {
             if(tuningViewModel.note.value.ordinal >= 6) tuningViewModel.resetNote()
