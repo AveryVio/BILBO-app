@@ -69,11 +69,6 @@ class InstrumentViewModel : ViewModel() {
         _note.value = MusicalNote.A
         _octive.value = 0
     }
-
-    fun addInstrument() {
-        val currentName = _name.value
-        val currentFreq = _freq.value
-    }
 }
 
 @Composable

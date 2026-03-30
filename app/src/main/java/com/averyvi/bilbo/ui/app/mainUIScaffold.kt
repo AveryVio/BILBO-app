@@ -30,6 +30,7 @@ import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.storage.InstrumentDBRow
 import com.averyvi.bilbo.storage.UserDao
 import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
+import com.averyvi.bilbo.ui.fragments.TuningViewModel
 import kotlin.concurrent.thread
 
 @Composable
@@ -37,11 +38,9 @@ import kotlin.concurrent.thread
 fun MainScaffold(
     modifier: Modifier = Modifier,
     instrumentViewModel: InstrumentViewModel,
+    tuningViewModel: TuningViewModel,
     dbDao: UserDao,
     selectedInstrumentStyling: InstrumentStyling,
-    note: State<String>,
-    octive: State<String>,
-    pitch: MutableState<Int>,
     bottomButton: BottomButton,
     showTopBar: Boolean,
     showBottomBar: Boolean,
@@ -95,7 +94,7 @@ fun MainScaffold(
                                             instrumentName = instrumentViewModel.name.value,
                                             instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
                                             refFreq = instrumentViewModel.freq.value.takeLast(9).toInt(),
-                                            positionInOctive = instrumentViewModel.note.value.ordinal,
+                                            positionInOctive = instrumentViewModel.note.value.noteNumber,
                                             refOctive = instrumentViewModel.octive.value
                                         )
                                     )
@@ -107,9 +106,7 @@ fun MainScaffold(
                             }
                         )
                         BILBONavPill(
-                            note = note,
-                            octive = octive,
-                            pitch = pitch,
+                            tuningViewModel = tuningViewModel,
                             onRouteButtonClicked = onRouteButtonClicked
                         )
                     }

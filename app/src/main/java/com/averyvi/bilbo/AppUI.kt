@@ -20,6 +20,7 @@ import com.averyvi.bilbo.bluetooth.BilboViewModel
 import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.definitions.FirstHarmonic
 import com.averyvi.bilbo.definitions.InstrumentStyling
+import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.storage.AppDatabase
 import com.averyvi.bilbo.ui.app.NewInstrumentScreen
@@ -28,6 +29,7 @@ import com.averyvi.bilbo.ui.app.IntroScreen
 import com.averyvi.bilbo.ui.app.MainScaffold
 import com.averyvi.bilbo.ui.app.NowPlayingScreen
 import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
+import com.averyvi.bilbo.ui.fragments.TuningViewModel
 import kotlinx.coroutines.delay
 import kotlin.getValue
 import kotlin.math.sin
@@ -50,34 +52,26 @@ fun AppUI(
     ).build()
     val userDao = db.userDao()
 
-    val noteN = remember { mutableIntStateOf(0) }
-    val note = remember { mutableStateOf("A") }
-    val octiveN = remember { mutableIntStateOf(4) }
-    val octive = remember { mutableStateOf("4") }
+    val tuningViewModel: TuningViewModel = viewModel()
 
-    val pitch = remember {
-        mutableIntStateOf(0)
-    }
     val pitchStep = remember {
         mutableDoubleStateOf(0.0)
     }
     LaunchedEffect(Unit) {
         while(true) {
             pitchStep.doubleValue += 0.1
-            pitch.intValue = (sin(pitchStep.doubleValue) * 100).toInt()
+            tuningViewModel.updatePitch((sin(pitchStep.doubleValue) * 100).toInt())
             delay(50)
         }
     }
 
     LaunchedEffect(Unit) {
         while(true) {
-            if(noteN.intValue >= 6) noteN.intValue = 0
-            else noteN.intValue++
-            note.value = noteN.intValue.toString()
+            if(tuningViewModel.note.value.ordinal >= 6) tuningViewModel.resetNote()
+            else tuningViewModel.incrementNote()
 
-            if(octiveN.intValue >= 8) octiveN.intValue = -2
-            else octiveN.intValue++
-            octive.value = octiveN.intValue.toString()
+            if(tuningViewModel.octive.value >= 8) tuningViewModel.resetOctive()
+            else tuningViewModel.incrementOctive()
 
             delay(500)
         }
@@ -118,10 +112,8 @@ fun AppUI(
     MainScaffold(
         selectedInstrumentStyling = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon),
         instrumentViewModel = instrumentViewModel,
+        tuningViewModel = tuningViewModel,
         dbDao = userDao,
-        note = note,
-        octive = octive,
-        pitch = pitch,
         bottomButton = bottomButtonViewable,
         showTopBar = showBars,
         showBottomBar = showBars,
@@ -141,9 +133,7 @@ fun AppUI(
 
             composable(route = Routes.CurrentlyPlaying.name) {
                 NowPlayingScreen(
-                    note = note,
-                    octive = octive,
-                    pitch = pitch,
+                    tuningViewModel = tuningViewModel,
                     deviceList = deviceList,
                     onDeviceSelected = onDeviceSelected,
                 )

@@ -53,13 +53,12 @@ import com.averyvi.bilbo.storage.deleteAllInstruments
 import com.averyvi.bilbo.storage.deleteLastInstrument
 import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
 import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
+import com.averyvi.bilbo.ui.fragments.TuningViewModel
 import kotlin.concurrent.thread
 
 @Composable
 fun NowPlayingScreen(
-    note: State<String>,
-    octive: State<String>,
-    pitch: MutableState<Int>,
+    tuningViewModel: TuningViewModel,
     deviceList: List<SelectableBluetoothDevice>,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
 ){
@@ -89,7 +88,7 @@ fun NowPlayingScreen(
                         fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
                     )
                 }
-                PitchDiffView(pitch)
+                PitchDiffView(tuningViewModel.pitch.collectAsState().value)
             }
         }
 

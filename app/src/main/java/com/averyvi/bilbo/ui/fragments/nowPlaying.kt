@@ -55,19 +55,54 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.definitions.MusicalNote
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.ceil
 import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.math.withSign
 
+class TuningViewModel : ViewModel() {
+    private val _note = MutableStateFlow(MusicalNote.A)
+    val note: StateFlow<MusicalNote> = _note.asStateFlow()
+
+    private val _octive = MutableStateFlow(4)
+    val octive: StateFlow<Int> = _octive.asStateFlow()
+
+    private val _pitch = MutableStateFlow(0)
+    val pitch: StateFlow<Int> = _pitch.asStateFlow()
+
+
+
+    fun updateNote(newNote: MusicalNote) { _note.value = newNote }
+    fun updateOctive(newOctive: Int) { _octive.value = newOctive }
+    fun updatePitch(newPitch: Int) { _pitch.value = newPitch}
+
+    fun incrementNote() { _note.value = MusicalNote.entries[_note.value.ordinal + 1] }
+    fun incrementOctive() { _octive.value++ }
+    fun incrementPitch() { _pitch.value++}
+
+    fun resetNote() { _note.value = MusicalNote.entries[0] }
+    fun resetOctive() { _octive.value = -2 }
+    fun resetPitch() { _pitch.value = 0 }
+
+    fun resetValues() {
+        _note.value = MusicalNote.A
+        _octive.value = 4
+        _pitch.value = 0
+    }
+}
 
 @Composable
-fun PitchDiffView(pitchDiff: MutableState<Int>){
+fun PitchDiffView(pitchDiff: Int){
     Box(){
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            val currentDiff = pitchDiff.value
+            val currentDiff = pitchDiff
 
             val sliderRange = if (currentDiff < 0) {
                 currentDiff.toFloat()..0f
@@ -100,11 +135,11 @@ fun PitchDiffView(pitchDiff: MutableState<Int>){
 }
 
 @Composable
-fun IsHarmonicText(pitchDiff: MutableState<Int>) {
+fun IsHarmonicText(pitchDiff: Int) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("${pitchDiff.value}")
+        Text("${pitchDiff}")
 
         Text(stringResource(R.string.Cents))
     }

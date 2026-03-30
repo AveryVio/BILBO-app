@@ -2,17 +2,14 @@ package com.averyvi.bilbo.definitions
 
 data class FirstHarmonic(val name: String, val frequency: Double)
 
-enum class MusicalNote(noteNumber: Int, noteString: String) {
-    C(1,"C"),
-    D(2, "D"),
-    E(3, "E"),
-    F(4, "F"),
-    G(5, "G"),
-    A(6, "A"),
-    H(7, "H"), ;
-
-
-
+enum class MusicalNote(var noteNumber: Int) {
+    C(1),
+    D(2),
+    E(3),
+    F(4),
+    G(5),
+    A(6),
+    H(7),
 }
 
 /*
