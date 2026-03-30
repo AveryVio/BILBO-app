@@ -2,6 +2,7 @@ package com.averyvi.bilbo.ui.app
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,21 +16,33 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.averyvi.bilbo.R
+import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.definitions.InstrumentStyling
+import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.storage.InstrumentDBRow
+import com.averyvi.bilbo.storage.UserDao
+import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
+import kotlin.concurrent.thread
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun MainScaffold(
     modifier: Modifier = Modifier,
+    instrumentViewModel: InstrumentViewModel,
+    dbDao: UserDao,
     selectedInstrumentStyling: InstrumentStyling,
     note: State<String>,
     octive: State<String>,
     pitch: MutableState<Int>,
-    showNewInstrumentButton: Boolean,
+    bottomButton: BottomButton,
     showTopBar: Boolean,
     showBottomBar: Boolean,
     scrollEnabled: Boolean = true,
@@ -65,17 +78,38 @@ fun MainScaffold(
                         .padding(bottom = 15.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(7.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        if (bottomButton.name == "new") BILBONewInstrumentButton(
+                            Modifier.width(70.dp).height(70.dp),
+                            onRouteButtonClicked = onRouteButtonClicked
+                        )
+                        else if(bottomButton.name == "add") BILBOAddInstrumentButton(
+                            onClick = {
+                                if(instrumentViewModel.freq.value.isEmpty()) instrumentViewModel.updateFreq("0")
+                                thread {
+                                    dbDao.insertAll(
+                                        instrument = InstrumentDBRow(
+                                            instrumentName = instrumentViewModel.name.value,
+                                            instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
+                                            refFreq = instrumentViewModel.freq.value.takeLast(9).toInt(),
+                                            positionInOctive = instrumentViewModel.note.value.ordinal,
+                                            refOctive = instrumentViewModel.octive.value
+                                        )
+                                    )
+                                }.join()
+                                //reset values
+                                instrumentViewModel.resetValues()
+                                //navigate
+                                onRouteButtonClicked(true)
+                            }
+                        )
                         BILBONavPill(
                             note = note,
                             octive = octive,
                             pitch = pitch,
-                            onRouteButtonClicked = onRouteButtonClicked
-                        )
-                        if (showNewInstrumentButton) BILBOAddInstrumentButton(
-                            Modifier.width(70.dp).height(70.dp),
                             onRouteButtonClicked = onRouteButtonClicked
                         )
                     }

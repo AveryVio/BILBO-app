@@ -46,6 +46,8 @@ import com.averyvi.asampleofuis.ui.theme.FancyHeading
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
 import com.averyvi.bilbo.definitions.InstrumentStyling
+import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,7 +128,7 @@ fun BILBOBottomAppBar(
 }
 
 @Composable
-fun BILBOAddInstrumentButton(
+fun BILBONewInstrumentButton(
     modifier: Modifier = Modifier,
     onRouteButtonClicked: (Boolean) -> Unit,
 ){
@@ -155,6 +157,50 @@ fun BILBOAddInstrumentButton(
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = null
             )
+        }
+    }
+}
+
+@Composable
+fun BILBOAddInstrumentButton(
+    onClick: () -> Unit
+){
+    Button(
+        onClick = onClick,
+        modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
+        colors = ButtonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        contentPadding = PaddingValues(vertical = 7.dp, horizontal = 13.dp)
+    ) {
+        Card(
+            modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
+            colors = CardColors(
+                containerColor = MaterialTheme.colorScheme.inversePrimary,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                disabledContentColor = MaterialTheme.colorScheme.onSurface
+            ),
+            shape = RoundedCornerShape(30.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    modifier = Modifier.height(30.dp).width(30.dp)
+                )
+                Text(
+                    text = stringResource(R.string.AddButton),
+                    fontSize = 25.sp,
+                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                )
+            }
         }
     }
 }

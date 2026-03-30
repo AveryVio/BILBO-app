@@ -10,11 +10,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.averyvi.bilbo.bluetooth.BilboViewModel
+import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.definitions.FirstHarmonic
 import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
@@ -24,7 +27,9 @@ import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
 import com.averyvi.bilbo.ui.app.MainScaffold
 import com.averyvi.bilbo.ui.app.NowPlayingScreen
+import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
 import kotlinx.coroutines.delay
+import kotlin.getValue
 import kotlin.math.sin
 
 @Composable
@@ -34,6 +39,10 @@ fun AppUI(
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
     onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
+    val instrumentViewModel: InstrumentViewModel = viewModel()
+
+    //todo add a view model for live data
+
     val locContext = LocalContext.current
     val db = Room.databaseBuilder(
         locContext,
@@ -83,7 +92,6 @@ fun AppUI(
         Routes.Intro.name
     )
     val showBars = currentRoute !in routesWithoutBars
-    val showNewInstrumentbutton = currentRoute == Routes.InstrumentSelect.name
 
     val defaultRouteToGoTo = mapOf<String, String>(
         Routes.InstrumentSelect.name to Routes.CurrentlyPlaying.name,
@@ -99,12 +107,22 @@ fun AppUI(
     val defaultRouteDestination = defaultRouteToGoTo.getOrDefault(currentRoute, Routes.InstrumentSelect.name)
     val secondaryRouteDestination = secondaryRouteToGoTo.getOrDefault(currentRoute, Routes.CurrentlyPlaying.name)
 
+    val bottomButtonSeeSettings = mapOf<String, BottomButton>(
+        Routes.Intro.name to BottomButton.nul,
+        Routes.InstrumentSelect.name to BottomButton.new,
+        Routes.CurrentlyPlaying.name to BottomButton.nul,
+        Routes.NewInstrument.name to BottomButton.add,
+    )
+    val bottomButtonViewable = bottomButtonSeeSettings.getOrDefault(currentRoute, BottomButton.nul)
+
     MainScaffold(
         selectedInstrumentStyling = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon),
+        instrumentViewModel = instrumentViewModel,
+        dbDao = userDao,
         note = note,
         octive = octive,
         pitch = pitch,
-        showNewInstrumentButton = showNewInstrumentbutton,
+        bottomButton = bottomButtonViewable,
         showTopBar = showBars,
         showBottomBar = showBars,
         onRouteButtonClicked = { alternateRoute ->
@@ -137,6 +155,7 @@ fun AppUI(
             }
             composable(route = Routes.NewInstrument.name) {
                 NewInstrumentScreen(
+                    viewModel = instrumentViewModel,
                     onRouteButtonClicked = onRouteButtonClicked,
                     dbDao = userDao
                 )

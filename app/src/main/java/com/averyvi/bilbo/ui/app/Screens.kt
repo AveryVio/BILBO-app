@@ -1,10 +1,5 @@
 package com.averyvi.bilbo.ui.app
 
-import androidx.compose.animation.core.VisibilityThreshold
-import androidx.compose.foundation.border
-import androidx.compose.foundation.interaction.InteractionSource
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,51 +16,30 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.storage.InstrumentDBRow
 import com.averyvi.bilbo.storage.UserDao
@@ -74,16 +48,11 @@ import com.averyvi.bilbo.ui.fragments.DeviceList
 import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
 import com.averyvi.bilbo.ui.fragments.IntroAppTitle
 import com.averyvi.bilbo.ui.fragments.IntroTutorial
-import com.averyvi.bilbo.ui.fragments.NewInstrumentDropdown
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.TextUnit
 import com.averyvi.bilbo.storage.deleteAllInstruments
 import com.averyvi.bilbo.storage.deleteLastInstrument
+import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
 import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
-import com.averyvi.bilbo.ui.fragments.NewInstrumentTextInput
 import kotlin.concurrent.thread
 
 @Composable
@@ -204,20 +173,17 @@ fun InstrumentSelectScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewInstrumentScreen(
+    viewModel: InstrumentViewModel,
     onRouteButtonClicked: (Routes) -> Unit,
     dbDao: UserDao,
 ){
-    var selectedName: String by remember { mutableStateOf("") }
-    var selectedFreq: Int by remember { mutableStateOf(440) }
-    var selectedFreqString: String by remember { mutableStateOf("") }
-    var selectedNote: MusicalNote by remember { mutableStateOf(MusicalNote.A) }
-    var selectedOctive: Int by remember { mutableStateOf(4) }
-
-    var noteIsExpanded by remember { mutableStateOf(false) }
-    var octiveIsExpanded by remember { mutableStateOf(false) }
+    val selectedName by viewModel.name.collectAsState()
+    val selectedFreq by viewModel.freq.collectAsState()
+    val selectedNote by viewModel.note.collectAsState()
+    val selectedOctive by viewModel.octive.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f).padding(15.dp),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         Row(
@@ -236,89 +202,24 @@ fun NewInstrumentScreen(
             selectedName = selectedName,
             onNameChange = { it: String ->
                 if (it.length < 50) {
-                    selectedName = it
+                    viewModel.updateName(it)
                 }
             },
-            selectedFreqString = selectedFreqString,
+            selectedFreqString = selectedFreq,
             onFreqChange = {
                 if (it == "") {
-                    selectedFreqString = ""
+                    viewModel.updateFreq(it)
                 } else {
                     if (it.length < 30) {
-                        selectedFreqString = it.filter { numb -> numb.isDigit() }
+                        viewModel.updateFreq(it.filter { numb -> numb.isDigit() })
                     }
                 }
             },
             selectedNote = selectedNote,
-            onSelectedNoteChange = { selectedNote = it },
+            onSelectedNoteChange = { viewModel.updateNote(it) } ,
             selectedOctive = selectedOctive,
-            onSelectedOctiveChange = {selectedOctive = it}
+            onSelectedOctiveChange = { viewModel.updateOctive(it) }
         )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Button(
-                onClick = {
-                    // make variables into values
-                    if (selectedFreqString.length == 0) {
-                        selectedFreq = 0
-                    } else if (selectedFreqString.length < 10) {
-                        selectedFreq = selectedFreqString.takeLast(10).toInt()
-                    }
-                    //insert into db
-                    thread {
-                        dbDao.insertAll(
-                            instrument = InstrumentDBRow(
-                                instrumentName = selectedName,
-                                instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
-                                refFreq = selectedFreq,
-                                positionInOctive = selectedNote.ordinal,
-                                refOctive = selectedOctive
-                            )
-                        )
-                    }
-                    //navigate
-                    onRouteButtonClicked(Routes.InstrumentSelect)
-                },
-                modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
-                colors = ButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                contentPadding = PaddingValues(vertical = 7.dp, horizontal = 13.dp)
-            ) {
-                Card(
-                    modifier = Modifier.width(IntrinsicSize.Max).height(IntrinsicSize.Max),
-                    colors = CardColors(
-                        containerColor = MaterialTheme.colorScheme.inversePrimary,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    shape = RoundedCornerShape(30.dp)
-                ){
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.add_24dp_000000_fill0_wght400_grad0_opsz24),
-                            contentDescription = null,
-                            modifier = Modifier.height(45.dp).width(45.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.AddButton),
-                            fontSize = 30.sp,
-                            fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                        )
-                    }
-                }
-            }
-        }
     }
 }
 

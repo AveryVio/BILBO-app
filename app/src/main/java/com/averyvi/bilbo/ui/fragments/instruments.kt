@@ -36,10 +36,45 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.definitions.MusicalNote
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.sin
+
+class InstrumentViewModel : ViewModel() {
+    private val _name = MutableStateFlow("")
+    val name: StateFlow<String> = _name.asStateFlow()
+
+    private val _freq = MutableStateFlow("")
+    val freq: StateFlow<String> = _freq.asStateFlow()
+
+    private val _note = MutableStateFlow(MusicalNote.A)
+    val note: StateFlow<MusicalNote> = _note.asStateFlow()
+
+    private val _octive = MutableStateFlow(4)
+    val octive: StateFlow<Int> = _octive.asStateFlow()
+
+    fun updateName(newName: String) { _name.value = newName }
+    fun updateFreq(newFreq: String) { _freq.value = newFreq }
+    fun updateNote(newNote: MusicalNote) { _note.value = newNote }
+    fun updateOctive(newOctive: Int) { _octive.value = newOctive }
+
+    fun resetValues() {
+        _name.value = ""
+        _freq.value = ""
+        _note.value = MusicalNote.A
+        _octive.value = 0
+    }
+
+    fun addInstrument() {
+        val currentName = _name.value
+        val currentFreq = _freq.value
+    }
+}
 
 @Composable
 fun InstrumentShelfItem(
