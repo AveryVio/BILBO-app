@@ -79,6 +79,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import com.averyvi.bilbo.storage.deleteAllInstruments
 import com.averyvi.bilbo.storage.deleteLastInstrument
+import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
 import com.averyvi.bilbo.ui.fragments.NewInstrumentTextInput
 import kotlin.concurrent.thread
 
@@ -213,7 +214,7 @@ fun NewInstrumentScreen(
     var octiveIsExpanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxWidth(0.95f).fillMaxHeight(0.9f).border(15.dp, Color.Red),
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f).padding(15.dp),
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         Row(
@@ -225,114 +226,34 @@ fun NewInstrumentScreen(
                 text = stringResource(R.string.NewInstrumentScreen),
                 fontSize = 40.sp,
                 fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
-                modifier = Modifier.border(15.dp, Color.Red)
+                modifier = Modifier
             )
         }
-        Column(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f).border(15.dp, Color.Red),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            NewInstrumentTextInput(
-                label = @Composable { Text(stringResource(R.string.NewInstrumentName)) },
-                placeholder = @Composable { Text("Foobar") },
-                value = selectedName,
-                onValueChange = {
-                    if (it.length < 50) {
-                        selectedName = it
+        NewInstrumentSelector(
+            selectedName = selectedName,
+            onNameChange = { it: String ->
+                if (it.length < 50) {
+                    selectedName = it
+                }
+            },
+            selectedFreqString = selectedFreqString,
+            onFreqChange = {
+                if (it == "") {
+                    selectedFreqString = ""
+                } else {
+                    if (it.length < 30) {
+                        selectedFreqString = it.filter { numb -> numb.isDigit() }
                     }
-                },
-                leadingIcon = @Composable {
-                    Icon(
-                        painter = painterResource(R.drawable.radio_button_checked_24px), // todo update
-                        contentDescription = null
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(0.75f),
-                brushColorList = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.tertiary,
-                    MaterialTheme.colorScheme.tertiary
-                )
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                NewInstrumentTextInput(
-                    label = @Composable { Text(stringResource(R.string.FreqName)) },
-                    placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
-                    value = selectedFreqString,
-                    onValueChange = {
-                        if (it == "") {
-                            selectedFreqString = ""
-                        } else {
-                            if (it.length < 30) {
-                                selectedFreqString = it.filter { it -> it.isDigit() }
-                            }
-                        }
-                    },
-                    leadingIcon = @Composable {
-                        Icon(
-                            painter = painterResource(R.drawable.freq),
-                            contentDescription = null
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    brushColorList = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary,
-                        MaterialTheme.colorScheme.tertiary
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        autoCorrectEnabled = false,
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    )
-                )
+                }
+            },
+            selectedNote = selectedNote,
+            onSelectedNoteChange = { selectedNote = it },
+            selectedOctive = selectedOctive,
+            onSelectedOctiveChange = {selectedOctive = it}
+        )
 
-                NewInstrumentDropdown(
-                    activatorName = selectedNote.name,
-                    expanded = noteIsExpanded,
-                    onCardClick = { noteIsExpanded = !noteIsExpanded },
-                    onDismissRequest = { noteIsExpanded = false },
-                    content = @Composable {
-                        MusicalNote.entries.forEach { note ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    selectedNote = note
-                                    noteIsExpanded = false
-                                },
-                                text = { Text(note.name) },
-                            )
-                        }
-                    },
-                )
-
-                NewInstrumentDropdown(
-                    activatorName = selectedOctive.toString(),
-                    expanded = octiveIsExpanded,
-                    onCardClick = { octiveIsExpanded = !octiveIsExpanded },
-                    onDismissRequest = { octiveIsExpanded = false },
-                    content = @Composable {
-                        (-2..8).forEach { octive ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    selectedOctive = octive
-                                    octiveIsExpanded = false
-                                },
-                                text = { Text(octive.toString()) },
-                            )
-                        }
-                    },
-                )
-            }
-        }
         Row(
-            modifier = Modifier.fillMaxWidth().border(15.dp, Color.Red),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
             Button(
