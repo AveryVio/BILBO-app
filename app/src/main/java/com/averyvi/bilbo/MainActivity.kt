@@ -15,7 +15,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
-import com.averyvi.bilbo.bluetooth.BilboViewModel
+import com.averyvi.bilbo.data.bluetooth.BilboViewModel
 import com.averyvi.bilbo.ui.theme.BilboTheme
 
 

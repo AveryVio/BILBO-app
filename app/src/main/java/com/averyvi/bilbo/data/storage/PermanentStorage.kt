@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.storage
+package com.averyvi.bilbo.data.storage
 
 import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo

@@ -6,8 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -16,13 +14,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.averyvi.bilbo.bluetooth.BilboViewModel
 import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.definitions.FirstHarmonic
-import com.averyvi.bilbo.definitions.InstrumentStyling
-import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
-import com.averyvi.bilbo.storage.AppDatabase
+import com.averyvi.bilbo.data.storage.AppDatabase
+import com.averyvi.bilbo.definitions.InstrumentStyling
 import com.averyvi.bilbo.ui.app.NewInstrumentScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
@@ -31,7 +27,6 @@ import com.averyvi.bilbo.ui.app.NowPlayingScreen
 import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
 import com.averyvi.bilbo.ui.fragments.TuningViewModel
 import kotlinx.coroutines.delay
-import kotlin.getValue
 import kotlin.math.sin
 
 @Composable

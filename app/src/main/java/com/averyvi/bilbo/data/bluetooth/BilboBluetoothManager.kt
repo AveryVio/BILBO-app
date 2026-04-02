@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.bluetooth
+package com.averyvi.bilbo.data.bluetooth
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -245,7 +246,7 @@ class BilboBluetoothManager(private val context: Context) {
 
         // Note: writeCharacteristic signature depends on API level.
         // This is the modern way, for older APIs use char.value = bytes; gatt.writeCharacteristic(char)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             bluetoothGATT?.writeCharacteristic(char, dataBytes, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
         } else {
             @Suppress("DEPRECATION")
@@ -263,7 +264,7 @@ class BilboBluetoothManager(private val context: Context) {
             // Determine value based on properties (simplified)
             val value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 gatt.writeDescriptor(it, value)
             } else {
                 @Suppress("DEPRECATION")

@@ -1,4 +1,4 @@
-package com.averyvi.bilbo.bluetooth
+package com.averyvi.bilbo.data.bluetooth
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
