@@ -40,10 +40,10 @@ import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import com.averyvi.bilbo.data.storage.deleteAllInstruments
 import com.averyvi.bilbo.data.storage.deleteLastInstrument
-import com.averyvi.bilbo.data.uiState.CurrentInstrumentViewModel
-import com.averyvi.bilbo.data.uiState.NewInstrumentViewModel
+import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
 import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
 import com.averyvi.bilbo.data.uiState.TuningViewModel
+import com.averyvi.bilbo.definitions.MusicalNote
 import kotlin.concurrent.thread
 
 @Composable
@@ -92,7 +92,7 @@ fun NowPlayingScreen(
 @Composable
 fun InstrumentSelectScreen(
     dbDao: UserDao,
-    currentInstrumentViewModel: CurrentInstrumentViewModel
+    instrumentProfileViewModel: InstrumentProfileViewModel,
 ){
     val instruments: SnapshotStateList<InstrumentDBRow> = getAllInstruments(dbDao)
 
@@ -151,7 +151,13 @@ fun InstrumentSelectScreen(
                     InstrumentShelfItem(
                         InstrumentImageResource = instruments[it].instrumentIcon,
                         name = instruments[it].instrumentName,
-                        onClick = { } // todo update
+                        onClick = {
+                            instrumentProfileViewModel.updateCurrentName(instruments[it].instrumentName)
+                            instrumentProfileViewModel.updateCurrentIcon(instruments[it].instrumentIcon)
+                            instrumentProfileViewModel.updateCurrentFreq(instruments[it].refFreq.toString())
+                            instrumentProfileViewModel.updateCurrentNote(MusicalNote.entries[instruments[it].positionInOctive])
+                            instrumentProfileViewModel.updateCurrentOctive(instruments[it].refOctive)
+                        }
                     )
                 }
             }
@@ -164,12 +170,13 @@ fun InstrumentSelectScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewInstrumentScreen(
-    newInstrumentViewModel: NewInstrumentViewModel,
+    instrumentProfileViewModel: InstrumentProfileViewModel,
 ){
-    val selectedName by newInstrumentViewModel.name.collectAsState()
-    val selectedFreq by newInstrumentViewModel.freq.collectAsState()
-    val selectedNote by newInstrumentViewModel.note.collectAsState()
-    val selectedOctive by newInstrumentViewModel.octive.collectAsState()
+    val selectedName = instrumentProfileViewModel.newInstrument.collectAsState().value.name
+    val selectedIcon = instrumentProfileViewModel.newInstrument.collectAsState().value.icon
+    val selectedFreq = instrumentProfileViewModel.newInstrument.collectAsState().value.freq
+    val selectedNote = instrumentProfileViewModel.newInstrument.collectAsState().value.note
+    val selectedOctive = instrumentProfileViewModel.newInstrument.collectAsState().value.octive
 
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(15.dp),
@@ -191,23 +198,23 @@ fun NewInstrumentScreen(
             selectedName = selectedName,
             onNameChange = { it: String ->
                 if (it.length < 50) {
-                    newInstrumentViewModel.updateName(it)
+                    instrumentProfileViewModel.updateNewName(it)
                 }
             },
             selectedFreqString = selectedFreq,
             onFreqChange = {
                 if (it == "") {
-                    newInstrumentViewModel.updateFreq(it)
+                    instrumentProfileViewModel.updateNewFreq(it)
                 } else {
                     if (it.length < 30) {
-                        newInstrumentViewModel.updateFreq(it.filter { numb -> numb.isDigit() })
+                        instrumentProfileViewModel.updateNewFreq(it.filter { numb -> numb.isDigit() })
                     }
                 }
             },
             selectedNote = selectedNote,
-            onSelectedNoteChange = { newInstrumentViewModel.updateNote(it) } ,
+            onSelectedNoteChange = { instrumentProfileViewModel.updateNewNote(it) } ,
             selectedOctive = selectedOctive,
-            onSelectedOctiveChange = { newInstrumentViewModel.updateOctive(it) }
+            onSelectedOctiveChange = { instrumentProfileViewModel.updateNewOctive(it) }
         )
     }
 }

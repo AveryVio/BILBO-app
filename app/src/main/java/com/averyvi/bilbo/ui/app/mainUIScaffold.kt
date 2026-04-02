@@ -19,19 +19,17 @@ import com.averyvi.bilbo.R
 import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.data.storage.InstrumentDBRow
 import com.averyvi.bilbo.data.storage.UserDao
-import com.averyvi.bilbo.data.uiState.CurrentInstrumentViewModel
 import com.averyvi.bilbo.definitions.AppBarsVisibility
-import com.averyvi.bilbo.data.uiState.NewInstrumentViewModel
 import com.averyvi.bilbo.data.uiState.TuningViewModel
 import kotlin.concurrent.thread
 import androidx.compose.runtime.collectAsState
+import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun MainScaffold(
     modifier: Modifier = Modifier,
-    newInstrumentViewModel: NewInstrumentViewModel,
-    currentInstrumentViewModel: CurrentInstrumentViewModel,
+    instrumentProfileViewModel: InstrumentProfileViewModel,
     tuningViewModel: TuningViewModel,
     dbDao: UserDao,
     bottomButton: BottomButton,
@@ -50,7 +48,7 @@ fun MainScaffold(
         topBar = {
             if((barsVisibility == AppBarsVisibility.top) || (barsVisibility == AppBarsVisibility.both)) {
                 BILBOTopAppBar(
-                    selectedInstrumentName = currentInstrumentViewModel.name.collectAsState().value,
+                    selectedInstrumentName = instrumentProfileViewModel.currentInstrument.collectAsState().value.name,
                     scrollBehavior = scrollBehavior,
                 )
             }
@@ -78,20 +76,20 @@ fun MainScaffold(
                         )
                         else if(bottomButton.name == "add") BILBOAddInstrumentButton(
                             onClick = {
-                                if(newInstrumentViewModel.freq.value.isEmpty()) newInstrumentViewModel.updateFreq("0")
+                                if( instrumentProfileViewModel.newInstrument.value.freq.isEmpty()) instrumentProfileViewModel.updateNewFreq("0")
                                 thread {
                                     dbDao.insertAll(
                                         instrument = InstrumentDBRow(
-                                            instrumentName = newInstrumentViewModel.name.value,
-                                            instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
-                                            refFreq = newInstrumentViewModel.freq.value.takeLast(9).toInt(),
-                                            positionInOctive = newInstrumentViewModel.note.value.noteNumber,
-                                            refOctive = newInstrumentViewModel.octive.value
+                                            instrumentName = instrumentProfileViewModel.newInstrument.value.name,
+                                            instrumentIcon = instrumentProfileViewModel.newInstrument.value.icon, //todo add the possibility of adding an icon
+                                            refFreq = instrumentProfileViewModel.newInstrument.value.freq.takeLast(9).toInt(),
+                                            positionInOctive = instrumentProfileViewModel.newInstrument.value.note.ordinal,
+                                            refOctive = instrumentProfileViewModel.newInstrument.value.octive
                                         )
                                     )
                                 }.join()
                                 //reset values
-                                newInstrumentViewModel.resetValues()
+                                instrumentProfileViewModel.resetNewValues()
                                 //navigate
                                 onRouteButtonClicked(true)
                             }

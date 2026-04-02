@@ -18,14 +18,13 @@ import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.definitions.FirstHarmonic
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.data.storage.AppDatabase
-import com.averyvi.bilbo.data.uiState.CurrentInstrumentViewModel
+import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
 import com.averyvi.bilbo.definitions.AppBarsVisibility
 import com.averyvi.bilbo.ui.app.NewInstrumentScreen
 import com.averyvi.bilbo.ui.app.InstrumentSelectScreen
 import com.averyvi.bilbo.ui.app.IntroScreen
 import com.averyvi.bilbo.ui.app.MainScaffold
 import com.averyvi.bilbo.ui.app.NowPlayingScreen
-import com.averyvi.bilbo.data.uiState.NewInstrumentViewModel
 import com.averyvi.bilbo.data.uiState.TuningViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.sin
@@ -37,8 +36,7 @@ fun AppUI(
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
     onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
-    val newInstrumentViewModel: NewInstrumentViewModel = viewModel()
-    val currentInstrumentViewModel: CurrentInstrumentViewModel = viewModel()
+    val instrumentProfileViewModel: InstrumentProfileViewModel = viewModel()
     val tuningViewModel: TuningViewModel = viewModel()
 
     val locContext = LocalContext.current
@@ -106,8 +104,7 @@ fun AppUI(
     val bottomButtonViewable = bottomButtonSeeSettings.getOrDefault(currentRoute, BottomButton.nul)
 
     MainScaffold(
-        currentInstrumentViewModel = currentInstrumentViewModel,
-        newInstrumentViewModel = newInstrumentViewModel,
+        instrumentProfileViewModel = instrumentProfileViewModel,
         tuningViewModel = tuningViewModel,
         dbDao = userDao,
         bottomButton = bottomButtonViewable,
@@ -136,12 +133,12 @@ fun AppUI(
             composable(route = Routes.InstrumentSelect.name) {
                 InstrumentSelectScreen(
                     dbDao = userDao,
-                    currentInstrumentViewModel = currentInstrumentViewModel
+                    instrumentProfileViewModel = instrumentProfileViewModel,
                 )
             }
             composable(route = Routes.NewInstrument.name) {
                 NewInstrumentScreen(
-                    newInstrumentViewModel = newInstrumentViewModel,
+                    instrumentProfileViewModel = instrumentProfileViewModel,
                 )
             }
             composable(route = Routes.Intro.name) {

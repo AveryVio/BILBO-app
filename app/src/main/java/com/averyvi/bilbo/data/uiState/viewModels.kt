@@ -7,6 +7,7 @@ import com.averyvi.bilbo.definitions.MusicalNote
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class TuningViewModel : ViewModel() {
     private val _note = MutableStateFlow(MusicalNote.A)
@@ -39,64 +40,77 @@ class TuningViewModel : ViewModel() {
     }
 }
 
-class CurrentInstrumentViewModel : ViewModel() {
-    private val _name = MutableStateFlow("")
-    val name: StateFlow<String> = _name.asStateFlow()
+class InstrumentProfileViewModel : ViewModel() {
 
-    private val _icon = MutableStateFlow(R.drawable.radio_button_checked_24px)
-    val icon: StateFlow<Int> = _icon.asStateFlow()
+    private val _currentInstrument = MutableStateFlow(
+        UsableInstrumentProfile(
+            name = "",
+            icon = R.drawable.radio_button_checked_24px,
+            freq = "",
+            note = MusicalNote.A,
+            octive = 0
+        )
+    )
+    val currentInstrument: StateFlow<UsableInstrumentProfile> = _currentInstrument.asStateFlow()
 
-    private val _freq = MutableStateFlow("")
-    val freq: StateFlow<String> = _freq.asStateFlow()
+    private val _newInstrument = MutableStateFlow(
+        UsableInstrumentProfile(
+            name = "",
+            icon = R.drawable.radio_button_checked_24px,
+            freq = "",
+            note = MusicalNote.A,
+            octive = 0
+        )
+    )
+    val newInstrument: StateFlow<UsableInstrumentProfile> = _newInstrument.asStateFlow()
 
-    private val _note = MutableStateFlow(MusicalNote.A)
-    val note: StateFlow<MusicalNote> = _note.asStateFlow()
-
-    private val _octive = MutableStateFlow(4)
-    val octive: StateFlow<Int> = _octive.asStateFlow()
-
-    fun updateName(newName: String) { _name.value = newName }
-    fun updateIcon(newIcon: Int) { _icon.value = newIcon }
-    fun updateFreq(newFreq: String) { _freq.value = newFreq }
-    fun updateNote(newNote: MusicalNote) { _note.value = newNote }
-    fun updateOctive(newOctive: Int) { _octive.value = newOctive }
-
-    fun resetValues() {
-        _name.value = ""
-        _icon.value = R.drawable.radio_button_checked_24px
-        _freq.value = ""
-        _note.value = MusicalNote.A
-        _octive.value = 0
+    fun updateCurrentName(newName: String) {
+        _currentInstrument.update { it.copy(name = newName) }
     }
-}
+    fun updateCurrentIcon(newIcon: Int) {
+        _currentInstrument.update { it.copy(icon = newIcon) }
+    }
+    fun updateCurrentFreq(newFreq: String) {
+        _currentInstrument.update { it.copy(freq = newFreq) }
+    }
+    fun updateCurrentNote(newNote: MusicalNote) {
+        _currentInstrument.update { it.copy(note = newNote) }
+    }
+    fun updateCurrentOctive(newOctive: Int) {
+        _currentInstrument.update { it.copy(octive = newOctive) }
+    }
+    fun resetCurrentValues() {
+        _currentInstrument.value = UsableInstrumentProfile(
+            name = "",
+            icon = R.drawable.radio_button_checked_24px,
+            freq = "",
+            note = MusicalNote.A,
+            octive = 0
+        )
+    }
 
-class NewInstrumentViewModel : ViewModel() {
-    private val _name = MutableStateFlow("")
-    val name: StateFlow<String> = _name.asStateFlow()
-
-    private val _icon = MutableStateFlow(R.drawable.radio_button_checked_24px)
-    val icon: StateFlow<Int> = _icon.asStateFlow()
-
-    private val _freq = MutableStateFlow("")
-    val freq: StateFlow<String> = _freq.asStateFlow()
-
-    private val _note = MutableStateFlow(MusicalNote.A)
-    val note: StateFlow<MusicalNote> = _note.asStateFlow()
-
-    private val _octive = MutableStateFlow(4)
-    val octive: StateFlow<Int> = _octive.asStateFlow()
-
-    fun updateName(newName: String) { _name.value = newName }
-    fun updateIcon(newIcon: Int) { _icon.value = newIcon }
-    fun updateFreq(newFreq: String) { _freq.value = newFreq }
-    fun updateNote(newNote: MusicalNote) { _note.value = newNote }
-    fun updateOctive(newOctive: Int) { _octive.value = newOctive }
-
-    fun resetValues() {
-        _name.value = ""
-        _icon.value = R.drawable.radio_button_checked_24px
-        _freq.value = ""
-        _note.value = MusicalNote.A
-        _octive.value = 0
+    fun updateNewName(newName: String) {
+        _newInstrument.update { it.copy(name = newName) }
+    }
+    fun updateNewIcon(newIcon: Int) {
+        _newInstrument.update { it.copy(icon = newIcon) }
+    }
+    fun updateNewFreq(newFreq: String) {
+        _newInstrument.update { it.copy(freq = newFreq) }
+    }
+    fun updateNewNote(newNote: MusicalNote) {
+        _newInstrument.update { it.copy(note = newNote) }
+    }
+    fun updateNewOctive(newOctive: Int) {
+        _newInstrument.update { it.copy(octive = newOctive) }
+    }
+    fun resetNewValues() {
+        _newInstrument.value = UsableInstrumentProfile(
+            name = "",
+            icon = R.drawable.radio_button_checked_24px,
+            freq = "",
+            note = MusicalNote.A,
+            octive = 0
+        )
     }
 }
