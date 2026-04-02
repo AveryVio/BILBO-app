@@ -5,3 +5,10 @@ enum class BottomButton {
     new, // routing to new screen
     add // routing from new screen
 }
+
+enum class AppBarsVisibility {
+    neither,
+    top,
+    bottom,
+    both
+}

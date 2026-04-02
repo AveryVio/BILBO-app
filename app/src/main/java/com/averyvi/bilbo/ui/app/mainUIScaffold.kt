@@ -19,22 +19,23 @@ import com.averyvi.bilbo.R
 import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.data.storage.InstrumentDBRow
 import com.averyvi.bilbo.data.storage.UserDao
-import com.averyvi.bilbo.definitions.InstrumentStyling
-import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
-import com.averyvi.bilbo.ui.fragments.TuningViewModel
+import com.averyvi.bilbo.data.uiState.CurrentInstrumentViewModel
+import com.averyvi.bilbo.definitions.AppBarsVisibility
+import com.averyvi.bilbo.data.uiState.NewInstrumentViewModel
+import com.averyvi.bilbo.data.uiState.TuningViewModel
 import kotlin.concurrent.thread
+import androidx.compose.runtime.collectAsState
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun MainScaffold(
     modifier: Modifier = Modifier,
-    instrumentViewModel: InstrumentViewModel,
+    newInstrumentViewModel: NewInstrumentViewModel,
+    currentInstrumentViewModel: CurrentInstrumentViewModel,
     tuningViewModel: TuningViewModel,
     dbDao: UserDao,
-    selectedInstrumentStyling: InstrumentStyling,
     bottomButton: BottomButton,
-    showTopBar: Boolean,
-    showBottomBar: Boolean,
+    barsVisibility: AppBarsVisibility,
     scrollEnabled: Boolean = true,
     onRouteButtonClicked: (Boolean) -> Unit,
     content: @Composable ((PaddingValues) -> Unit),
@@ -47,9 +48,9 @@ fun MainScaffold(
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            if(showTopBar) {
+            if((barsVisibility == AppBarsVisibility.top) || (barsVisibility == AppBarsVisibility.both)) {
                 BILBOTopAppBar(
-                    selectedInstrument = selectedInstrumentStyling,
+                    selectedInstrumentName = currentInstrumentViewModel.name.collectAsState().value,
                     scrollBehavior = scrollBehavior,
                 )
             }
@@ -61,7 +62,7 @@ fun MainScaffold(
                 .fillMaxSize(),
         ) {
             content(innerPadding)
-            if(showBottomBar) {
+            if((barsVisibility == AppBarsVisibility.bottom) || (barsVisibility == AppBarsVisibility.both)) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -77,20 +78,20 @@ fun MainScaffold(
                         )
                         else if(bottomButton.name == "add") BILBOAddInstrumentButton(
                             onClick = {
-                                if(instrumentViewModel.freq.value.isEmpty()) instrumentViewModel.updateFreq("0")
+                                if(newInstrumentViewModel.freq.value.isEmpty()) newInstrumentViewModel.updateFreq("0")
                                 thread {
                                     dbDao.insertAll(
                                         instrument = InstrumentDBRow(
-                                            instrumentName = instrumentViewModel.name.value,
+                                            instrumentName = newInstrumentViewModel.name.value,
                                             instrumentIcon = R.drawable.radio_button_checked_24px, //todo add the possibility of adding an icon
-                                            refFreq = instrumentViewModel.freq.value.takeLast(9).toInt(),
-                                            positionInOctive = instrumentViewModel.note.value.noteNumber,
-                                            refOctive = instrumentViewModel.octive.value
+                                            refFreq = newInstrumentViewModel.freq.value.takeLast(9).toInt(),
+                                            positionInOctive = newInstrumentViewModel.note.value.noteNumber,
+                                            refOctive = newInstrumentViewModel.octive.value
                                         )
                                     )
                                 }.join()
                                 //reset values
-                                instrumentViewModel.resetValues()
+                                newInstrumentViewModel.resetValues()
                                 //navigate
                                 onRouteButtonClicked(true)
                             }

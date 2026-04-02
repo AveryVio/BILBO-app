@@ -14,10 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.ui.fragments.IsHarmonicText
 import com.averyvi.bilbo.ui.fragments.NoteOctiveDisplay
-import com.averyvi.bilbo.ui.fragments.TuningViewModel
+import com.averyvi.bilbo.data.uiState.TuningViewModel
 
 @Composable
 fun BILBONavPill(

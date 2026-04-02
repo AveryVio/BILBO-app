@@ -1,15 +1,8 @@
 package com.averyvi.bilbo.data.storage
 
-import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
-class InstrumentProfile(
-    val refFreq: Int,
-    val positionInOctive: Int,
-    val refOctive: Int
-)
 
 @Entity
 data class InstrumentDBRow(

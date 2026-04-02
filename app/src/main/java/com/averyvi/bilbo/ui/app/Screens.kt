@@ -40,9 +40,10 @@ import com.averyvi.bilbo.ui.fragments.IntroTutorial
 import com.averyvi.bilbo.ui.fragments.PitchDiffView
 import com.averyvi.bilbo.data.storage.deleteAllInstruments
 import com.averyvi.bilbo.data.storage.deleteLastInstrument
-import com.averyvi.bilbo.ui.fragments.InstrumentViewModel
+import com.averyvi.bilbo.data.uiState.CurrentInstrumentViewModel
+import com.averyvi.bilbo.data.uiState.NewInstrumentViewModel
 import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
-import com.averyvi.bilbo.ui.fragments.TuningViewModel
+import com.averyvi.bilbo.data.uiState.TuningViewModel
 import kotlin.concurrent.thread
 
 @Composable
@@ -91,6 +92,7 @@ fun NowPlayingScreen(
 @Composable
 fun InstrumentSelectScreen(
     dbDao: UserDao,
+    currentInstrumentViewModel: CurrentInstrumentViewModel
 ){
     val instruments: SnapshotStateList<InstrumentDBRow> = getAllInstruments(dbDao)
 
@@ -149,6 +151,7 @@ fun InstrumentSelectScreen(
                     InstrumentShelfItem(
                         InstrumentImageResource = instruments[it].instrumentIcon,
                         name = instruments[it].instrumentName,
+                        onClick = { } // todo update
                     )
                 }
             }
@@ -161,14 +164,12 @@ fun InstrumentSelectScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewInstrumentScreen(
-    viewModel: InstrumentViewModel,
-    onRouteButtonClicked: (Routes) -> Unit,
-    dbDao: UserDao,
+    newInstrumentViewModel: NewInstrumentViewModel,
 ){
-    val selectedName by viewModel.name.collectAsState()
-    val selectedFreq by viewModel.freq.collectAsState()
-    val selectedNote by viewModel.note.collectAsState()
-    val selectedOctive by viewModel.octive.collectAsState()
+    val selectedName by newInstrumentViewModel.name.collectAsState()
+    val selectedFreq by newInstrumentViewModel.freq.collectAsState()
+    val selectedNote by newInstrumentViewModel.note.collectAsState()
+    val selectedOctive by newInstrumentViewModel.octive.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(15.dp),
@@ -190,23 +191,23 @@ fun NewInstrumentScreen(
             selectedName = selectedName,
             onNameChange = { it: String ->
                 if (it.length < 50) {
-                    viewModel.updateName(it)
+                    newInstrumentViewModel.updateName(it)
                 }
             },
             selectedFreqString = selectedFreq,
             onFreqChange = {
                 if (it == "") {
-                    viewModel.updateFreq(it)
+                    newInstrumentViewModel.updateFreq(it)
                 } else {
                     if (it.length < 30) {
-                        viewModel.updateFreq(it.filter { numb -> numb.isDigit() })
+                        newInstrumentViewModel.updateFreq(it.filter { numb -> numb.isDigit() })
                     }
                 }
             },
             selectedNote = selectedNote,
-            onSelectedNoteChange = { viewModel.updateNote(it) } ,
+            onSelectedNoteChange = { newInstrumentViewModel.updateNote(it) } ,
             selectedOctive = selectedOctive,
-            onSelectedOctiveChange = { viewModel.updateOctive(it) }
+            onSelectedOctiveChange = { newInstrumentViewModel.updateOctive(it) }
         )
     }
 }

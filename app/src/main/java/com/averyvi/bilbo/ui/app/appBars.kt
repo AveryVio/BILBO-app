@@ -39,12 +39,11 @@ import androidx.compose.ui.unit.sp
 import com.averyvi.asampleofuis.ui.theme.FancyHeading
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
-import com.averyvi.bilbo.definitions.InstrumentStyling
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BILBOTopAppBar(
-    selectedInstrument: InstrumentStyling,
+    selectedInstrumentName: String,
     scrollBehavior: TopAppBarScrollBehavior,
 ){
     TopAppBar(
@@ -66,7 +65,7 @@ fun BILBOTopAppBar(
                     modifier = Modifier.padding(top = 0.dp, bottom = 0.dp, start = 0.dp, end = 20.dp)
                 )
                 Text(
-                    text = selectedInstrument.instrumentName,
+                    text = selectedInstrumentName,
                     fontSize = 20.sp,
                     lineHeight = 10.sp,
                     maxLines = 1,
@@ -76,46 +75,6 @@ fun BILBOTopAppBar(
             }
                 },
         scrollBehavior = scrollBehavior
-    )
-}
-
-@Composable
-fun BILBOBottomAppBar(
-    selectedInstrument: InstrumentStyling,
-    onRouteButtonClicked: (Routes) -> Unit,
-){
-    BottomAppBar(
-        actions = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    IconButton(onClick = { onRouteButtonClicked(Routes.InstrumentSelect) } ) {
-                        Icon(
-                            painter = painterResource(selectedInstrument.instrumentIcon),
-                            contentDescription = "Localized description"
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = { onRouteButtonClicked(Routes.CurrentlyPlaying) },
-                        containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-                    ) {
-                        Icon(Icons.Filled.Add, "Localized description")
-                    }
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            painter = painterResource(selectedInstrument.instrumentIcon),
-                            contentDescription = "Localized description"
-                        )
-                    }
-                }
-            }
-        }
     )
 }
 

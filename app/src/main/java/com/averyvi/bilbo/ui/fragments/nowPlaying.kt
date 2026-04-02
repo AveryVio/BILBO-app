@@ -21,43 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import com.averyvi.bilbo.R
-import com.averyvi.bilbo.definitions.MusicalNote
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-
-class TuningViewModel : ViewModel() {
-    private val _note = MutableStateFlow(MusicalNote.A)
-    val note: StateFlow<MusicalNote> = _note.asStateFlow()
-
-    private val _octive = MutableStateFlow(4)
-    val octive: StateFlow<Int> = _octive.asStateFlow()
-
-    private val _pitch = MutableStateFlow(0)
-    val pitch: StateFlow<Int> = _pitch.asStateFlow()
-
-
-
-    fun updateNote(newNote: MusicalNote) { _note.value = newNote }
-    fun updateOctive(newOctive: Int) { _octive.value = newOctive }
-    fun updatePitch(newPitch: Int) { _pitch.value = newPitch}
-
-    fun incrementNote() { _note.value = MusicalNote.entries[_note.value.ordinal + 1] }
-    fun incrementOctive() { _octive.value++ }
-    fun incrementPitch() { _pitch.value++}
-
-    fun resetNote() { _note.value = MusicalNote.entries[0] }
-    fun resetOctive() { _octive.value = -2 }
-    fun resetPitch() { _pitch.value = 0 }
-
-    fun resetValues() {
-        _note.value = MusicalNote.A
-        _octive.value = 4
-        _pitch.value = 0
-    }
-}
 
 @Composable
 fun PitchDiffView(pitchDiff: Int){
