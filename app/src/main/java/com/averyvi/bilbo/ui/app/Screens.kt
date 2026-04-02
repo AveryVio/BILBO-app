@@ -182,7 +182,7 @@ fun NewInstrumentScreen(
     val selectedOctive by viewModel.octive.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxHeight().fillMaxWidth(0.9f),
+        modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(15.dp),
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         Row(

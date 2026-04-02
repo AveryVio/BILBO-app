@@ -1,6 +1,7 @@
 package com.averyvi.bilbo.ui.fragments
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -100,26 +101,31 @@ fun NewInstrumentSelector(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        NewInstrumentTextInput(
-            label = @Composable { Text(stringResource(R.string.NewInstrumentName)) },
-            placeholder = @Composable { Text("Foobar") },
-            value = selectedName,
-            onValueChange = { onNameChange(it) },
-            leadingIcon = @Composable {
-                Icon(
-                    painter = painterResource(R.drawable.radio_button_checked_24px), // todo update
-                    contentDescription = null
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            NewInstrumentTextInput(
+                label = @Composable { Text(stringResource(R.string.NewInstrumentName)) },
+                placeholder = @Composable { Text("Foobar") },
+                value = selectedName,
+                onValueChange = { onNameChange(it) },
+                leadingIcon = @Composable {
+                    Icon(
+                        painter = painterResource(R.drawable.radio_button_checked_24px), // todo update
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.weight(1f),
+                brushColorList = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.tertiary
                 )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            brushColorList = listOf(
-                MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.secondary,
-                MaterialTheme.colorScheme.secondary,
-                MaterialTheme.colorScheme.tertiary,
-                MaterialTheme.colorScheme.tertiary
             )
-        )
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
@@ -135,7 +141,7 @@ fun NewInstrumentSelector(
                         contentDescription = null
                     )
                 },
-                modifier = Modifier,
+                modifier = Modifier.weight(1f),
                 brushColorList = listOf(
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.primary,
