@@ -10,6 +10,11 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import com.averyvi.asampleofuis.ui.theme.Typography
 
 private val DarkColorScheme = darkColorScheme(
@@ -33,6 +38,20 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
+
+
+@Composable
+fun fadedHilightText(): TextStyle {
+    return TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+        textAlign = TextAlign.Center,
+        lineHeight = 22.sp,
+        letterSpacing = 0.5.sp
+    )
+}
 
 @Composable
 fun BilboTheme(

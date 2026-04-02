@@ -23,8 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
@@ -44,6 +48,7 @@ import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
 import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
 import com.averyvi.bilbo.data.uiState.TuningViewModel
 import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.ui.theme.fadedHilightText
 import kotlin.concurrent.thread
 
 @Composable
@@ -157,12 +162,28 @@ fun InstrumentSelectScreen(
                             instrumentProfileViewModel.updateCurrentFreq(instruments[it].refFreq.toString())
                             instrumentProfileViewModel.updateCurrentNote(MusicalNote.entries[instruments[it].positionInOctive])
                             instrumentProfileViewModel.updateCurrentOctive(instruments[it].refOctive)
+
+                            // todo add bt communication
                         }
                     )
                 }
             }
         } else {
-            Text("fjdkl") // todo add string
+            Column(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Text(
+                    text = stringResource(R.string.NoInstrumentsAvalible),
+                    style = fadedHilightText()
+                )
+                Text(
+                    text = stringResource(R.string.AddMoreInstruments),
+                    style = fadedHilightText()
+                )
+            }
+
         }
     }
 }

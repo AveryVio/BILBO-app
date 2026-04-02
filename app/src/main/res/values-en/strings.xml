@@ -15,4 +15,6 @@
     <string name="FreqName">Frequency</string>
     <string name="NewInstrumentName">Name of New Instrument</string>
     <string name="AddButton">Add</string>
+    <string name="NoInstrumentsAvalible">You have no tuning profiles.</string>
+    <string name="AddMoreInstruments">Add more by tapping the + icon.</string>
 </resources>

@@ -15,4 +15,6 @@
     <string name="FreqName">Frekvence</string>
     <string name="NewInstrumentName">Jméno nového nástroje</string>
     <string name="AddButton">Přidat</string>
+    <string name="NoInstrumentsAvalible">Nemáte žádné ladící profily.</string>
+    <string name="AddMoreInstruments">Přidejte nové kliknutím na + ikonu</string>
 </resources>
