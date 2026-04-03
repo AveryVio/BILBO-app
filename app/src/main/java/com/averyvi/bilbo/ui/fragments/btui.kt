@@ -27,8 +27,11 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import com.averyvi.bilbo.ui.theme.boldText
+import com.averyvi.bilbo.ui.theme.semiBoldText
 
 @Composable
 @SuppressLint("MissingPermission")
@@ -60,7 +63,7 @@ fun DeviceList(
                     MaterialTheme.colorScheme.secondaryContainer,
                     MaterialTheme.colorScheme.onSurface
                 ),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(22.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -69,7 +72,11 @@ fun DeviceList(
                         .padding(20.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(stringResource(R.string.BTConnectedDevices))
+                    Text(
+                        text = stringResource(R.string.BTConnectedDevices),
+                        style = boldText(),
+                        fontSize = 18.sp
+                    )
                     Icon(
                         painter = painterResource(if (!isExpanded) R.drawable.bluetooth_searching else R.drawable.bluetooth),
                         contentDescription = null,
@@ -91,8 +98,16 @@ fun DeviceList(
                                 onDeviceSelected(device)
                                 isExpanded = false
                                       },
-                            text = { Text(device.device.name + "\n" + device.device.address) },
-                            leadingIcon = { Text(index.toString()) },
+                            text = { Text(
+                                text = device.device.name + "\n" + device.device.address,
+                                style = semiBoldText(),
+                                fontSize = 16.sp
+                            ) },
+                            leadingIcon = { Text(
+                                text = index.toString(),
+                                style = boldText(),
+                                fontSize = 20.sp
+                            ) },
                             colors = MenuItemColors(
                                 MaterialTheme.colorScheme.onSurface,
                                 MaterialTheme.colorScheme.onSurface,

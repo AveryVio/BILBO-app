@@ -22,6 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
+import com.averyvi.bilbo.ui.theme.boldText
+import com.averyvi.bilbo.ui.theme.normalText
+import com.averyvi.bilbo.ui.theme.semiBoldText
 
 @Composable
 fun PitchDiffView(pitchDiff: Int){
@@ -64,9 +67,15 @@ fun IsHarmonicText(pitchDiff: Int) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("${pitchDiff}")
+        Text(
+            text = "${pitchDiff}",
+            style = semiBoldText(),
+            )
 
-        Text(stringResource(R.string.Cents))
+        Text(
+            text = stringResource(R.string.Cents),
+            style = normalText(),
+            )
     }
 }
 
@@ -78,10 +87,12 @@ fun NoteOctiveDisplay(note:String, octive:String){
     ) {
         Text(
             text = note,
+            style = boldText(),
             fontSize = 40.sp,
         )
         Text(
             text = octive,
+            style = semiBoldText(),
             fontSize = 20.sp,
         )
     }

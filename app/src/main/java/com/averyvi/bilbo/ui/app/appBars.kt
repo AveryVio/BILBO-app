@@ -1,6 +1,5 @@
 package com.averyvi.bilbo.ui.app
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,19 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -36,9 +28,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.averyvi.asampleofuis.ui.theme.FancyHeading
 import com.averyvi.bilbo.R
-import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.ui.theme.BILBOText
+import com.averyvi.bilbo.ui.theme.boldText
+import com.averyvi.bilbo.ui.theme.semiBoldText
+import com.averyvi.bilbo.ui.theme.topbarInstrumentText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,20 +52,16 @@ fun BILBOTopAppBar(
             ){
                 Text(
                     text = stringResource(R.string.AppNameShort),
-                    fontFamily = FancyHeading.titleLarge.fontFamily,
-                    fontWeight = FancyHeading.titleLarge.fontWeight,
-                    fontSize = 25.sp,
-                    lineHeight = 10.sp,
-                    modifier = Modifier.padding(top = 0.dp, bottom = 0.dp, start = 0.dp, end = 20.dp)
+                    style = BILBOText()
                 )
-                Text(
-                    text = selectedInstrumentName,
-                    fontSize = 20.sp,
-                    lineHeight = 10.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 0.dp, bottom = 0.dp, start = 20.dp, end = 0.dp)
-                )
+                if(selectedInstrumentName.isNotEmpty()) {
+                    Text(
+                        text = selectedInstrumentName,
+                        style = topbarInstrumentText(),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
                 },
         scrollBehavior = scrollBehavior
@@ -149,8 +139,7 @@ fun BILBOAddInstrumentButton(
                 )
                 Text(
                     text = stringResource(R.string.AddButton),
-                    fontSize = 25.sp,
-                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                    style = boldText().copy(fontSize = 24.sp)
                 )
             }
         }

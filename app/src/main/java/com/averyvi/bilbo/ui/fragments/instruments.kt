@@ -21,14 +21,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.averyvi.bilbo.ui.theme.boldText
+import com.averyvi.bilbo.ui.theme.normalText
 
 @Composable
 fun InstrumentShelfItem(
     @DrawableRes InstrumentImageResource: Int,
     name: String,
-    comment: String = "",
     inModifier: Modifier = Modifier,
     onClick: () -> Unit
 ){
@@ -43,7 +45,9 @@ fun InstrumentShelfItem(
         ),
         onClick = { onClick() }
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(horizontal = 6.dp)
+        ) {
             Image(
                 painter = painterResource( InstrumentImageResource ),
                 contentDescription = null,
@@ -54,16 +58,10 @@ fun InstrumentShelfItem(
             )
             Text(
                 text = name,
-                fontWeight = FontWeight(800),
+                style = boldText(),
                 fontSize = 18.sp,
-
-                modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal =  4.dp)
-            )
-            Text(
-                text = comment,
-                fontSize = 14.sp,
-                lineHeight = 12.sp,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 0.dp, horizontal = 4.dp)
+                lineHeight = 18.sp,
+                modifier = Modifier.fillMaxWidth().padding(bottom =  8.dp)
             )
         }
     }
@@ -82,9 +80,11 @@ fun NewInstrumentDropdown(
     ){
         Card(
             onClick = onCardClick,
+            shape = RoundedCornerShape(20.dp)
         ) {
             Text(
                 text = activatorName,
+                style = normalText(),
                 fontSize = 47.sp,
                 modifier = Modifier.padding(3.dp)
             )

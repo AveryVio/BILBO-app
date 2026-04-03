@@ -1,5 +1,6 @@
 package com.averyvi.bilbo.ui.app
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,7 +50,9 @@ import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
 import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
 import com.averyvi.bilbo.data.uiState.TuningViewModel
 import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.ui.theme.boldText
 import com.averyvi.bilbo.ui.theme.fadedHilightText
+import com.averyvi.bilbo.ui.theme.hilightText
 import kotlin.concurrent.thread
 
 @Composable
@@ -80,8 +83,8 @@ fun NowPlayingScreen(
                 ){
                     Text(
                         text = "placeholder",
-                        fontSize = 45.sp,
-                        fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                        style = boldText(),
+                        fontSize = 52.sp
                     )
                 }
                 PitchDiffView(tuningViewModel.pitch.collectAsState().value)
@@ -106,8 +109,7 @@ fun InstrumentSelectScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 10.dp),
+            .fillMaxSize(),
     ) {
         Row() {
             Button(
@@ -150,7 +152,7 @@ fun InstrumentSelectScreen(
             LazyVerticalGrid(
                 modifier = Modifier
                     .padding(top = 6.dp),
-                columns = GridCells.Adaptive(75.dp),
+                columns = GridCells.Adaptive(90.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
@@ -179,11 +181,15 @@ fun InstrumentSelectScreen(
             ){
                 Text(
                     text = stringResource(R.string.NoInstrumentsAvalible),
-                    style = fadedHilightText()
+                    style = fadedHilightText(),
+                    fontSize = 20.sp,
+                    lineHeight = 22.sp
                 )
                 Text(
                     text = stringResource(R.string.AddMoreInstruments),
-                    style = fadedHilightText()
+                    style = fadedHilightText(),
+                    fontSize = 18.sp,
+                    lineHeight = 20.sp
                 )
             }
 
@@ -203,7 +209,7 @@ fun NewInstrumentScreen(
     val selectedOctive = instrumentProfileViewModel.newInstrument.collectAsState().value.octive
 
     Column(
-        modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(15.dp),
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.6f).padding(15.dp),
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         Row(
@@ -213,8 +219,8 @@ fun NewInstrumentScreen(
         ) {
             Text(
                 text = stringResource(R.string.NewInstrumentScreen),
+                style = hilightText(),
                 fontSize = 40.sp,
-                fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
                 modifier = Modifier
             )
         }

@@ -3,8 +3,6 @@ package com.averyvi.bilbo.ui.fragments
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
@@ -31,8 +29,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.ui.theme.boldText
+import com.averyvi.bilbo.ui.theme.normalText
+import com.averyvi.bilbo.ui.theme.semiBoldText
 
 @Composable
 fun NewInstrumentTextInput(
@@ -69,10 +71,13 @@ fun NewInstrumentTextInput(
             unfocusedIndicatorColor = Color.Transparent,
         ),
         shape = RoundedCornerShape(24.dp),
-        textStyle = TextStyle(brush = Brush.linearGradient(
-            colors = brushColorList,
-            end = Offset(gradientEndX, 0f)
-        )),
+        textStyle = boldText().copy(
+            fontSize = 20.sp,
+            brush = Brush.linearGradient(
+                colors = brushColorList,
+                end = Offset(gradientEndX, 0f)
+            )
+        ),
         keyboardOptions = keyboardOptions,
         singleLine = true,
     )
@@ -93,7 +98,7 @@ fun NewInstrumentSelector(
     var octiveIsExpanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+        modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
@@ -102,8 +107,14 @@ fun NewInstrumentSelector(
             verticalAlignment = Alignment.CenterVertically,
         ){
             NewInstrumentTextInput(
-                label = @Composable { Text(stringResource(R.string.NewInstrumentName)) },
-                placeholder = @Composable { Text("Foobar") },
+                label = @Composable { Text(
+                    text = stringResource(R.string.NewInstrumentName),
+                    style = semiBoldText().copy(fontSize = 18.sp)
+                ) },
+                placeholder = @Composable { Text(
+                    text = "Foobar",
+                    style = normalText().copy(fontSize = 16.sp)
+                ) },
                 value = selectedName,
                 onValueChange = { onNameChange(it) },
                 leadingIcon = @Composable {
@@ -127,8 +138,14 @@ fun NewInstrumentSelector(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             NewInstrumentTextInput(
-                label = @Composable { Text(stringResource(R.string.FreqName)) },
-                placeholder = @Composable { Text(stringResource(R.string.FreqName)) },
+                label = @Composable { Text(
+                    text = stringResource(R.string.FreqName),
+                    style = semiBoldText().copy(fontSize = 16.sp)
+                ) },
+                placeholder = @Composable { Text(
+                    text = stringResource(R.string.FreqName),
+                    style = normalText().copy(fontSize = 16.sp)
+                ) },
                 value = selectedFreqString,
                 onValueChange = { onFreqChange(it) },
                 leadingIcon = @Composable {
@@ -163,7 +180,10 @@ fun NewInstrumentSelector(
                                 onSelectedNoteChange(note)
                                 noteIsExpanded = false
                             },
-                            text = { Text(note.name) },
+                            text = { Text(
+                                text = note.name,
+                                style = boldText()
+                            ) },
                         )
                     }
                 },
@@ -181,7 +201,10 @@ fun NewInstrumentSelector(
                                 onSelectedOctiveChange(octive)
                                 octiveIsExpanded = false
                             },
-                            text = { Text(octive.toString()) },
+                            text = { Text(
+                                octive.toString(),
+                                style = boldText()
+                            ) },
                         )
                     }
                 },
