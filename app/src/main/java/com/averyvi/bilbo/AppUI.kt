@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,9 @@ fun AppUI(
         while(true) {
             pitchStep.doubleValue += 0.1
             tuningViewModel.updatePitch((sin(pitchStep.doubleValue) * 100).toInt())
+
+            if(tuningViewModel.freq.value < 2000) tuningViewModel.incrementFreq()
+            else tuningViewModel.resetFreq()
             delay(50)
         }
     }

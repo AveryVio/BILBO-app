@@ -53,6 +53,7 @@ import com.averyvi.bilbo.definitions.MusicalNote
 import com.averyvi.bilbo.ui.theme.boldText
 import com.averyvi.bilbo.ui.theme.fadedHilightText
 import com.averyvi.bilbo.ui.theme.hilightText
+import com.averyvi.bilbo.ui.theme.normalText
 import kotlin.concurrent.thread
 
 @Composable
@@ -74,7 +75,7 @@ fun NowPlayingScreen(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(25.dp)
+                verticalArrangement = Arrangement.spacedBy(30.dp)
             ){
                 Box(
                     modifier = Modifier
@@ -88,6 +89,12 @@ fun NowPlayingScreen(
                     )
                 }
                 PitchDiffView(tuningViewModel.pitch.collectAsState().value)
+                Text(
+                    text = tuningViewModel.freq.collectAsState().value.toString() + " Hz",
+                    style = normalText(),
+                    fontSize = 64.sp,
+                    modifier = Modifier.padding(top = 40.dp)
+                )
             }
         }
 

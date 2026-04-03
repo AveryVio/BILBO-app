@@ -22,6 +22,9 @@ class TuningViewModel(private val bluetoothManager: BilboBluetoothManager) : Vie
     private val _pitch = MutableStateFlow(0)
     val pitch: StateFlow<Int> = _pitch.asStateFlow()
 
+    private val _freq = MutableStateFlow(0)
+    val freq: StateFlow<Int> = _freq.asStateFlow()
+
     init {
         viewModelScope.launch {
             bluetoothManager.incomingTuningData.collect { TuningData: TuningData ->
@@ -33,23 +36,30 @@ class TuningViewModel(private val bluetoothManager: BilboBluetoothManager) : Vie
     fun updateNote(newNote: MusicalNote) { _note.value = newNote }
     fun updateOctive(newOctive: Int) { _octive.value = newOctive }
     fun updatePitch(newPitch: Int) { _pitch.value = newPitch}
+    fun updateFreq(newFreq: Int) { _freq.value = newFreq}
 
     fun incrementNote() { _note.value = MusicalNote.entries[_note.value.ordinal + 1] }
     fun incrementOctive() { _octive.value++ }
     fun incrementPitch() { _pitch.value++}
+    fun incrementFreq() { _freq.value++}
 
     fun resetNote() { _note.value = MusicalNote.entries[0] }
     fun resetOctive() { _octive.value = -2 }
     fun resetPitch() { _pitch.value = 0 }
+    fun resetFreq() { _freq.value = 0 }
 
     fun resetValues() {
         _note.value = MusicalNote.A
         _octive.value = 4
         _pitch.value = 0
+        _freq.value = 0
     }
 
     private fun updateUI(data: TuningData) {
         _note.value = MusicalNote.entries[data.positionInOctave]
+        _octive.value = data.octive
+        _pitch.value = data.difference
+        _freq.value = data.frequency
         // Update your UI state variables here
         // e.g., currentFrequency.value = data.frequency
     }
