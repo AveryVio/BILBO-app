@@ -14,15 +14,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
+import com.averyvi.bilbo.data.bluetooth.BilboBluetoothManager
 import com.averyvi.bilbo.data.bluetooth.BilboViewModel
+import com.averyvi.bilbo.data.frop.buildProfileChangeMessage
+import com.averyvi.bilbo.data.storage.AppDatabase
+import com.averyvi.bilbo.data.uiState.TuningViewModel
 import com.averyvi.bilbo.ui.theme.BilboTheme
 
 
 class MainActivity : ComponentActivity() {
 
     // Instantiate ViewModel
-    private val viewModel: BilboViewModel by viewModels()
+    private val bilboViewModel: BilboViewModel by viewModels()
     private var bluetoothAdapter: BluetoothAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,22 +41,40 @@ class MainActivity : ComponentActivity() {
         val btManager = getSystemService(BluetoothManager::class.java)
         bluetoothAdapter = btManager.adapter
 
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "instruments"
+        ).build()
+        val userDao = db.userDao()
+
         beginBluetooth()
 
         setContent {
+            val factory = object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return TuningViewModel(bilboViewModel.bluetoothManager) as T
+                }
+            }
+
+            val tuningViewModel: TuningViewModel = viewModel(factory = factory)
+
             BilboTheme {
                 // Observe data from ViewModel
-                val discoveredDevices by viewModel.discoveredDevices.collectAsState()
+                val discoveredDevices by bilboViewModel.discoveredDevices.collectAsState()
 
                 AppUI(
+                    tuningViewModel = tuningViewModel,
+                    userDao = userDao,
                     deviceList = discoveredDevices,
+                    updateInstrument = { freq: Int, note: Int, octive: Int ->
+                        val profileMessage = buildProfileChangeMessage(frequency = freq, positionInOctive = note, octive = octive)
+                        bilboViewModel.bluetoothManager.sendData(profileMessage)
+                    },
                     onDeviceSelected = { selectedDevice ->
                         // Delegate logic to ViewModel
-                        viewModel.toggleConnection(selectedDevice)
+                        bilboViewModel.toggleConnection(selectedDevice)
                     },
-                    onHarmonicSelected = { firstHarmonic ->
-                        viewModel.sendFrequency(firstHarmonic)
-                    }
                 )
             }
         }
@@ -64,7 +91,7 @@ class MainActivity : ComponentActivity() {
                 enablePermission.launch(enableIntent)
             } else {
                 Log.d("BluetoothBegin", "Scanning begins.")
-                viewModel.startScan()
+                bilboViewModel.startScan()
             }
         }
         else {
@@ -99,7 +126,7 @@ class MainActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.all { it.value }) {
                 Log.d("Permissions", "All permissions granted.")
-                if (bluetoothAdapter?.isEnabled == true) viewModel.startScan()
+                if (bluetoothAdapter?.isEnabled == true) bilboViewModel.startScan()
             } else {
                 Log.w("Permissions", "Permissions denied.")
             }
@@ -108,7 +135,7 @@ class MainActivity : ComponentActivity() {
     private val enablePermission =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                viewModel.startScan()
+                bilboViewModel.startScan()
             }
         }
 }

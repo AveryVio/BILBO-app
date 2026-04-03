@@ -8,12 +8,14 @@ import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.Locale
 
 class BilboViewModel(application: Application) : AndroidViewModel(application) {
 
     // Initialize Manager with Application Context
-    private val bluetoothManager = BilboBluetoothManager(application.applicationContext)
+    val bluetoothManager = BilboBluetoothManager(application.applicationContext)
 
     // Expose flow to UI
     val discoveredDevices: StateFlow<List<SelectableBluetoothDevice>> = bluetoothManager.discoveredDevices
@@ -28,11 +30,6 @@ class BilboViewModel(application: Application) : AndroidViewModel(application) {
         } else {
             bluetoothManager.connectToDevice(deviceWrapper.device)
         }
-    }
-
-    fun sendFrequency(firstHarmonic: FirstHarmonic) {
-        val payload = String.format(Locale.US, "%.2f\r\n", firstHarmonic.frequency)
-        bluetoothManager.sendData(payload)
     }
 
     override fun onCleared() {

@@ -14,10 +14,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.averyvi.bilbo.data.bluetooth.BilboBluetoothManager
 import com.averyvi.bilbo.definitions.BottomButton
 import com.averyvi.bilbo.definitions.FirstHarmonic
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.data.storage.AppDatabase
+import com.averyvi.bilbo.data.storage.UserDao
 import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
 import com.averyvi.bilbo.definitions.AppBarsVisibility
 import com.averyvi.bilbo.ui.app.NewInstrumentScreen
@@ -33,18 +35,12 @@ import kotlin.math.sin
 @OptIn(ExperimentalMaterial3Api::class)
 fun AppUI(
     deviceList: List<SelectableBluetoothDevice>,
+    tuningViewModel: TuningViewModel,
+    userDao: UserDao,
+    updateInstrument: (freq: Int, note: Int, octive: Int) -> Unit,
     onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
-    onHarmonicSelected: (FirstHarmonic) -> Unit
 ){
     val instrumentProfileViewModel: InstrumentProfileViewModel = viewModel()
-    val tuningViewModel: TuningViewModel = viewModel()
-
-    val locContext = LocalContext.current
-    val db = Room.databaseBuilder(
-        locContext,
-        AppDatabase::class.java, "instruments"
-    ).build()
-    val userDao = db.userDao()
 
     val pitchStep = remember {
         mutableDoubleStateOf(0.0)
@@ -134,6 +130,7 @@ fun AppUI(
                 InstrumentSelectScreen(
                     dbDao = userDao,
                     instrumentProfileViewModel = instrumentProfileViewModel,
+                    updateInstrument = updateInstrument,
                 )
             }
             composable(route = Routes.NewInstrument.name) {

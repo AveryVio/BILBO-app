@@ -1,15 +1,18 @@
 package com.averyvi.bilbo.data.uiState
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.averyvi.bilbo.R
-import com.averyvi.bilbo.data.storage.InstrumentDBRow
+import com.averyvi.bilbo.data.bluetooth.BilboBluetoothManager
+import com.averyvi.bilbo.data.frop.TuningData
 import com.averyvi.bilbo.definitions.MusicalNote
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class TuningViewModel : ViewModel() {
+class TuningViewModel(private val bluetoothManager: BilboBluetoothManager) : ViewModel() {
     private val _note = MutableStateFlow(MusicalNote.A)
     val note: StateFlow<MusicalNote> = _note.asStateFlow()
 
@@ -19,7 +22,13 @@ class TuningViewModel : ViewModel() {
     private val _pitch = MutableStateFlow(0)
     val pitch: StateFlow<Int> = _pitch.asStateFlow()
 
-
+    init {
+        viewModelScope.launch {
+            bluetoothManager.incomingTuningData.collect { TuningData: TuningData ->
+                updateUI(TuningData)
+            }
+        }
+    }
 
     fun updateNote(newNote: MusicalNote) { _note.value = newNote }
     fun updateOctive(newOctive: Int) { _octive.value = newOctive }
@@ -37,6 +46,12 @@ class TuningViewModel : ViewModel() {
         _note.value = MusicalNote.A
         _octive.value = 4
         _pitch.value = 0
+    }
+
+    private fun updateUI(data: TuningData) {
+        _note.value = MusicalNote.entries[data.positionInOctave]
+        // Update your UI state variables here
+        // e.g., currentFrequency.value = data.frequency
     }
 }
 

@@ -4,12 +4,17 @@ data class FirstHarmonic(val name: String, val frequency: Double)
 
 enum class MusicalNote(var noteNumber: Int) {
     C(1),
-    D(2),
-    E(3),
-    F(4),
-    G(5),
-    A(6),
-    H(7),
+    Cs(2),
+    D(3),
+    Ds(4),
+    E(5),
+    F(6),
+    Fs(7),
+    G(8),
+    Gs(9),
+    A(10),
+    As(11),
+    H(12),
 }
 
 /*

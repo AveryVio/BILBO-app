@@ -12,8 +12,12 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.averyvi.bilbo.data.frop.FropParser
+import com.averyvi.bilbo.data.frop.TuningData
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.*
@@ -54,6 +58,10 @@ class BilboBluetoothManager(private val context: Context) {
     private val maxConnectionAttempts = 3
     private val baseConnectionAttemptDelayMs = 1000L
     private val maxConnectionAttemptDelayMs = 5000L
+
+    private val fropParser = FropParser()
+    private val _incomingTuningData = MutableSharedFlow<TuningData>(extraBufferCapacity = 10)
+    val incomingTuningData = _incomingTuningData.asSharedFlow()
 
     // --- Scanning ---
 
@@ -217,7 +225,19 @@ class BilboBluetoothManager(private val context: Context) {
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) {
             val dataString = value.toString(Charsets.UTF_8)
+            val newMessages = fropParser.processIncomingBytes(value)
+
             Log.i("GattCallback", "Received data on ${characteristic.uuid}: $dataString")
+
+            for (message in newMessages) {
+                when (message) {
+                    is TuningData -> {
+                        Log.i("BilboBT", "Parsed Tuning Data: Freq=${message.frequency}, NotePos=${message.positionInOctave}")
+                        _incomingTuningData.tryEmit(message)
+                    }
+                    // You can add cases for RangeChange, ErrorMessages, etc. later
+                }
+            }
         }
 
         // triggered on data reception
@@ -233,7 +253,7 @@ class BilboBluetoothManager(private val context: Context) {
 
     // --- Data Transmission ---
 
-    fun sendData(data: String) {
+    fun sendData(dataBytes: ByteArray) {
         if (!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) return
         val char = uartTxCharacteristic ?: run {
             Log.w("SendData", "UART TX Characteristic not found, cannot send data.")
@@ -241,19 +261,10 @@ class BilboBluetoothManager(private val context: Context) {
         }
 
         char.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-        val dataBytes = data.toByteArray(Charsets.UTF_8)
-        Log.d("SendData", "Sending data to BLE device: $data")
+        Log.d("SendData", "Sending data to BLE device: $dataBytes of length: ${dataBytes.size}")
 
         // Note: writeCharacteristic signature depends on API level.
-        // This is the modern way, for older APIs use char.value = bytes; gatt.writeCharacteristic(char)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bluetoothGATT?.writeCharacteristic(char, dataBytes, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
-        } else {
-            @Suppress("DEPRECATION")
-            char.value = dataBytes
-            @Suppress("DEPRECATION")
-            bluetoothGATT?.writeCharacteristic(char)
-        }
+        bluetoothGATT?.writeCharacteristic(char, dataBytes, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
     }
 
     private fun enableNotifications(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
@@ -264,14 +275,7 @@ class BilboBluetoothManager(private val context: Context) {
             // Determine value based on properties (simplified)
             val value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                gatt.writeDescriptor(it, value)
-            } else {
-                @Suppress("DEPRECATION")
-                it.value = value
-                @Suppress("DEPRECATION")
-                gatt.writeDescriptor(it)
-            }
+            gatt.writeDescriptor(it, value)
         }
     }
 

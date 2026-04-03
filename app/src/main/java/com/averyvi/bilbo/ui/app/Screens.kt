@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.averyvi.bilbo.R
 import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.data.frop.buildProfileChangeMessage
 import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
 import com.averyvi.bilbo.data.storage.InstrumentDBRow
 import com.averyvi.bilbo.data.storage.UserDao
@@ -98,6 +99,7 @@ fun NowPlayingScreen(
 fun InstrumentSelectScreen(
     dbDao: UserDao,
     instrumentProfileViewModel: InstrumentProfileViewModel,
+    updateInstrument: (freq: Int, note: Int, octive: Int) -> Unit,
 ){
     val instruments: SnapshotStateList<InstrumentDBRow> = getAllInstruments(dbDao)
 
@@ -164,6 +166,7 @@ fun InstrumentSelectScreen(
                             instrumentProfileViewModel.updateCurrentOctive(instruments[it].refOctive)
 
                             // todo add bt communication
+                            updateInstrument(instruments[it].refFreq, instruments[it].positionInOctive, instruments[it].refOctive)
                         }
                     )
                 }
