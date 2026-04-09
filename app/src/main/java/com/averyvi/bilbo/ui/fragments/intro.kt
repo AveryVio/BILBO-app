@@ -3,6 +3,7 @@ package com.averyvi.bilbo.ui.fragments
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,11 +38,20 @@ fun IntroAppTitle(){
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(R.drawable.handa),
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-            )
+            Box() {
+                Card(shape = RoundedCornerShape(20.dp)) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_background),
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp),
+                    )
+                }
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(50.dp),
+                )
+            }
             Row() {
                 Text(stringResource(R.string.IntroBy))
                 Icon(
@@ -67,13 +77,6 @@ fun IntroTutorial(){
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-
-            painter = painterResource(R.drawable.avi),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.size(250.dp)
-        )
         Text(
             text = stringResource(R.string.TutorialText),
             textAlign = TextAlign.Center,

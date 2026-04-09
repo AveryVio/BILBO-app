@@ -82,7 +82,7 @@ fun MainScaffold(
                                         instrument = InstrumentDBRow(
                                             instrumentName = instrumentProfileViewModel.newInstrument.value.name,
                                             instrumentIcon = instrumentProfileViewModel.newInstrument.value.icon, //todo add the possibility of adding an icon
-                                            refFreq = instrumentProfileViewModel.newInstrument.value.freq.takeLast(9).toInt(),
+                                            refFreq = instrumentProfileViewModel.newInstrument.value.freq.takeLast(5).toInt(),
                                             positionInOctive = instrumentProfileViewModel.newInstrument.value.note.ordinal,
                                             refOctive = instrumentProfileViewModel.newInstrument.value.octive
                                         )

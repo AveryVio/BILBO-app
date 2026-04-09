@@ -82,6 +82,7 @@ fun AppUI(
     val appBarsShow = appBarsVisibility.getOrDefault(currentRoute, AppBarsVisibility.both)
 
     val defaultRouteToGoTo = mapOf<String, String>(
+        Routes.Intro.name to Routes.CurrentlyPlaying.name,
         Routes.InstrumentSelect.name to Routes.CurrentlyPlaying.name,
         Routes.CurrentlyPlaying.name to Routes.InstrumentSelect.name,
         Routes.NewInstrument.name to Routes.CurrentlyPlaying.name,
@@ -116,7 +117,7 @@ fun AppUI(
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.NewInstrument.name,
+            startDestination = Routes.Intro.name,
         ) {
 
             val onRouteButtonClicked = { route: Routes ->

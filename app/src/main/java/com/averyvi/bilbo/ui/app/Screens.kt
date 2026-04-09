@@ -83,9 +83,9 @@ fun NowPlayingScreen(
                     contentAlignment = Alignment.BottomCenter
                 ){
                     Text(
-                        text = "placeholder",
+                        text = stringResource(R.string.PitchDiff),
                         style = boldText(),
-                        fontSize = 52.sp
+                        fontSize = 38.sp
                     )
                 }
                 PitchDiffView(tuningViewModel.pitch.collectAsState().value)
@@ -110,97 +110,59 @@ fun InstrumentSelectScreen(
     dbDao: UserDao,
     instrumentProfileViewModel: InstrumentProfileViewModel,
     updateInstrument: (freq: Int, note: Int, octive: Int) -> Unit,
-){
+) {
     val instruments: SnapshotStateList<InstrumentDBRow> = getAllInstruments(dbDao)
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        Row() {
-            Button(
-                onClick = {
-                    thread {
-                        dbDao.insertAll(
-                            instrument = InstrumentDBRow(
-                                instrumentName = "Piano",
-                                instrumentIcon = R.drawable.radio_button_checked_24px,
-                                refFreq = 440,
-                                positionInOctive = 9,
-                                refOctive = 4,
-                            )
+    if (instruments.isNotEmpty()) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .padding(top = 6.dp),
+            columns = GridCells.Adaptive(90.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            items(instruments.size) {
+                InstrumentShelfItem(
+                    InstrumentImageResource = instruments[it].instrumentIcon,
+                    name = instruments[it].instrumentName,
+                    onClick = {
+                        instrumentProfileViewModel.updateCurrentName(instruments[it].instrumentName)
+                        instrumentProfileViewModel.updateCurrentIcon(instruments[it].instrumentIcon)
+                        instrumentProfileViewModel.updateCurrentFreq(instruments[it].refFreq.toString())
+                        instrumentProfileViewModel.updateCurrentNote(MusicalNote.entries[instruments[it].positionInOctive])
+                        instrumentProfileViewModel.updateCurrentOctive(instruments[it].refOctive)
+
+                        // todo add bt communication
+                        updateInstrument(
+                            instruments[it].refFreq,
+                            instruments[it].positionInOctive,
+                            instruments[it].refOctive
                         )
                     }
-                }
-            ){
-                Text("testAdd") // toto remove
-            }
-            Button(
-                onClick = {
-                    thread {
-                        deleteAllInstruments(dbDao)
-                    }
-                }
-            ){
-                Text("testRemoveAll") // toto remove
-            }
-            Button(
-                onClick = {
-                    thread {
-                        deleteLastInstrument(dbDao)
-                    }
-                }
-            ){
-                Text("testRemoveLast") // toto remove
-            }
-        }
-        if(instruments.isNotEmpty()) {
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .padding(top = 6.dp),
-                columns = GridCells.Adaptive(90.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                items(instruments.size) {
-                    InstrumentShelfItem(
-                        InstrumentImageResource = instruments[it].instrumentIcon,
-                        name = instruments[it].instrumentName,
-                        onClick = {
-                            instrumentProfileViewModel.updateCurrentName(instruments[it].instrumentName)
-                            instrumentProfileViewModel.updateCurrentIcon(instruments[it].instrumentIcon)
-                            instrumentProfileViewModel.updateCurrentFreq(instruments[it].refFreq.toString())
-                            instrumentProfileViewModel.updateCurrentNote(MusicalNote.entries[instruments[it].positionInOctive])
-                            instrumentProfileViewModel.updateCurrentOctive(instruments[it].refOctive)
-
-                            // todo add bt communication
-                            updateInstrument(instruments[it].refFreq, instruments[it].positionInOctive, instruments[it].refOctive)
-                        }
-                    )
-                }
-            }
-        } else {
-            Column(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Text(
-                    text = stringResource(R.string.NoInstrumentsAvalible),
-                    style = fadedHilightText(),
-                    fontSize = 20.sp,
-                    lineHeight = 22.sp
-                )
-                Text(
-                    text = stringResource(R.string.AddMoreInstruments),
-                    style = fadedHilightText(),
-                    fontSize = 18.sp,
-                    lineHeight = 20.sp
                 )
             }
-
         }
+    } else {
+        Column(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.NoInstrumentsAvalible),
+                style = fadedHilightText(),
+                fontSize = 20.sp,
+                lineHeight = 22.sp
+            )
+            Text(
+                text = stringResource(R.string.AddMoreInstruments),
+                style = fadedHilightText(),
+                fontSize = 18.sp,
+                lineHeight = 20.sp
+            )
+        }
+
     }
 }
 
@@ -225,7 +187,7 @@ fun NewInstrumentScreen(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = stringResource(R.string.NewInstrumentScreen),
+                text = stringResource(R.string.NewProfile),
                 style = hilightText(),
                 fontSize = 40.sp,
                 modifier = Modifier
@@ -240,12 +202,8 @@ fun NewInstrumentScreen(
             },
             selectedFreqString = selectedFreq,
             onFreqChange = {
-                if (it == "") {
-                    instrumentProfileViewModel.updateNewFreq(it)
-                } else {
-                    if (it.length < 30) {
+                if (it.length < 30) {
                         instrumentProfileViewModel.updateNewFreq(it.filter { numb -> numb.isDigit() })
-                    }
                 }
             },
             selectedNote = selectedNote,
@@ -271,7 +229,7 @@ fun IntroScreen(
 
             IntroTutorial()
 
-            /* add some fluff */
+            /* todo add some fluff */
             /*
             github
             licences/ licence
