@@ -1,11 +1,23 @@
 <resources>
-    <string name="app_name">A sample of UIs</string>
-    <string name="InstrumentSelectScreen">Instrument Select</string>
-    <string name="HelpScreen">Help</string>
     <string name="AppName" translatable="false">BILBO app</string>
+    <string name="InstrumentSelectScreen">Instrument Select</string>
+    <string name="NewInstrumentScreen">New instrument</string>
     <string name="MostUsedInstrumentsStatName">Most used Instruments</string>
     <string name="IntroScreen">Intro</string>
     <string name="IntroTextTop">Welcome to the BILBO app.</string>
     <string name="nextButton">Next</string>
     <string name="CurrentlyPlaying">Current Instrument</string>
+    <string name="Cents">Cents</string>
+    <string name="BTConnectedDevices">Connected Devices</string>
+    <string name="AppNameShort" translatable="false">BILBO</string>
+    <string name="CurrentFilter">"Current filter: "</string>
+    <string name="TutorialText">To us your tuner,\nyou have to connect to it via Bluetooth.</string>
+    <string name="IntroBy">By</string>
+    <string name="FreqName">Frequency</string>
+    <string name="NewInstrumentName">Name of New Instrument</string>
+    <string name="AddButton">Add</string>
+    <string name="NoInstrumentsAvalible">You have no tuning profiles.</string>
+    <string name="AddMoreInstruments">Add more by tapping the + icon.</string>
+    <string name="PitchDiff">Pitch difference</string>
+    <string name="NewProfile">New profile</string>
 </resources>

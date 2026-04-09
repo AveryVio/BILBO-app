@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">uika lol</string>
     <string name="InstrumentSelectScreen">Výběr Nástroje</string>
-    <string name="HelpScreen">Nápověda</string>
+    <string name="NewInstrumentScreen">Nový nástroj</string>
     <string name="MostUsedInstrumentsStatName">Nejvíce používané nástroje:</string>
     <string name="IntroScreen">Úvod</string>
     <string name="IntroTextTop">Vítejte do BILBO aplikace.</string>
     <string name="nextButton">Další</string>
     <string name="CurrentlyPlaying">Aktuální Nástroj</string>
+    <string name="Cents">Centů</string>
+    <string name="BTConnectedDevices">Připojená zařízení</string>
+    <string name="CurrentFilter">"Aktuální filtr: "</string>
+    <string name="TutorialText">Pro použití vaší ladičky,\nse k ní musíte připojit pomocí Bluetooth.</string>
+    <string name="IntroBy">Od</string>
+    <string name="FreqName">Frekvence</string>
+    <string name="NewInstrumentName">Jméno nového nástroje</string>
+    <string name="AddButton">Přidat</string>
+    <string name="NoInstrumentsAvalible">Nemáte žádné ladící profily.</string>
+    <string name="AddMoreInstruments">Přidejte nové kliknutím na + ikonu</string>
+    <string name="PitchDiff">Rozdíl frekvencí</string>
+    <string name="NewProfile">Nový profil</string>
 </resources>

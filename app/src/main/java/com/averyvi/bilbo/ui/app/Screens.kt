@@ -1,0 +1,307 @@
+package com.averyvi.bilbo.ui.app
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.averyvi.bilbo.R
+import com.averyvi.bilbo.Routes
+import com.averyvi.bilbo.data.frop.buildProfileChangeMessage
+import com.averyvi.bilbo.definitions.SelectableBluetoothDevice
+import com.averyvi.bilbo.data.storage.InstrumentDBRow
+import com.averyvi.bilbo.data.storage.UserDao
+import com.averyvi.bilbo.data.storage.getAllInstruments
+import com.averyvi.bilbo.ui.fragments.DeviceList
+import com.averyvi.bilbo.ui.fragments.InstrumentShelfItem
+import com.averyvi.bilbo.ui.fragments.IntroAppTitle
+import com.averyvi.bilbo.ui.fragments.IntroTutorial
+import com.averyvi.bilbo.ui.fragments.PitchDiffView
+import com.averyvi.bilbo.data.storage.deleteAllInstruments
+import com.averyvi.bilbo.data.storage.deleteLastInstrument
+import com.averyvi.bilbo.data.uiState.InstrumentProfileViewModel
+import com.averyvi.bilbo.ui.fragments.NewInstrumentSelector
+import com.averyvi.bilbo.data.uiState.TuningViewModel
+import com.averyvi.bilbo.definitions.MusicalNote
+import com.averyvi.bilbo.ui.theme.boldText
+import com.averyvi.bilbo.ui.theme.fadedHilightText
+import com.averyvi.bilbo.ui.theme.hilightText
+import com.averyvi.bilbo.ui.theme.normalText
+import kotlin.concurrent.thread
+
+@Composable
+fun NowPlayingScreen(
+    tuningViewModel: TuningViewModel,
+    deviceList: List<SelectableBluetoothDevice>,
+    onDeviceSelected: (SelectableBluetoothDevice) -> Unit,
+){
+    Box(
+        modifier = Modifier
+            .padding(bottom = 10.dp)
+            .fillMaxWidth()
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 120.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(30.dp)
+            ){
+                Box(
+                    modifier = Modifier
+                        .height(150.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ){
+                    Text(
+                        text = stringResource(R.string.PitchDiff),
+                        style = boldText(),
+                        fontSize = 38.sp
+                    )
+                }
+                PitchDiffView(tuningViewModel.pitch.collectAsState().value)
+                Text(
+                    text = tuningViewModel.freq.collectAsState().value.toString() + " Hz",
+                    style = normalText(),
+                    fontSize = 64.sp,
+                    modifier = Modifier.padding(top = 40.dp)
+                )
+            }
+        }
+
+        DeviceList(
+            devices = deviceList,
+            onDeviceSelected = onDeviceSelected
+        )
+    }
+}
+
+@Composable
+fun InstrumentSelectScreen(
+    dbDao: UserDao,
+    instrumentProfileViewModel: InstrumentProfileViewModel,
+    updateInstrument: (freq: Int, note: Int, octive: Int) -> Unit,
+) {
+    val instruments: SnapshotStateList<InstrumentDBRow> = getAllInstruments(dbDao)
+
+
+    if (instruments.isNotEmpty()) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .padding(top = 6.dp),
+            columns = GridCells.Adaptive(90.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            items(instruments.size) {
+                InstrumentShelfItem(
+                    InstrumentImageResource = instruments[it].instrumentIcon,
+                    name = instruments[it].instrumentName,
+                    onClick = {
+                        instrumentProfileViewModel.updateCurrentName(instruments[it].instrumentName)
+                        instrumentProfileViewModel.updateCurrentIcon(instruments[it].instrumentIcon)
+                        instrumentProfileViewModel.updateCurrentFreq(instruments[it].refFreq.toString())
+                        instrumentProfileViewModel.updateCurrentNote(MusicalNote.entries[instruments[it].positionInOctive])
+                        instrumentProfileViewModel.updateCurrentOctive(instruments[it].refOctive)
+
+                        // todo add bt communication
+                        updateInstrument(
+                            instruments[it].refFreq,
+                            instruments[it].positionInOctive,
+                            instruments[it].refOctive
+                        )
+                    }
+                )
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.NoInstrumentsAvalible),
+                style = fadedHilightText(),
+                fontSize = 20.sp,
+                lineHeight = 22.sp
+            )
+            Text(
+                text = stringResource(R.string.AddMoreInstruments),
+                style = fadedHilightText(),
+                fontSize = 18.sp,
+                lineHeight = 20.sp
+            )
+        }
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewInstrumentScreen(
+    instrumentProfileViewModel: InstrumentProfileViewModel,
+){
+    val selectedName = instrumentProfileViewModel.newInstrument.collectAsState().value.name
+    val selectedIcon = instrumentProfileViewModel.newInstrument.collectAsState().value.icon
+    val selectedFreq = instrumentProfileViewModel.newInstrument.collectAsState().value.freq
+    val selectedNote = instrumentProfileViewModel.newInstrument.collectAsState().value.note
+    val selectedOctive = instrumentProfileViewModel.newInstrument.collectAsState().value.octive
+
+    Column(
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.6f).padding(15.dp),
+        verticalArrangement = Arrangement.SpaceAround,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = stringResource(R.string.NewProfile),
+                style = hilightText(),
+                fontSize = 40.sp,
+                modifier = Modifier
+            )
+        }
+        NewInstrumentSelector(
+            selectedName = selectedName,
+            onNameChange = { it: String ->
+                if (it.length < 50) {
+                    instrumentProfileViewModel.updateNewName(it)
+                }
+            },
+            selectedFreqString = selectedFreq,
+            onFreqChange = {
+                if (it.length < 30) {
+                        instrumentProfileViewModel.updateNewFreq(it.filter { numb -> numb.isDigit() })
+                }
+            },
+            selectedNote = selectedNote,
+            onSelectedNoteChange = { instrumentProfileViewModel.updateNewNote(it) } ,
+            selectedOctive = selectedOctive,
+            onSelectedOctiveChange = { instrumentProfileViewModel.updateNewOctive(it) }
+        )
+    }
+}
+
+@Composable
+fun IntroScreen(
+    onRouteButtonClicked: (Routes) -> Unit
+) {
+    Surface(modifier = Modifier
+        .statusBarsPadding()
+        .fillMaxSize()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            IntroAppTitle()
+
+            IntroTutorial()
+
+            /* todo add some fluff */
+            /*
+            github
+            licences/ licence
+             */
+            Button(
+                onClick = { onRouteButtonClicked(Routes.InstrumentSelect) }
+            ) {
+                Text(
+                    text = stringResource(R.string.nextButton),
+                    fontWeight = FontWeight(500),
+                    fontSize = 25.sp,
+                )
+            }
+        }
+    }
+}
+
+//About screen
+
+/*
+val a = InstrumentStyling(instrumentName = "Piano", instrumentIcon = R.drawable.androidicon)
+Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = Modifier
+        .fillMaxWidth()
+) {
+    Spacer(modifier = Modifier.height(25.dp))
+    Image(
+        painter = painterResource(R.drawable.ic_launcher_background),
+        contentDescription = null,
+        modifier = Modifier.size(233.dp)
+    )
+    Spacer(modifier = Modifier.height(25.dp))
+    Row {
+        Text(
+            text = stringResource(R.string.AppName),
+            fontWeight = FontWeight(400),
+            fontSize = 20.sp,
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = "•",
+            fontWeight = FontWeight(800),
+            fontSize = 20.sp,
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = "version:" + System.getProperty("jpackage.app-version"),
+            fontWeight = FontWeight(400),
+            fontSize = 20.sp,
+        )
+    }
+    Spacer(modifier = Modifier.height(25.dp))
+    Column(horizontalAlignment = Alignment.CenterHorizontally,) {
+        Text(text = stringResource(R.string.MostUsedInstrumentsStatName))
+        Row {
+            InstrumentShelfItem(
+                InstrumentImageResource = a.instrumentIcon,
+                name = a.instrumentName,
+            )
+            InstrumentShelfItem(
+                InstrumentImageResource = a.instrumentIcon,
+                name = a.instrumentName,
+            )
+            InstrumentShelfItem(
+                InstrumentImageResource = a.instrumentIcon,
+                name = a.instrumentName,
+            )
+        }
+    }
+
+    //add links to github
+
+
+}*/
